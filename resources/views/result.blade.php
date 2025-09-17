@@ -259,6 +259,18 @@
             </div>
         </div>
         @endif
+        <!-- Action Buttons -->
+        <div class="flex flex-col sm:flex-row gap-4">
+            <a href="{{ route('upload.form') }}" class="flex-1 bg-blue-500 hover:bg-blue-600 text-white text-center font-semibold py-3 px-4 rounded-lg transition-all">
+                <i class="fas fa-upload mr-2"></i> Analisis File Lain
+            </a>
+            <button onclick="saveResults()" class="flex-1 bg-white border border-gray-300 hover:bg-gray-100 text-gray-800 font-semibold py-3 px-4 rounded-lg transition-all">
+                <i class="fas fa-download mr-2"></i> Simpan Hasil
+            </button>
+            <button onclick="window.print()" class="flex-1 bg-purple-500 hover:bg-purple-600 text-white font-semibold py-3 px-4 rounded-lg transition-all">
+                <i class="fas fa-print mr-2"></i> Cetak Laporan
+            </button>
+        </div>
     </div>
     
     <!-- Footer -->
