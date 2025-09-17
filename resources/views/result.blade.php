@@ -1,30 +1,43 @@
-@extends('layouts.app')
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Hasil Analisis</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="flex items-center justify-center min-h-screen bg-gradient-to-br from-purple-500 to-blue-500">
+  <div class="bg-white rounded-2xl shadow-lg p-8 w-[500px]">
+    <h1 class="text-2xl font-bold mb-4 text-center">Hasil Analisis Dokumen</h1>
 
-@section('content')
-<div class="card shadow-sm">
-    <div class="card-body">
-        <h3 class="mb-3">Hasil Analisis</h3>
+    <p class="mb-4 text-gray-700">File diupload: 
+      <span class="font-semibold text-blue-600">{{ $filename }}</span>
+    </p>
 
-        <p><strong>File disimpan di:</strong> {{ $filePath }}</p>
-
-        <h5>Kelengkapan:</h5>
-        <ul>
-            <li>Cover: {{ $analysis['cover'] ? '✅ Ada' : '❌ Tidak ada' }}</li>
-            <li>Abstrak: {{ $analysis['abstrak'] ? '✅ Ada' : '❌ Tidak ada' }}</li>
-            <li>Daftar Isi: {{ $analysis['daftar_isi'] ? '✅ Ada' : '❌ Tidak ada' }}</li>
-            <li>Bab:
-                <ul>
-                    @foreach ($analysis['bab'] as $bab => $status)
-                        <li>{{ $bab }}: {{ $status ? '✅ Ada' : '❌ Tidak ada' }}</li>
-                    @endforeach
-                </ul>
-            </li>
-            <li>Daftar Pustaka: {{ $analysis['daftar_pustaka'] ? '✅ Ada' : '❌ Tidak ada' }}</li>
-        </ul>
-
-        <h4 class="mt-3">Skor Kelengkapan: {{ $analysis['skor'] }} / 100</h4>
-
-        <a href="{{ route('upload.form') }}" class="btn btn-secondary mt-3">Upload Ulang</a>
+    <div class="space-y-2">
+      <div class="flex items-center justify-between">
+        <span>Abstrak</span>
+        <span class="text-green-600 font-bold">250 kata</span>
+      </div>
+      <div class="flex items-center justify-between">
+        <span>Margin</span>
+        <span class="text-red-600 font-bold">3.0 cm → 2.7 cm</span>
+      </div>
+      <div class="flex items-center justify-between">
+        <span>Daftar Isi</span>
+        <span class="text-green-600 font-bold">OK</span>
+      </div>
+      <div class="flex items-center justify-between">
+        <span>Rumusan Masalah</span>
+        <span class="text-red-600 font-bold">Perlu diperbaiki</span>
+      </div>
     </div>
-</div>
-@endsection
+
+    <div class="mt-6 text-center">
+      <a href="{{ route('upload.form') }}" 
+        class="block w-full bg-blue-600 text-white py-2 rounded-lg shadow hover:bg-blue-700 transition text-center">
+        Upload File Lainnya
+    </a>
+    </div>
+  </div>
+</body>
+</html>

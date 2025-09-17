@@ -3,40 +3,34 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 
 class UploadController extends Controller
 {
     public function index()
     {
-        return view('upload'); // menuju ke resources/views/upload.blade.php
+        return view('upload');
     }
 
     public function store(Request $request)
     {
         $request->validate([
-            'ta_file' => 'required|mimes:pdf|max:20480',
+            'file' => 'required|mimes:pdf,doc,docx|max:5120', // max 5 MB
         ]);
 
-        $path = $request->file('ta_file')->store('ta_files');
+        // Simpan file ke storage/app/uploads
+        $path = $request->file('file')->store('uploads');
 
-        // Dummy hasil analisis (nanti bisa diganti pakai AI/PDF parser)
-        $analysis = [
-            'cover' => true,
-            'abstrak' => true,
-            'daftar_isi' => false,
-            'bab' => [
-                'BAB I' => true,
-                'BAB II' => true,
-                'BAB III' => false,
-            ],
-            'daftar_pustaka' => true,
-            'skor' => 75,
+        // Data hasil analisis (dummy dulu)
+        $result = [
+            ['label' => 'Abstrak', 'value' => '250 kata', 'status' => 'ok'],
+            ['label' => 'Margin', 'value' => '3.0 cm → 2.7 cm', 'status' => 'warning'],
+            ['label' => 'Daftar Isi', 'value' => 'OK', 'status' => 'ok'],
+            ['label' => 'Rumusan Masalah', 'value' => 'Perlu diperbaiki', 'status' => 'error'],
         ];
 
-        return view('result', [
-            'filePath' => $path,
-            'analysis' => $analysis,
-        ]);
+        // Nama file yang diupload
+        $filename = $request->file('file')->getClientOriginalName();
+
+        return view('result', compact('result', 'filename', 'path'));
     }
 }
