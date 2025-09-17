@@ -34,3 +34,63 @@ Mahasiswa dapat mengunggah file PDF buku TA, lalu sistem akan memeriksa apakah f
    ```bash
    git clone https://github.com/username/deteksi-ta.git
    cd deteksi-ta
+
+2. Install dependency Laravel:
+
+   ```bash
+   composer install
+   ```
+
+3. Copy file environment:
+
+   ```bash
+   cp .env.example .env
+   ```
+
+4. Generate key aplikasi:
+
+   ```bash
+   php artisan key:generate
+   ```
+
+5. Jalankan server Laravel:
+
+   ```bash
+   php artisan serve
+   ```
+
+6. Buka di browser:
+
+   ```
+   http://127.0.0.1:8000/upload
+   ```
+
+## Struktur Folder Penting
+
+* `app/Http/Controllers/UploadController.php` → logic upload file
+* `resources/views/` → Blade templates (form upload dan hasil analisis)
+* `routes/web.php` → routing aplikasi
+
+## Cara Kontribusi
+
+1. Buat branch baru untuk fitur/bugfix:
+
+   ```bash
+   git checkout -b fitur-nama
+   ```
+2. Commit perubahan:
+
+   ```bash
+   git add .
+   git commit -m "Tambah fitur upload PDF"
+   ```
+3. Push ke GitHub:
+
+   ```bash
+   git push origin fitur-nama
+   ```
+4. Buat Pull Request di GitHub.
+
+## Lisensi
+
+Proyek ini dibuat untuk keperluan akademik di Institut Teknologi Sepuluh Nopember (ITS) tahun ajaran 2025/2026.
