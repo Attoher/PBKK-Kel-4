@@ -55,16 +55,16 @@ Mahasiswa dapat mengunggah file PDF buku TA, lalu sistem akan memeriksa apakah f
    php artisan key:generate
    ```
 
-5. Jalankan server Laravel:
-
-   ```bash
-   php artisan serve
-   ```
-
-6. Migrate Database :
+5. Migrate Database :
 
    ```
    php artisan migrate
+   ```
+
+6. Jalankan server Laravel:
+
+   ```bash
+   php artisan serve
    ```
 
 7. Buka di browser:
