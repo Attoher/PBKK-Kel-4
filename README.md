@@ -46,7 +46,7 @@ Mahasiswa dapat mengunggah file PDF buku TA, lalu sistem akan memeriksa apakah f
 3. Copy file environment:
 
    ```bash
-   cp .env.example .env
+   copy .env.example .env
    ```
 
 4. Generate key aplikasi:
@@ -55,18 +55,24 @@ Mahasiswa dapat mengunggah file PDF buku TA, lalu sistem akan memeriksa apakah f
    php artisan key:generate
    ```
 
-5. Jalankan server Laravel:
+5. Migrate Database :
+
+   ```
+   php artisan migrate
+   ```
+
+6. Jalankan server Laravel:
 
    ```bash
    php artisan serve
    ```
 
-6. Buka di browser:
+7. Buka di browser:
 
    ```
    http://127.0.0.1:8000/upload
    ```
-
+   
 ## Struktur Folder Penting
 
 * `app/Http/Controllers/UploadController.php` → logic upload file
