@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Upload TA - Deteksi Format</title>
+  <title>Upload TA - Deteksi Format ITS</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
@@ -55,193 +55,381 @@
     .notification.hide {
       animation: slideOut 0.3s ease-in;
     }
+
+    /* Navbar styles */
+    .navbar {
+      backdrop-filter: blur(10px);
+      background: rgba(255, 255, 255, 0.95);
+    }
+
+    /* Custom scrollbar */
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 6px;
+    }
+    
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: #f1f1f1;
+      border-radius: 10px;
+    }
+    
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: #c1c1c1;
+      border-radius: 10px;
+    }
+    
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+      background: #a8a8a8;
+    }
   </style>
 </head>
-<body class="flex items-center justify-center min-h-screen p-4">
+<body class="flex flex-col min-h-screen">
+  <!-- Navbar -->
+  <nav class="navbar shadow-lg border-b border-gray-200">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between h-16">
+        <div class="flex items-center">
+          <!-- Logo -->
+          <div class="flex-shrink-0 flex items-center">
+            <div class="w-10 h-10 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg flex items-center justify-center">
+              <i class="fas fa-graduation-cap text-white text-lg"></i>
+            </div>
+            <span class="ml-3 text-xl font-bold text-gray-800">FormatCheck ITS</span>
+          </div>
+          
+          <!-- Navigation Links -->
+          <div class="hidden md:ml-6 md:flex md:space-x-8">
+            <a href="{{ route('upload.form') }}" class="border-b-2 border-blue-500 text-gray-900 inline-flex items-center px-1 pt-1 text-sm font-medium">
+              <i class="fas fa-upload mr-2"></i>
+              Upload TA
+            </a>
+            <a href="{{ route('history') }}" class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
+              <i class="fas fa-history mr-2"></i>
+              Riwayat
+            </a>
+          </div>
+        </div>
+
+        <!-- Right side -->
+        <div class="flex items-center">
+          <!-- User info atau login -->
+          <div class="flex items-center space-x-4">
+            <span class="text-sm text-gray-700">
+              <i class="fas fa-user-circle mr-1"></i>
+              Sistem Deteksi Format
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mobile menu -->
+    <div class="md:hidden">
+      <div class="pt-2 pb-3 space-y-1 bg-white">
+        <a href="{{ route('upload.form') }}" class="bg-blue-50 border-blue-500 text-blue-700 block pl-3 pr-4 py-2 border-l-4 text-base font-medium">
+          <i class="fas fa-upload mr-2"></i>
+          Upload TA
+        </a>
+        <a href="{{ route('history') }}" class="border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700 block pl-3 pr-4 py-2 border-l-4 text-base font-medium">
+          <i class="fas fa-history mr-2"></i>
+          Riwayat
+        </a>
+      </div>
+    </div>
+  </nav>
+
   <!-- Notifikasi -->
-  <div id="notification" class="fixed top-4 right-4 z-50 hidden">
-    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative shadow-lg notification">
-      <span class="block sm:inline" id="notification-message"></span>
-      <button onclick="hideNotification()" class="absolute top-0 right-0 p-2">
-        <i class="fas fa-times"></i>
+  <div id="notification" class="fixed top-20 right-4 z-50 hidden max-w-sm">
+    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg relative shadow-lg notification">
+      <div class="flex items-start">
+        <i class="fas fa-exclamation-triangle mt-1 mr-3 flex-shrink-0"></i>
+        <span class="block flex-1" id="notification-message"></span>
+      </div>
+      <button onclick="hideNotification()" class="absolute top-2 right-2 p-1 text-red-500 hover:text-red-700">
+        <i class="fas fa-times text-sm"></i>
       </button>
     </div>
   </div>
 
-  <div class="bg-white rounded-2xl shadow-2xl overflow-hidden w-full max-w-4xl">
-    <!-- Header -->
-    <div class="bg-gradient-to-r from-blue-600 to-purple-600 p-6 text-white text-center">
-      <h1 class="text-3xl font-bold mb-2">Cek Format Tugas Akhir</h1>
-      <p class="text-blue-100">Unggah file tugas akhir kamu untuk memeriksa kelengkapan format</p>
-    </div>
-    
-    <div class="md:flex">
-      <!-- Upload Section -->
-      <div class="md:w-1/2 p-8">
-        <form action="{{ route('upload.process') }}" method="POST" enctype="multipart/form-data" class="space-y-6" id="uploadForm">
-          @csrf
-          
-          <div class="file-upload-container border-2 border-dashed border-gray-300 rounded-xl p-8 text-center cursor-pointer transition-all duration-300 hover:border-blue-400 hover:bg-blue-50"
-               id="dropArea">
-            <div class="flex justify-center mb-4">
-              <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center">
-                <i class="fas fa-file-upload text-blue-500 text-2xl"></i>
-              </div>
-            </div>
-            <p class="text-gray-600 mb-2">Tarik file ke sini atau klik untuk mengupload</p>
-            <p class="text-xs text-gray-400 mb-4">Format yang didukung: PDF, DOC, DOCX (Maks. 10MB)</p>
-            <input id="file" name="file" type="file" class="hidden" required accept=".pdf,.doc,.docx">
-            <label for="file" class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition cursor-pointer">
-              Pilih File
-            </label>
-          </div>
-
-          <!-- File Preview -->
-          <div id="file-preview" class="p-4 bg-gray-50 rounded-lg hidden">
-            <div class="flex items-center justify-between">
-              <div class="flex items-center">
-                <i class="far fa-file-pdf text-red-500 text-2xl mr-3"></i>
-                <div>
-                  <p id="file-name" class="font-medium text-gray-800"></p>
-                  <p id="file-size" class="text-sm text-gray-500"></p>
-                </div>
-              </div>
-              <button type="button" id="remove-file" class="text-gray-400 hover:text-gray-600">
-                <i class="fas fa-times"></i>
-              </button>
-            </div>
-          </div>
-
-          <!-- Progress Bar (Initially Hidden) -->
-          <div id="progress-container" class="hidden">
-            <div class="flex justify-between mb-1">
-              <span class="text-sm font-medium text-blue-600">Mengupload...</span>
-              <span id="progress-percentage" class="text-sm font-medium text-blue-600">0%</span>
-            </div>
-            <div class="w-full bg-gray-200 rounded-full h-2.5">
-              <div id="progress-bar" class="progress-bar bg-blue-600 h-2.5 rounded-full" style="width: 0%"></div>
-            </div>
-          </div>
-
-          <button type="submit" id="submit-btn" class="w-full py-3 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-lg font-semibold shadow-md hover:from-blue-600 hover:to-purple-600 transition-all flex items-center justify-center">
-            <i class="fas fa-search mr-2"></i> Analisis Dokumen
-          </button>
-
-          <!-- Error Messages -->
-          @if($errors->any())
-            <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative">
-              <ul class="list-disc list-inside">
-                @foreach($errors->all() as $error)
-                  <li>{{ $error }}</li>
-                @endforeach
-              </ul>
-            </div>
-          @endif
-
-          @if(session('error'))
-            <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative">
-              {{ session('error') }}
-            </div>
-          @endif
-        </form>
+  <!-- Success Notification -->
+  <div id="success-notification" class="fixed top-20 right-4 z-50 hidden max-w-sm">
+    <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg relative shadow-lg notification">
+      <div class="flex items-start">
+        <i class="fas fa-check-circle mt-1 mr-3 flex-shrink-0"></i>
+        <span class="block flex-1" id="success-message"></span>
       </div>
-      
-      <!-- Requirements Section -->
-      <div class="md:w-1/2 bg-gray-50 p-8">
-        <h2 class="text-xl font-bold text-gray-800 mb-4">Kelengkapan yang Diperiksa</h2>
-        <p class="text-gray-600 mb-6">Sistem akan memeriksa dokumen Anda berdasarkan kriteria berikut:</p>
-        
-        <div class="space-y-4">
-          <div class="requirement-item flex items-start">
-            <div class="flex-shrink-0 w-8 h-8 bg-green-100 rounded-full flex items-center justify-center mr-3">
-              <i class="fas fa-check text-green-500"></i>
-            </div>
-            <div>
-              <h3 class="font-medium text-gray-800">Abstrak</h3>
-              <p class="text-sm text-gray-600">Minimal 200 kata, maksimal 300 kata</p>
-            </div>
-          </div>
-          
-          <div class="requirement-item flex items-start">
-            <div class="flex-shrink-0 w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center mr-3">
-              <i class="fas fa-list text-blue-500"></i>
-            </div>
-            <div>
-              <h3 class="font-medium text-gray-800">Daftar Isi</h3>
-              <p class="text-sm text-gray-600">Format yang konsisten dan lengkap</p>
-            </div>
-          </div>
-          
-          <div class="requirement-item flex items-start">
-            <div class="flex-shrink-0 w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center mr-3">
-              <i class="fas fa-file-alt text-purple-500"></i>
-            </div>
-            <div>
-              <h3 class="font-medium text-gray-800">Bab 1 Pendahuluan</h3>
-              <p class="text-sm text-gray-600">Latar belakang, rumusan masalah, tujuan</p>
-            </div>
-          </div>
-          
-          <div class="requirement-item flex items-start">
-            <div class="flex-shrink-0 w-8 h-8 bg-yellow-100 rounded-full flex items-center justify-center mr-3">
-              <i class="fas fa-ruler text-yellow-500"></i>
-            </div>
-            <div>
-              <h3 class="font-medium text-gray-800">Format Margin</h3>
-              <p class="text-sm text-gray-600">Atas: 4cm, Bawah: 3cm, Kiri: 4cm, Kanan: 3cm</p>
-            </div>
-          </div>
-          
-          <div class="requirement-item flex items-start">
-            <div class="flex-shrink-0 w-8 h-8 bg-red-100 rounded-full flex items-center justify-center mr-3">
-              <i class="fas fa-book text-red-500"></i>
-            </div>
-            <div>
-              <h3 class="font-medium text-gray-800">Daftar Pustaka</h3>
-              <p class="text-sm text-gray-600">Minimal 20 referensi, format konsisten</p>
-            </div>
-          </div>
-        </div>
-        
-        <div class="mt-8 p-4 bg-blue-50 rounded-lg border border-blue-200">
-          <div class="flex">
-            <div class="flex-shrink-0">
-              <i class="fas fa-info-circle text-blue-500 text-xl"></i>
-            </div>
-            <div class="ml-3">
-              <h3 class="text-sm font-medium text-blue-800">Tips</h3>
-              <p class="text-sm text-blue-600 mt-1">Pastikan dokumen tidak dipassword dan dapat dibuka untuk hasil analisis yang optimal.</p>
-            </div>
-          </div>
-        </div>
-
-        <!-- Recent Uploads (jika ada) -->
-        @if(isset($recentUploads) && count($recentUploads) > 0)
-        <div class="mt-6">
-        <h3 class="text-md font-semibold text-gray-800 mb-3 flex items-center">
-            <i class="fas fa-history mr-2 text-blue-500"></i> Upload Terbaru
-        </h3>
-        <div class="space-y-2 max-h-40 overflow-y-auto">
-            @foreach($recentUploads as $recent)
-            <div class="flex items-center justify-between bg-white p-3 rounded-lg border border-gray-200 hover:bg-gray-50 transition">
-            <div class="flex items-center truncate">
-                <i class="far fa-file-pdf text-red-500 mr-3"></i>
-                <div class="truncate">
-                <p class="text-sm font-medium text-gray-800 truncate" title="{{ $recent['name'] }}">
-                    {{ \Illuminate\Support\Str::limit($recent['name'], 20) }}
-                </p>
-                <p class="text-xs text-gray-500">{{ $recent['size'] }}</p>
-                </div>
-            </div>
-            <span class="text-xs text-gray-400 whitespace-nowrap">{{ \Illuminate\Support\Carbon::parse($recent['uploaded_at'])->diffForHumans() }}</span>
-            </div>
-            @endforeach
-        </div>
-        </div>
-        @endif
-      </div>
+      <button onclick="hideSuccessNotification()" class="absolute top-2 right-2 p-1 text-green-500 hover:text-green-700">
+        <i class="fas fa-times text-sm"></i>
+      </button>
     </div>
   </div>
+
+  <!-- Main Content -->
+  <main class="flex-grow flex items-center justify-center p-4 py-8">
+    <div class="bg-white rounded-2xl shadow-2xl overflow-hidden w-full max-w-6xl">
+      <!-- Header -->
+      <div class="bg-gradient-to-r from-blue-600 to-purple-600 p-6 text-white text-center">
+        <h1 class="text-3xl font-bold mb-2">Cek Format Tugas Akhir ITS</h1>
+        <p class="text-blue-100">Unggah file tugas akhir untuk memeriksa kelengkapan format sesuai panduan ITS</p>
+      </div>
+      
+      <div class="md:flex">
+        <!-- Upload Section -->
+        <div class="md:w-1/2 p-8 border-r border-gray-200">
+          <form action="{{ route('upload.process') }}" method="POST" enctype="multipart/form-data" class="space-y-6" id="uploadForm">
+            @csrf
+            
+            <div class="file-upload-container border-2 border-dashed border-gray-300 rounded-xl p-8 text-center cursor-pointer transition-all duration-300 hover:border-blue-400 hover:bg-blue-50"
+                 id="dropArea">
+              <div class="flex justify-center mb-4">
+                <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center">
+                  <i class="fas fa-file-upload text-blue-500 text-2xl"></i>
+                </div>
+              </div>
+              <p class="text-gray-600 mb-2">Tarik file ke sini atau klik untuk mengupload</p>
+              <p class="text-xs text-gray-400 mb-4">Format yang didukung: PDF, DOC, DOCX (Maks. 10MB)</p>
+              <input id="file" name="file" type="file" class="hidden" required accept=".pdf,.doc,.docx">
+              <label for="file" class="inline-block px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition cursor-pointer font-medium">
+                Pilih File
+              </label>
+            </div>
+
+            <!-- File Preview -->
+            <div id="file-preview" class="p-4 bg-gray-50 rounded-lg hidden border border-gray-200">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center">
+                  <i class="far fa-file-pdf text-red-500 text-2xl mr-3"></i>
+                  <div>
+                    <p id="file-name" class="font-medium text-gray-800 text-sm"></p>
+                    <p id="file-size" class="text-xs text-gray-500 mt-1"></p>
+                  </div>
+                </div>
+                <button type="button" id="remove-file" class="text-gray-400 hover:text-gray-600 transition">
+                  <i class="fas fa-times"></i>
+                </button>
+              </div>
+            </div>
+
+            <!-- Progress Bar (Initially Hidden) -->
+            <div id="progress-container" class="hidden">
+              <div class="flex justify-between mb-2">
+                <span class="text-sm font-medium text-blue-600">Mengupload...</span>
+                <span id="progress-percentage" class="text-sm font-medium text-blue-600">0%</span>
+              </div>
+              <div class="w-full bg-gray-200 rounded-full h-2.5">
+                <div id="progress-bar" class="progress-bar bg-blue-600 h-2.5 rounded-full transition-all duration-300" style="width: 0%"></div>
+              </div>
+              <p class="text-xs text-gray-500 mt-2 text-center">Harap tunggu, file sedang diproses...</p>
+            </div>
+
+            <button type="submit" id="submit-btn" class="w-full py-3 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-lg font-semibold shadow-md hover:from-blue-600 hover:to-purple-600 transition-all flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed">
+              <i class="fas fa-search mr-2"></i> 
+              <span id="submit-text">Analisis Dokumen</span>
+              <i id="submit-loading" class="fas fa-spinner fa-spin ml-2 hidden"></i>
+            </button>
+
+            <!-- Error Messages -->
+            @if($errors->any())
+              <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg">
+                <div class="flex items-center mb-2">
+                  <i class="fas fa-exclamation-circle mr-2"></i>
+                  <strong class="font-medium">Terjadi kesalahan:</strong>
+                </div>
+                <ul class="list-disc list-inside text-sm">
+                  @foreach($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                  @endforeach
+                </ul>
+              </div>
+            @endif
+
+            @if(session('error'))
+              <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg flex items-start">
+                <i class="fas fa-exclamation-circle mt-0.5 mr-3 flex-shrink-0"></i>
+                <div>{{ session('error') }}</div>
+              </div>
+            @endif
+
+            @if(session('success'))
+              <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg flex items-start">
+                <i class="fas fa-check-circle mt-0.5 mr-3 flex-shrink-0"></i>
+                <div>{{ session('success') }}</div>
+              </div>
+            @endif
+
+            @if(session('info'))
+              <div class="bg-blue-100 border border-blue-400 text-blue-700 px-4 py-3 rounded-lg flex items-start">
+                <i class="fas fa-info-circle mt-0.5 mr-3 flex-shrink-0"></i>
+                <div>{{ session('info') }}</div>
+              </div>
+            @endif
+          </form>
+
+          <!-- Recent Uploads -->
+          @if(isset($recentUploads) && count($recentUploads) > 0)
+          <div class="mt-8">
+            <h3 class="text-md font-semibold text-gray-800 mb-3 flex items-center">
+              <i class="fas fa-history mr-2 text-blue-500"></i> Upload Terbaru
+            </h3>
+            <div class="space-y-2 max-h-100 overflow-y-auto custom-scrollbar pr-2">
+              @foreach($recentUploads as $recent)
+              <a href="{{ $recent['url'] ?? '#' }}" class="flex items-center justify-between bg-white p-3 rounded-lg border border-gray-200 hover:bg-gray-50 transition block group">
+                <div class="flex items-center min-w-0 flex-1">
+                  <i class="far fa-file-pdf text-red-500 mr-3 text-lg flex-shrink-0"></i>
+                  <div class="min-w-0 flex-1">
+                    <p class="text-sm font-medium text-gray-800 truncate" title="{{ $recent['name'] }}">
+                      {{ \Illuminate\Support\Str::limit($recent['name'], 25) }}
+                    </p>
+                    <p class="text-xs text-gray-500 mt-1">{{ $recent['size'] }}</p>
+                  </div>
+                </div>
+                <span class="text-xs text-gray-400 whitespace-nowrap ml-2 group-hover:text-blue-500 transition">
+                  {{ \Illuminate\Support\Carbon::parse($recent['uploaded_at'])->diffForHumans() }}
+                </span>
+              </a>
+              @endforeach
+            </div>
+          </div>
+          @endif
+        </div>
+        
+        <!-- Requirements Section -->
+        <div class="md:w-1/2 bg-gray-50 p-8">
+          <h2 class="text-xl font-bold text-gray-800 mb-4">Kelengkapan Format ITS</h2>
+          <p class="text-gray-600 mb-6">Sistem memeriksa dokumen berdasarkan panduan format ITS:</p>
+          
+          <div class="space-y-4 mb-6">
+            <div class="requirement-item flex items-start p-3 rounded-lg hover:bg-white transition">
+              <div class="flex-shrink-0 w-8 h-8 bg-green-100 rounded-full flex items-center justify-center mr-3 mt-1">
+                <i class="fas fa-file-alt text-green-500 text-sm"></i>
+              </div>
+              <div class="flex-1">
+                <h3 class="font-medium text-gray-800">Struktur Dokumen</h3>
+                <p class="text-sm text-gray-600 mt-1">Cover, Abstrak (ID+EN), Daftar Isi, Bab 1-3 (Proposal) / Bab 1-5 (Laporan)</p>
+              </div>
+            </div>
+            
+            <div class="requirement-item flex items-start p-3 rounded-lg hover:bg-white transition">
+              <div class="flex-shrink-0 w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center mr-3 mt-1">
+                <i class="fas fa-font text-blue-500 text-sm"></i>
+              </div>
+              <div class="flex-1">
+                <h3 class="font-medium text-gray-800">Format Teks</h3>
+                <p class="text-sm text-gray-600 mt-1">Times New Roman 12pt, spasi 1, margin 3-2.5-3-2cm</p>
+              </div>
+            </div>
+            
+            <div class="requirement-item flex items-start p-3 rounded-lg hover:bg-white transition">
+              <div class="flex-shrink-0 w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center mr-3 mt-1">
+                <i class="fas fa-book text-purple-500 text-sm"></i>
+              </div>
+              <div class="flex-1">
+                <h3 class="font-medium text-gray-800">Abstrak</h3>
+                <p class="text-sm text-gray-600 mt-1">200-300 kata, Bahasa Indonesia & Inggris</p>
+              </div>
+            </div>
+            
+            <div class="requirement-item flex items-start p-3 rounded-lg hover:bg-white transition">
+              <div class="flex-shrink-0 w-8 h-8 bg-yellow-100 rounded-full flex items-center justify-center mr-3 mt-1">
+                <i class="fas fa-list-ol text-yellow-500 text-sm"></i>
+              </div>
+              <div class="flex-1">
+                <h3 class="font-medium text-gray-800">Bab 1 Pendahuluan</h3>
+                <p class="text-sm text-gray-600 mt-1">Latar belakang, rumusan masalah, batasan, tujuan, manfaat</p>
+              </div>
+            </div>
+            
+            <div class="requirement-item flex items-start p-3 rounded-lg hover:bg-white transition">
+              <div class="flex-shrink-0 w-8 h-8 bg-red-100 rounded-full flex items-center justify-center mr-3 mt-1">
+                <i class="fas fa-graduation-cap text-red-500 text-sm"></i>
+              </div>
+              <div class="flex-1">
+                <h3 class="font-medium text-gray-800">Daftar Pustaka</h3>
+                <p class="text-sm text-gray-600 mt-1">Format APA Edisi ke-7, sitasi konsisten</p>
+              </div>
+            </div>
+
+            <div class="requirement-item flex items-start p-3 rounded-lg hover:bg-white transition">
+              <div class="flex-shrink-0 w-8 h-8 bg-indigo-100 rounded-full flex items-center justify-center mr-3 mt-1">
+                <i class="fas fa-palette text-indigo-500 text-sm"></i>
+              </div>
+              <div class="flex-1">
+                <h3 class="font-medium text-gray-800">Cover & Halaman Judul</h3>
+                <p class="text-sm text-gray-600 mt-1">Background biru ITS, font Trebuchet MS, teks putih</p>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Tips Section -->
+          <div class="p-4 bg-blue-50 rounded-lg border border-blue-200 mb-6">
+            <div class="flex">
+              <div class="flex-shrink-0">
+                <i class="fas fa-info-circle text-blue-500 text-lg mt-0.5"></i>
+              </div>
+              <div class="ml-3">
+                <h3 class="text-sm font-medium text-blue-800">Panduan Format ITS</h3>
+                <p class="text-sm text-blue-600 mt-1">Pastikan dokumen mengikuti Buku Panduan Format Tugas Akhir ITS. Cover menggunakan Trebuchet MS dengan background biru ITS.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Quick Stats -->
+          <div class="grid grid-cols-2 gap-4 text-center">
+            <div class="bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
+              <div class="text-2xl font-bold text-blue-600">5</div>
+              <div class="text-sm text-gray-600 mt-1">Bab Wajib</div>
+            </div>
+            <div class="bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
+              <div class="text-2xl font-bold text-green-600">200-300</div>
+              <div class="text-sm text-gray-600 mt-1">Kata Abstrak</div>
+            </div>
+            <div class="bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
+              <div class="text-2xl font-bold text-purple-600">A4</div>
+              <div class="text-sm text-gray-600 mt-1">Ukuran Kertas</div>
+            </div>
+            <div class="bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
+              <div class="text-2xl font-bold text-orange-600">APA 7</div>
+              <div class="text-sm text-gray-600 mt-1">Format Pustaka</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-gray-800 text-white py-8 mt-12">
+    <div class="max-w-6xl mx-auto px-4">
+      <div class="flex flex-col md:flex-row justify-between items-center">
+        <div class="mb-6 md:mb-0 text-center md:text-left">
+          <div class="flex items-center justify-center md:justify-start">
+            <div class="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg flex items-center justify-center mr-3">
+              <i class="fas fa-graduation-cap text-white text-lg"></i>
+            </div>
+            <span class="text-xl font-bold">FormatCheck ITS</span>
+          </div>
+          <p class="text-gray-400 text-sm mt-2">Sistem Deteksi Kelengkapan Format Tugas Akhir</p>
+        </div>
+        
+        <div class="flex space-x-6">
+          <a href="#" class="text-gray-300 hover:text-white transition transform hover:scale-110" title="GitHub">
+            <i class="fab fa-github text-xl"></i>
+          </a>
+          <a href="#" class="text-gray-300 hover:text-white transition transform hover:scale-110" title="Email">
+            <i class="fas fa-envelope text-xl"></i>
+          </a>
+          <a href="#" class="text-gray-300 hover:text-white transition transform hover:scale-110" title="Tentang">
+            <i class="fas fa-info-circle text-xl"></i>
+          </a>
+        </div>
+      </div>
+      
+      <div class="border-t border-gray-700 mt-6 pt-6 text-center">
+        <p class="text-gray-400 text-sm">
+          © 2025 Sistem Deteksi Kelengkapan Format Tugas Akhir - ITS. All rights reserved.
+        </p>
+      </div>
+    </div>
+  </footer>
 
   <script>
     document.addEventListener('DOMContentLoaded', function() {
@@ -255,9 +443,13 @@
       const progressBar = document.getElementById('progress-bar');
       const progressPercentage = document.getElementById('progress-percentage');
       const submitBtn = document.getElementById('submit-btn');
+      const submitText = document.getElementById('submit-text');
+      const submitLoading = document.getElementById('submit-loading');
       const uploadForm = document.getElementById('uploadForm');
       const notification = document.getElementById('notification');
       const notificationMessage = document.getElementById('notification-message');
+      const successNotification = document.getElementById('success-notification');
+      const successMessage = document.getElementById('success-message');
       
       // Drag and drop functionality
       ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
@@ -305,20 +497,34 @@
         fileInput.value = '';
         filePreview.classList.add('hidden');
         dropArea.classList.remove('hidden');
+        submitBtn.disabled = false;
       });
       
       function handleFiles(files) {
         if (files.length > 0) {
           const file = files[0];
           const validTypes = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
+          const validExtensions = ['.pdf', '.doc', '.docx'];
           
-          if (!validTypes.includes(file.type)) {
-            showNotification('Format file tidak didukung. Silakan upload file PDF atau Word.');
+          // Check file extension as fallback
+          const fileExtension = '.' + file.name.split('.').pop().toLowerCase();
+          const isValidType = validTypes.includes(file.type) || validExtensions.includes(fileExtension);
+          
+          if (!isValidType) {
+            showNotification('Format file tidak didukung. Silakan upload file PDF (.pdf) atau Word (.doc, .docx).');
+            fileInput.value = '';
             return;
           }
           
           if (file.size > 10 * 1024 * 1024) {
             showNotification('Ukuran file terlalu besar. Maksimal 10MB.');
+            fileInput.value = '';
+            return;
+          }
+          
+          if (file.size === 0) {
+            showNotification('File kosong. Silakan pilih file lain.');
+            fileInput.value = '';
             return;
           }
           
@@ -329,11 +535,14 @@
           
           // Change icon based on file type
           const fileIcon = filePreview.querySelector('i');
-          if (file.type === 'application/pdf') {
+          if (file.type === 'application/pdf' || fileExtension === '.pdf') {
             fileIcon.className = 'far fa-file-pdf text-red-500 text-2xl mr-3';
           } else {
             fileIcon.className = 'far fa-file-word text-blue-500 text-2xl mr-3';
           }
+
+          // Show success message for valid file
+          showSuccessNotification('File valid. Klik "Analisis Dokumen" untuk melanjutkan.');
         }
       }
       
@@ -354,23 +563,35 @@
           return;
         }
         
-        // Show progress bar
+        const file = fileInput.files[0];
+        if (file.size > 10 * 1024 * 1024) {
+          showNotification('Ukuran file terlalu besar. Maksimal 10MB.');
+          return;
+        }
+        
+        // Show progress bar and loading state
         progressContainer.classList.remove('hidden');
         submitBtn.disabled = true;
+        submitText.textContent = 'Memproses...';
+        submitLoading.classList.remove('hidden');
         
         // Simulate progress
         let width = 0;
         const interval = setInterval(() => {
-          if (width >= 100) {
+          if (width >= 90) { // Stop at 90% for realistic effect
             clearInterval(interval);
-            // Submit the form after progress completes
-            uploadForm.submit();
           } else {
-            width += 5;
+            width += Math.random() * 10 + 5; // Random increment for realistic progress
+            if (width > 90) width = 90;
             progressBar.style.width = width + '%';
-            progressPercentage.textContent = width + '%';
+            progressPercentage.textContent = Math.round(width) + '%';
           }
-        }, 100);
+        }, 200);
+        
+        // Submit the form after a short delay to show progress
+        setTimeout(() => {
+          uploadForm.submit();
+        }, 1500);
       });
       
       // Notification functions
@@ -378,7 +599,6 @@
         notificationMessage.textContent = message;
         notification.classList.remove('hidden');
         notification.classList.remove('hide');
-        notification.classList.add('notification');
         
         // Auto hide after 5 seconds
         setTimeout(() => {
@@ -392,6 +612,36 @@
           notification.classList.add('hidden');
         }, 300);
       };
+
+      window.showSuccessNotification = function(message) {
+        successMessage.textContent = message;
+        successNotification.classList.remove('hidden');
+        successNotification.classList.remove('hide');
+        
+        // Auto hide after 3 seconds
+        setTimeout(() => {
+          hideSuccessNotification();
+        }, 3000);
+      };
+      
+      window.hideSuccessNotification = function() {
+        successNotification.classList.add('hide');
+        setTimeout(() => {
+          successNotification.classList.add('hidden');
+        }, 300);
+      };
+
+      // Auto-hide success messages after page load
+      @if(session('success') || session('info'))
+        setTimeout(() => {
+          const successElements = document.querySelectorAll('.bg-green-100, .bg-blue-100');
+          successElements.forEach(el => {
+            el.style.transition = 'opacity 0.5s ease';
+            el.style.opacity = '0';
+            setTimeout(() => el.remove(), 500);
+          });
+        }, 5000);
+      @endif
     });
   </script>
 </body>

@@ -20,5 +20,8 @@ Route::get('/results/{filename}', [DocumentAnalysisController::class, 'showResul
 // Route untuk download hasil
 Route::get('/download/{filename}', [DocumentAnalysisController::class, 'downloadResults'])->name('download.results');
 
-// Route untuk history
+// Routes untuk history
 Route::get('/history', [DocumentAnalysisController::class, 'showHistory'])->name('history');
+Route::delete('/history/clear', [DocumentAnalysisController::class, 'clearHistory'])->name('history.clear');
+Route::delete('/history/clear-old', [DocumentAnalysisController::class, 'clearOldHistory'])->name('history.clear.old');
+Route::delete('/history/delete/{filename}', [DocumentAnalysisController::class, 'deleteHistoryItem'])->name('history.delete');
