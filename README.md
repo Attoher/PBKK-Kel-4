@@ -1,6 +1,6 @@
 # Deteksi Kelengkapan Format Buku TA Berbasis AI
 
-<img width="1919" height="958" alt="image" src="https://github.com/user-attachments/assets/4faecca0-eaa3-4da8-9110-49042bb990f4" />
+<img width="1919" height="990" alt="image" src="https://github.com/user-attachments/assets/b83a226c-f77e-4307-aedf-1dd9171abb81" />
 
 ## Kelompok C04
 - 5025231026 — Kasyiful Kurob  
