@@ -515,12 +515,7 @@
             fileInput.value = '';
             return;
           }
-          
-          if (file.size > 10 * 1024 * 1024) {
-            showNotification('Ukuran file terlalu besar. Maksimal 10MB.');
-            fileInput.value = '';
-            return;
-          }
+
           
           if (file.size === 0) {
             showNotification('File kosong. Silakan pilih file lain.');
@@ -555,44 +550,95 @@
       }
       
       // Form submission with progress simulation
-      uploadForm.addEventListener('submit', function(e) {
+      // Form submission with chunked upload
+      uploadForm.addEventListener('submit', async function(e) {
         e.preventDefault();
-        
+
         if (!fileInput.files.length) {
           showNotification('Silakan pilih file terlebih dahulu.');
           return;
         }
-        
+
         const file = fileInput.files[0];
-        if (file.size > 10 * 1024 * 1024) {
-          showNotification('Ukuran file terlalu besar. Maksimal 10MB.');
-          return;
-        }
-        
-        // Show progress bar and loading state
+        const chunkSize = 1 * 1024 * 1024; // 1MB per chunk
+        const totalChunks = Math.ceil(file.size / chunkSize);
+
         progressContainer.classList.remove('hidden');
+        progressBar.style.width = '0%';
+        progressPercentage.textContent = '0%';
         submitBtn.disabled = true;
-        submitText.textContent = 'Memproses...';
+        submitText.textContent = 'Mengupload...';
         submitLoading.classList.remove('hidden');
-        
-        // Simulate progress
-        let width = 0;
-        const interval = setInterval(() => {
-          if (width >= 90) { // Stop at 90% for realistic effect
-            clearInterval(interval);
-          } else {
-            width += Math.random() * 10 + 5; // Random increment for realistic progress
-            if (width > 90) width = 90;
-            progressBar.style.width = width + '%';
-            progressPercentage.textContent = Math.round(width) + '%';
+
+        const uploadId = Date.now() + '_' + file.name; // unique upload session ID
+        let uploadedChunks = 0;
+
+        for (let start = 0; start < file.size; start += chunkSize) {
+          const end = Math.min(file.size, start + chunkSize);
+          const chunk = file.slice(start, end);
+          const formData = new FormData();
+          formData.append('file', chunk);
+          formData.append('uploadId', uploadId);
+          formData.append('fileName', file.name);
+          formData.append('chunkIndex', Math.floor(start / chunkSize));
+          formData.append('totalChunks', totalChunks);
+
+          try {
+            const response = await fetch('{{ route('upload.chunk') }}', {
+              method: 'POST',
+              headers: {
+                'X-CSRF-TOKEN': document.querySelector('input[name=_token]').value
+              },
+              body: formData
+            });
+
+            if (!response.ok) throw new Error('Gagal upload chunk');
+          } catch (error) {
+            showNotification('Terjadi kesalahan saat mengupload file.');
+            submitBtn.disabled = false;
+            submitText.textContent = 'Analisis Dokumen';
+            submitLoading.classList.add('hidden');
+            return;
           }
-        }, 200);
-        
-        // Submit the form after a short delay to show progress
-        setTimeout(() => {
-          uploadForm.submit();
-        }, 1500);
+
+          uploadedChunks++;
+          const percent = Math.floor((uploadedChunks / totalChunks) * 100);
+          progressBar.style.width = percent + '%';
+          progressPercentage.textContent = percent + '%';
+        }
+
+        // Setelah semua chunk dikirim, minta server untuk gabungkan
+        try {
+          const mergeResponse = await fetch('{{ route('upload.merge') }}', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'X-CSRF-TOKEN': document.querySelector('input[name=_token]').value
+            },
+            body: JSON.stringify({ uploadId, fileName: file.name })
+          });
+
+          if (!mergeResponse.ok) throw new Error('Gagal menggabungkan file');
+
+          const result = await mergeResponse.json();
+
+          // Jika sukses, redirect ke halaman hasil
+          if (result.success && result.filename) {
+              window.location.href = `/results/${result.filename}`;
+          } else {
+              showNotification(result.message || 'Gagal menyelesaikan upload.');
+          }
+
+
+        } catch (error) {
+          showNotification('Terjadi kesalahan saat menggabungkan file.');
+        } finally {
+          submitBtn.disabled = false;
+          submitText.textContent = 'Analisis Dokumen';
+          submitLoading.classList.add('hidden');
+        }
       });
+
       
       // Notification functions
       window.showNotification = function(message) {
