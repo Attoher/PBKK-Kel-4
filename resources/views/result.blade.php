@@ -140,6 +140,26 @@
             {{ $filename ?? 'Dokumen' }}
           </span>
         </div>
+        <div class="flex items-center">
+          <div class="flex items-center space-x-4">
+            @auth
+              <span class="text-sm text-gray-700">
+                <i class="fas fa-user-circle mr-1"></i>
+                {{ Auth::user()->name }}
+              </span>
+              <form method="POST" action="{{ route('logout') }}">
+                @csrf
+                <button type="submit" class="text-sm text-gray-700 hover:text-blue-600 transition">
+                  <i class="fas fa-sign-out-alt mr-1"></i>Logout
+                </button>
+              </form>
+            @else
+              <a href="{{ route('login.form') }}" class="text-sm text-gray-700 hover:text-blue-600 transition">
+                <i class="fas fa-sign-in-alt mr-1"></i>Login
+              </a>
+            @endauth
+          </div>
+        </div>
       </div>
     </div>
 

@@ -175,13 +175,25 @@
           </div>
         </div>
 
-        <!-- Right side -->
+        <!-- Ganti bagian ini -->
         <div class="flex items-center">
           <div class="flex items-center space-x-4">
-            <span class="text-sm text-gray-700 bg-gray-100 px-3 py-1 rounded-full">
-              <i class="fas fa-user-circle mr-1 text-blue-500"></i>
-              Sistem Deteksi Format
-            </span>
+            @auth
+              <span class="text-sm text-gray-700">
+                <i class="fas fa-user-circle mr-1"></i>
+                {{ Auth::user()->name }}
+              </span>
+              <form method="POST" action="{{ route('logout') }}">
+                @csrf
+                <button type="submit" class="text-sm text-gray-700 hover:text-blue-600 transition">
+                  <i class="fas fa-sign-out-alt mr-1"></i>Logout
+                </button>
+              </form>
+            @else
+              <a href="{{ route('login.form') }}" class="text-sm text-gray-700 hover:text-blue-600 transition">
+                <i class="fas fa-sign-in-alt mr-1"></i>Login
+              </a>
+            @endauth
           </div>
         </div>
       </div>

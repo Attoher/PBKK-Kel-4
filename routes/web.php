@@ -3,11 +3,19 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DocumentAnalysisController;
 use App\Http\Controllers\UploadController;
+use App\Http\Controllers\AuthController;
 
 // Halaman utama
 Route::get('/', function () {
     return redirect()->route('upload.form');
 });
+
+// Routes untuk autentikasi
+Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login.form');
+Route::post('/login', [AuthController::class, 'login'])->name('login');
+Route::get('/register', [AuthController::class, 'showRegisterForm'])->name('register.form');
+Route::post('/register', [AuthController::class, 'register'])->name('register');
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 // Routes untuk upload
 Route::get('/upload', [UploadController::class, 'showUploadForm'])->name('upload.form');
@@ -16,8 +24,6 @@ Route::post('/upload', [UploadController::class, 'processUpload'])->name('upload
 // Routes untuk analisis dokumen
 Route::get('/analyze/{filename}', [DocumentAnalysisController::class, 'analyzeDocument'])->name('analyze.document');
 Route::get('/results/{filename}', [DocumentAnalysisController::class, 'showResults'])->name('results');
-
-
 
 // Route untuk download hasil
 Route::get('/download/{filename}', [DocumentAnalysisController::class, 'downloadResults'])->name('download.results');
