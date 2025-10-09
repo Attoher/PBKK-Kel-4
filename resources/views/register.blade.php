@@ -68,47 +68,35 @@
     
     /* Custom checkbox */
     .custom-checkbox {
-    appearance: none;
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    width: 20px;
-    height: 20px;
-    border: 2px solid #d1d5db;
-    border-radius: 4px;
-    outline: none;
-    cursor: pointer;
-    position: relative;
-    transition: all 0.3s;
-    flex-shrink: 0;
+      appearance: none;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      width: 20px;
+      height: 20px;
+      border: 2px solid #d1d5db;
+      border-radius: 4px;
+      outline: none;
+      cursor: pointer;
+      position: relative;
+      transition: all 0.3s;
+      flex-shrink: 0;
     }
 
     .custom-checkbox:checked {
-    background-color: #4f46e5;
-    border-color: #4f46e5;
+      background-color: #4f46e5;
+      border-color: #4f46e5;
     }
 
     .custom-checkbox:checked::after {
-    content: '';
-    position: absolute;
-    left: 6px;
-    top: 2px;
-    width: 5px;
-    height: 10px;
-    border: solid white;
-    border-width: 0 2px 2px 0;
-    transform: rotate(45deg);
-    }
-
-    /* Untuk alignment yang lebih baik */
-    .checkbox-container {
-    display: flex;
-    align-items: flex-start;
-    gap: 12px;
-    }
-
-    .checkbox-label {
-    margin-top: 2px;
-    line-height: 1.4;
+      content: '';
+      position: absolute;
+      left: 6px;
+      top: 2px;
+      width: 5px;
+      height: 10px;
+      border: solid white;
+      border-width: 0 2px 2px 0;
+      transform: rotate(45deg);
     }
 
     /* Password strength indicator */
@@ -122,6 +110,68 @@
     .strength-fair { background-color: #f59e0b; width: 50%; }
     .strength-good { background-color: #10b981; width: 75%; }
     .strength-strong { background-color: #10b981; width: 100%; }
+    
+    /* Compact form styling */
+    .compact-form .input-group {
+      margin-bottom: 1rem;
+    }
+    
+    .compact-form .input-group label {
+      margin-bottom: 0.5rem;
+    }
+    
+    /* Step indicator */
+    .step-indicator {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 1.5rem;
+      position: relative;
+    }
+    
+    .step-indicator::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background-color: #e5e7eb;
+      transform: translateY(-50%);
+      z-index: 1;
+    }
+    
+    .step {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background-color: #e5e7eb;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      font-weight: 600;
+      position: relative;
+      z-index: 2;
+    }
+    
+    .step.active {
+      background-color: #4f46e5;
+      color: white;
+    }
+    
+    .step.completed {
+      background-color: #10b981;
+      color: white;
+    }
+    
+    /* Form steps */
+    .form-step {
+      display: none;
+    }
+    
+    .form-step.active {
+      display: block;
+    }
   </style>
 </head>
 <body class="flex flex-col min-h-screen">
@@ -153,123 +203,78 @@
 
   <!-- Main Content -->
   <main class="flex-grow flex items-center justify-center p-4 py-8">
-    <div class="flex flex-col md:flex-row items-center justify-center w-full max-w-6xl gap-8">
-      <!-- Left side - Branding & Info -->
-      <div class="md:w-1/2 text-center md:text-left mb-8 md:mb-0">
-        <div class="bg-white/10 backdrop-blur-sm rounded-2xl p-8 text-white card-hover">
-          <div class="flex justify-center md:justify-start mb-6">
+    <div class="w-full max-w-2xl">
+      <div class="bg-white rounded-2xl shadow-2xl overflow-hidden register-container card-hover">
+        <!-- Header -->
+        <div class="bg-gradient-to-r from-blue-600 to-purple-600 p-6 text-white text-center">
+          <div class="flex justify-center mb-4">
             <div class="w-16 h-16 bg-white rounded-xl flex items-center justify-center floating">
               <i class="fas fa-graduation-cap text-blue-600 text-2xl"></i>
             </div>
           </div>
-          <h1 class="text-4xl font-bold mb-4">Bergabung dengan FormatCheck ITS</h1>
-          <p class="text-xl mb-6 text-blue-100">Daftar akun untuk akses penuh fitur analisis format tugas akhir</p>
-          <p class="text-blue-100 mb-8">Dengan memiliki akun, Anda dapat menyimpan riwayat analisis, mengelola dokumen, dan mendapatkan rekomendasi perbaikan yang dipersonalisasi.</p>
-          
-          <div class="space-y-4">
-            <div class="flex items-center">
-              <div class="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center mr-3">
-                <i class="fas fa-history text-white text-sm"></i>
-              </div>
-              <span class="text-white">Simpan riwayat analisis dokumen</span>
-            </div>
-            <div class="flex items-center">
-              <div class="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center mr-3">
-                <i class="fas fa-chart-line text-white text-sm"></i>
-              </div>
-              <span class="text-white">Lacak perkembangan kualitas format</span>
-            </div>
-            <div class="flex items-center">
-              <div class="w-8 h-8 bg-purple-500 rounded-full flex items-center justify-center mr-3">
-                <i class="fas fa-bell text-white text-sm"></i>
-              </div>
-              <span class="text-white">Notifikasi update panduan ITS</span>
-            </div>
-            <div class="flex items-center">
-              <div class="w-8 h-8 bg-yellow-500 rounded-full flex items-center justify-center mr-3">
-                <i class="fas fa-download text-white text-sm"></i>
-              </div>
-              <span class="text-white">Ekspor hasil analisis dalam berbagai format</span>
-            </div>
-          </div>
+          <h1 class="text-2xl font-bold">Bergabung dengan FormatCheck ITS</h1>
+          <p class="text-blue-100 mt-2">Daftar akun untuk akses penuh fitur analisis format tugas akhir</p>
         </div>
-      </div>
-      
-      <!-- Right side - Register Form -->
-      <div class="md:w-1/2 max-w-md">
-        <div class="bg-white rounded-2xl shadow-2xl overflow-hidden register-container card-hover">
-          <!-- Header -->
-          <div class="bg-gradient-to-r from-blue-600 to-purple-600 p-6 text-white text-center">
-            <h2 class="text-2xl font-bold">Buat Akun Baru</h2>
-            <p class="text-blue-100 mt-2">Isi data diri Anda dengan benar</p>
+        
+        <!-- Form -->
+        <div class="p-6 compact-form">
+          <!-- Step Indicator -->
+          <div class="step-indicator">
+            <div class="step active">1</div>
+            <div class="step">2</div>
+            <div class="step">3</div>
           </div>
           
-          <!-- Form -->
-          <div class="p-8">
-            <form action="{{ route('register') }}" method="POST" class="space-y-5" id="registerForm">
-              @csrf
+          <form action="{{ route('register') }}" method="POST" id="registerForm">
+            @csrf
+            
+            <!-- Step 1: Personal Information -->
+            <div class="form-step active" id="step1">
+              <h3 class="text-lg font-semibold mb-4 text-gray-800">Informasi Pribadi</h3>
               
-              <!-- Nama Lengkap -->
-              <div class="input-group">
-                <label for="name" class="block text-sm font-medium text-gray-700 mb-2">Nama Lengkap</label>
-                <div class="relative">
-                  <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <i class="fas fa-user text-gray-400"></i>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- Nama Lengkap -->
+                <div class="input-group">
+                  <label for="name" class="block text-sm font-medium text-gray-700 mb-1">Nama Lengkap</label>
+                  <div class="relative">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                      <i class="fas fa-user text-gray-400"></i>
+                    </div>
+                    <input 
+                      id="name" 
+                      name="name" 
+                      type="text" 
+                      required 
+                      class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
+                      placeholder="Masukkan nama lengkap"
+                      value="{{ old('name') }}"
+                    >
                   </div>
-                  <input 
-                    id="name" 
-                    name="name" 
-                    type="text" 
-                    required 
-                    class="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
-                    placeholder="Masukkan nama lengkap"
-                    value="{{ old('name') }}"
-                  >
                 </div>
-              </div>
-              
-              <!-- Email -->
-              <div class="input-group">
-                <label for="email" class="block text-sm font-medium text-gray-700 mb-2">Email ITS</label>
-                <div class="relative">
-                  <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <i class="fas fa-envelope text-gray-400"></i>
+                
+                <!-- NIM -->
+                <div class="input-group">
+                  <label for="nim" class="block text-sm font-medium text-gray-700 mb-1">NIM</label>
+                  <div class="relative">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                      <i class="fas fa-id-card text-gray-400"></i>
+                    </div>
+                    <input 
+                      id="nim" 
+                      name="nim" 
+                      type="text" 
+                      required 
+                      class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
+                      placeholder="Masukkan NIM"
+                      value="{{ old('nim') }}"
+                    >
                   </div>
-                  <input 
-                    id="email" 
-                    name="email" 
-                    type="email" 
-                    required 
-                    class="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
-                    placeholder="nama@its.ac.id"
-                    value="{{ old('email') }}"
-                  >
-                </div>
-                <p class="text-xs text-gray-500 mt-1">Gunakan email institusi ITS Anda</p>
-              </div>
-              
-              <!-- NIM -->
-              <div class="input-group">
-                <label for="nim" class="block text-sm font-medium text-gray-700 mb-2">NIM</label>
-                <div class="relative">
-                  <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <i class="fas fa-id-card text-gray-400"></i>
-                  </div>
-                  <input 
-                    id="nim" 
-                    name="nim" 
-                    type="text" 
-                    required 
-                    class="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
-                    placeholder="Masukkan NIM"
-                    value="{{ old('nim') }}"
-                  >
                 </div>
               </div>
               
               <!-- Program Studi -->
-              <div class="input-group">
-                <label for="program_studi" class="block text-sm font-medium text-gray-700 mb-2">Program Studi</label>
+              <div class="input-group mt-4">
+                <label for="program_studi" class="block text-sm font-medium text-gray-700 mb-1">Program Studi</label>
                 <div class="relative">
                   <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                     <i class="fas fa-graduation-cap text-gray-400"></i>
@@ -278,7 +283,7 @@
                     id="program_studi" 
                     name="program_studi" 
                     required 
-                    class="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition appearance-none bg-white"
+                    class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition appearance-none bg-white"
                   >
                     <option value="">Pilih Program Studi</option>
                     <option value="Teknik Informatika" {{ old('program_studi') == 'Teknik Informatika' ? 'selected' : '' }}>Teknik Informatika</option>
@@ -297,9 +302,40 @@
                 </div>
               </div>
               
-              <!-- Password -->
+              <div class="flex justify-end mt-6">
+                <button type="button" class="next-step bg-blue-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-blue-700 transition">
+                  Selanjutnya <i class="fas fa-arrow-right ml-1"></i>
+                </button>
+              </div>
+            </div>
+            
+            <!-- Step 2: Account Information -->
+            <div class="form-step" id="step2">
+              <h3 class="text-lg font-semibold mb-4 text-gray-800">Informasi Akun</h3>
+              
+              <!-- Email -->
               <div class="input-group">
-                <label for="password" class="block text-sm font-medium text-gray-700 mb-2">Kata Sandi</label>
+                <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email ITS</label>
+                <div class="relative">
+                  <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <i class="fas fa-envelope text-gray-400"></i>
+                  </div>
+                  <input 
+                    id="email" 
+                    name="email" 
+                    type="email" 
+                    required 
+                    class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
+                    placeholder="nama@student.its.ac.id"
+                    value="{{ old('email') }}"
+                  >
+                </div>
+                <p class="text-xs text-gray-500 mt-1">Gunakan email institusi ITS Anda</p>
+              </div>
+              
+              <!-- Password -->
+              <div class="input-group mt-4">
+                <label for="password" class="block text-sm font-medium text-gray-700 mb-1">Kata Sandi</label>
                 <div class="relative">
                   <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                     <i class="fas fa-lock text-gray-400"></i>
@@ -309,7 +345,7 @@
                     name="password" 
                     type="password" 
                     required 
-                    class="block w-full pl-10 pr-10 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
+                    class="block w-full pl-10 pr-10 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
                     placeholder="Buat kata sandi"
                   >
                   <button type="button" id="togglePassword" class="absolute inset-y-0 right-0 pr-3 flex items-center">
@@ -329,8 +365,8 @@
               </div>
               
               <!-- Confirm Password -->
-              <div class="input-group">
-                <label for="password_confirmation" class="block text-sm font-medium text-gray-700 mb-2">Konfirmasi Kata Sandi</label>
+              <div class="input-group mt-4">
+                <label for="password_confirmation" class="block text-sm font-medium text-gray-700 mb-1">Konfirmasi Kata Sandi</label>
                 <div class="relative">
                   <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                     <i class="fas fa-lock text-gray-400"></i>
@@ -340,7 +376,7 @@
                     name="password_confirmation" 
                     type="password" 
                     required 
-                    class="block w-full pl-10 pr-10 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
+                    class="block w-full pl-10 pr-10 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
                     placeholder="Ulangi kata sandi"
                   >
                   <button type="button" id="togglePasswordConfirmation" class="absolute inset-y-0 right-0 pr-3 flex items-center">
@@ -355,8 +391,22 @@
                 </div>
               </div>
               
+              <div class="flex justify-between mt-6">
+                <button type="button" class="prev-step text-gray-600 px-4 py-2 rounded-lg font-medium hover:bg-gray-100 transition">
+                  <i class="fas fa-arrow-left mr-1"></i> Kembali
+                </button>
+                <button type="button" class="next-step bg-blue-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-blue-700 transition">
+                  Selanjutnya <i class="fas fa-arrow-right ml-1"></i>
+                </button>
+              </div>
+            </div>
+            
+            <!-- Step 3: Terms & Submit -->
+            <div class="form-step" id="step3">
+              <h3 class="text-lg font-semibold mb-4 text-gray-800">Persetujuan</h3>
+              
               <!-- Terms Agreement -->
-              <div class="flex items-start">
+              <div class="flex items-start mb-4">
                 <input 
                   id="agree_terms" 
                   name="agree_terms" 
@@ -373,115 +423,132 @@
                 </label>
               </div>
               
-              <!-- Submit Button -->
-              <button 
-                type="submit" 
-                id="submit-btn" 
-                class="w-full py-3 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-lg font-semibold shadow-md hover:from-blue-600 hover:to-purple-600 transition-all flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                <i class="fas fa-user-plus mr-2"></i> 
-                <span id="submit-text">Daftar Akun</span>
-                <i id="submit-loading" class="fas fa-spinner fa-spin ml-2 hidden"></i>
-              </button>
-              
-              <!-- Divider -->
-              <div class="relative flex items-center my-6">
-                <div class="flex-grow border-t border-gray-300"></div>
-                <span class="flex-shrink mx-4 text-gray-500 text-sm">atau daftar dengan</span>
-                <div class="flex-grow border-t border-gray-300"></div>
-              </div>
-              
-              <!-- SSO Options -->
-              <div class="grid grid-cols-2 gap-4">
-                <button 
-                  type="button" 
-                  class="flex items-center justify-center py-3 px-4 border border-gray-300 rounded-lg hover:bg-gray-50 transition"
-                >
-                  <i class="fab fa-google text-red-500 mr-2"></i>
-                  <span class="text-sm font-medium text-gray-700">Google</span>
-                </button>
-                
-                <button 
-                  type="button" 
-                  class="flex items-center justify-center py-3 px-4 border border-gray-300 rounded-lg hover:bg-gray-50 transition"
-                >
-                  <i class="fas fa-university text-blue-500 mr-2"></i>
-                  <span class="text-sm font-medium text-gray-700">SSO ITS</span>
-                </button>
-              </div>
-            </form>
-            
-            <!-- Login Link -->
-            <div class="mt-6 text-center">
-              <p class="text-gray-600 text-sm">
-                Sudah punya akun? 
-                <a href="{{ route('login.form') }}" class="text-blue-600 hover:text-blue-500 font-medium transition">Masuk di sini</a>
-              </p>
-            </div>
-            
-            <!-- Error Messages -->
-            @if($errors->any())
-              <div class="mt-6 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg">
-                <div class="flex items-center mb-2">
-                  <i class="fas fa-exclamation-circle mr-2"></i>
-                  <strong class="font-medium">Terjadi kesalahan:</strong>
-                </div>
-                <ul class="list-disc list-inside text-sm">
-                  @foreach($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                  @endforeach
+              <!-- Benefits -->
+              <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+                <h4 class="font-medium text-blue-800 mb-2">Keuntungan Bergabung:</h4>
+                <ul class="text-sm text-blue-700 space-y-1">
+                  <li class="flex items-center"><i class="fas fa-check-circle mr-2 text-green-500"></i> Simpan riwayat analisis dokumen</li>
+                  <li class="flex items-center"><i class="fas fa-check-circle mr-2 text-green-500"></i> Lacak perkembangan kualitas format</li>
+                  <li class="flex items-center"><i class="fas fa-check-circle mr-2 text-green-500"></i> Notifikasi update panduan ITS</li>
+                  <li class="flex items-center"><i class="fas fa-check-circle mr-2 text-green-500"></i> Ekspor hasil analisis dalam berbagai format</li>
                 </ul>
               </div>
-            @endif
-
-            @if(session('error'))
-              <div class="mt-6 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg flex items-start">
-                <i class="fas fa-exclamation-circle mt-0.5 mr-3 flex-shrink-0"></i>
-                <div>{{ session('error') }}</div>
+              
+              <div class="flex justify-between mt-6">
+                <button type="button" class="prev-step text-gray-600 px-4 py-2 rounded-lg font-medium hover:bg-gray-100 transition">
+                  <i class="fas fa-arrow-left mr-1"></i> Kembali
+                </button>
+                
+                <!-- Submit Button -->
+                <button 
+                  type="submit" 
+                  id="submit-btn" 
+                  class="py-2 px-6 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-lg font-semibold shadow-md hover:from-blue-600 hover:to-purple-600 transition-all flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  <i class="fas fa-user-plus mr-2"></i> 
+                  <span id="submit-text">Daftar Akun</span>
+                  <i id="submit-loading" class="fas fa-spinner fa-spin ml-2 hidden"></i>
+                </button>
               </div>
-            @endif
-
-            @if(session('success'))
-              <div class="mt-6 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg flex items-start">
-                <i class="fas fa-check-circle mt-0.5 mr-3 flex-shrink-0"></i>
-                <div>{{ session('success') }}</div>
-              </div>
-            @endif
+            </div>
+          </form>
+          
+          <!-- Divider -->
+          <div class="relative flex items-center my-4">
+            <div class="flex-grow border-t border-gray-300"></div>
+            <span class="flex-shrink mx-4 text-gray-500 text-sm">atau daftar dengan</span>
+            <div class="flex-grow border-t border-gray-300"></div>
           </div>
+          
+          <!-- SSO Options -->
+          <div class="grid grid-cols-2 gap-4">
+            <button 
+              type="button" 
+              class="flex items-center justify-center py-2 px-4 border border-gray-300 rounded-lg hover:bg-gray-50 transition"
+            >
+              <i class="fab fa-google text-red-500 mr-2"></i>
+              <span class="text-sm font-medium text-gray-700">Google</span>
+            </button>
+            
+            <button 
+              type="button" 
+              class="flex items-center justify-center py-2 px-4 border border-gray-300 rounded-lg hover:bg-gray-50 transition"
+            >
+              <i class="fas fa-university text-blue-500 mr-2"></i>
+              <span class="text-sm font-medium text-gray-700">SSO ITS</span>
+            </button>
+          </div>
+          
+          <!-- Login Link -->
+          <div class="mt-6 text-center">
+            <p class="text-gray-600 text-sm">
+              Sudah punya akun? 
+              <a href="{{ route('login.form') }}" class="text-blue-600 hover:text-blue-500 font-medium transition">Masuk di sini</a>
+            </p>
+          </div>
+          
+          <!-- Error Messages -->
+          @if($errors->any())
+            <div class="mt-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg">
+              <div class="flex items-center mb-2">
+                <i class="fas fa-exclamation-circle mr-2"></i>
+                <strong class="font-medium">Terjadi kesalahan:</strong>
+              </div>
+              <ul class="list-disc list-inside text-sm">
+                @foreach($errors->all() as $error)
+                  <li>{{ $error }}</li>
+                @endforeach
+              </ul>
+            </div>
+          @endif
+
+          @if(session('error'))
+            <div class="mt-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg flex items-start">
+              <i class="fas fa-exclamation-circle mt-0.5 mr-3 flex-shrink-0"></i>
+              <div>{{ session('error') }}</div>
+            </div>
+          @endif
+
+          @if(session('success'))
+            <div class="mt-4 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg flex items-start">
+              <i class="fas fa-check-circle mt-0.5 mr-3 flex-shrink-0"></i>
+              <div>{{ session('success') }}</div>
+            </div>
+          @endif
         </div>
       </div>
     </div>
   </main>
 
   <!-- Footer -->
-  <footer class="bg-gray-800 text-white py-6 mt-8">
-    <div class="max-w-6xl mx-auto px-4 text-center">
+  <footer class="bg-gray-800 text-white py-4 mt-8">
+    <div class="max-w-2xl mx-auto px-4 text-center">
       <div class="flex flex-col md:flex-row justify-between items-center">
-        <div class="mb-4 md:mb-0">
+        <div class="mb-2 md:mb-0">
           <div class="flex items-center justify-center md:justify-start">
             <div class="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg flex items-center justify-center mr-3">
               <i class="fas fa-graduation-cap text-white"></i>
             </div>
             <span class="text-lg font-bold">FormatCheck ITS</span>
           </div>
-          <p class="text-gray-400 text-sm mt-2">Sistem Deteksi Kelengkapan Format Tugas Akhir</p>
+          <p class="text-gray-400 text-xs mt-1">Sistem Deteksi Kelengkapan Format Tugas Akhir</p>
         </div>
         
-        <div class="flex space-x-6">
-          <a href="#" class="text-gray-300 hover:text-white transition transform hover:scale-110" title="Bantuan">
-            <i class="fas fa-question-circle text-xl"></i>
+        <div class="flex space-x-4">
+          <a href="#" class="text-gray-300 hover:text-white transition" title="Bantuan">
+            <i class="fas fa-question-circle"></i>
           </a>
-          <a href="#" class="text-gray-300 hover:text-white transition transform hover:scale-110" title="Kontak">
-            <i class="fas fa-envelope text-xl"></i>
+          <a href="#" class="text-gray-300 hover:text-white transition" title="Kontak">
+            <i class="fas fa-envelope"></i>
           </a>
-          <a href="#" class="text-gray-300 hover:text-white transition transform hover:scale-110" title="Tentang">
-            <i class="fas fa-info-circle text-xl"></i>
+          <a href="#" class="text-gray-300 hover:text-white transition" title="Tentang">
+            <i class="fas fa-info-circle"></i>
           </a>
         </div>
       </div>
       
-      <div class="border-t border-gray-700 mt-4 pt-4">
-        <p class="text-gray-400 text-sm">
+      <div class="border-t border-gray-700 mt-2 pt-2">
+        <p class="text-gray-400 text-xs">
           © 2025 Sistem Deteksi Kelengkapan Format Tugas Akhir - ITS. All rights reserved.
         </p>
       </div>
@@ -506,6 +573,90 @@
       const notificationMessage = document.getElementById('notification-message');
       const successNotification = document.getElementById('success-notification');
       const successMessage = document.getElementById('success-message');
+      
+      // Multi-step form functionality
+      const steps = document.querySelectorAll('.form-step');
+      const stepIndicators = document.querySelectorAll('.step');
+      let currentStep = 0;
+      
+      // Next step button
+      document.querySelectorAll('.next-step').forEach(button => {
+        button.addEventListener('click', function() {
+          if (validateStep(currentStep)) {
+            goToStep(currentStep + 1);
+          }
+        });
+      });
+      
+      // Previous step button
+      document.querySelectorAll('.prev-step').forEach(button => {
+        button.addEventListener('click', function() {
+          goToStep(currentStep - 1);
+        });
+      });
+      
+      function goToStep(step) {
+        // Hide current step
+        steps[currentStep].classList.remove('active');
+        stepIndicators[currentStep].classList.remove('active');
+        
+        // Show new step
+        steps[step].classList.add('active');
+        stepIndicators[step].classList.add('active');
+        
+        // Mark previous steps as completed
+        for (let i = 0; i < step; i++) {
+          stepIndicators[i].classList.add('completed');
+        }
+        
+        currentStep = step;
+      }
+      
+      function validateStep(step) {
+        let isValid = true;
+        
+        if (step === 0) {
+          // Validate step 1
+          const name = document.getElementById('name').value;
+          const nim = document.getElementById('nim').value;
+          const programStudi = document.getElementById('program_studi').value;
+          
+          if (!name.trim()) {
+            showNotification('Nama lengkap harus diisi');
+            isValid = false;
+          } else if (!nim.trim()) {
+            showNotification('NIM harus diisi');
+            isValid = false;
+          } else if (!programStudi) {
+            showNotification('Program studi harus dipilih');
+            isValid = false;
+          }
+        } else if (step === 1) {
+          // Validate step 2
+          const email = document.getElementById('email').value;
+          const password = document.getElementById('password').value;
+          const passwordConfirm = document.getElementById('password_confirmation').value;
+          
+          if (!email.trim()) {
+            showNotification('Email harus diisi');
+            isValid = false;
+          } else if (!email.endsWith('@student.its.ac.id')) {
+            showNotification('Harus menggunakan email ITS (@student.its.ac.id)');
+            isValid = false;
+          } else if (!password) {
+            showNotification('Kata sandi harus diisi');
+            isValid = false;
+          } else if (password.length < 8) {
+            showNotification('Kata sandi minimal 8 karakter');
+            isValid = false;
+          } else if (password !== passwordConfirm) {
+            showNotification('Konfirmasi kata sandi tidak cocok');
+            isValid = false;
+          }
+        }
+        
+        return isValid;
+      }
       
       // Toggle password visibility
       togglePassword.addEventListener('click', function() {
@@ -601,6 +752,11 @@
       
       // Form submission
       registerForm.addEventListener('submit', function(e) {
+        if (!validateStep(2)) {
+          e.preventDefault();
+          return;
+        }
+        
         // Show loading state
         submitBtn.disabled = true;
         submitText.textContent = 'Mendaftarkan...';

@@ -7,7 +7,7 @@ use App\Http\Controllers\AuthController;
 
 // Halaman utama
 Route::get('/', function () {
-    return redirect()->route('upload.form');
+    return redirect()->route('login.form');
 });
 
 // Routes untuk autentikasi
