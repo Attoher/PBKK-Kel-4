@@ -70,7 +70,7 @@ class UploadController extends Controller
      * 🔹 Gabungkan semua chunk
      * -----------------------------
      */
-    public function mergeChunks(Request $request)
+   public function mergeChunks(Request $request)
     {
         $request->validate([
             'uploadId' => 'required|string',
@@ -78,24 +78,25 @@ class UploadController extends Controller
         ]);
 
         $uploadId = $request->input('uploadId');
-        $filename = $this->sanitizeFilename($request->input('fileName'));
+        $originalName = $request->input('fileName');
+        $filename = time() . '_' . $this->sanitizeFilename($originalName);
+
         $tempDir = storage_path("app/chunks/{$uploadId}");
-        $finalDir = storage_path("app/uploads");
-        $finalPath = "{$finalDir}/{$filename}";
-
-        if (!file_exists($finalDir)) {
-            mkdir($finalDir, 0777, true);
-        }
-
         $chunkFiles = glob("{$tempDir}/chunk_*");
+
         if (empty($chunkFiles)) {
-            return response()->json(['success' => false, 'message' => 'Tidak ada potongan file ditemukan.'], 400);
+            return response()->json([
+                'success' => false,
+                'message' => 'Tidak ada potongan file ditemukan.'
+            ], 400);
         }
 
         sort($chunkFiles, SORT_NATURAL);
 
         try {
-            $out = fopen($finalPath, 'wb');
+            // Gabungkan semua chunk ke file sementara di local
+            $tempMergedPath = "{$tempDir}/merged_temp_file";
+            $out = fopen($tempMergedPath, 'wb');
             foreach ($chunkFiles as $chunk) {
                 $in = fopen($chunk, 'rb');
                 stream_copy_to_stream($in, $out);
@@ -103,16 +104,59 @@ class UploadController extends Controller
             }
             fclose($out);
 
-            // Hapus folder temporary
+            // Baca isi hasil merge
+            $fileContent = file_get_contents($tempMergedPath);
+            if ($fileContent === false) {
+                throw new \Exception('Gagal membaca file hasil penggabungan.');
+            }
+
+            // Simpan file menggunakan Storage::putFileAs() seperti di processUpload()
+            $uploadPath = 'uploads';
+            if (!Storage::exists($uploadPath)) {
+                Storage::makeDirectory($uploadPath);
+                Log::info('Created upload directory: ' . $uploadPath);
+            }
+
+            $finalPath = "{$uploadPath}/{$filename}";
+            Storage::put($finalPath, $fileContent);
+
+            if (!Storage::exists($finalPath)) {
+                throw new \Exception('File gagal disimpan ke storage.');
+            }
+
+            // Verifikasi hasil simpan
+            $storedFileSize = Storage::size($finalPath);
+            $storedFilePath = Storage::path($finalPath);
+            Log::info('File berhasil digabung dan disimpan:', [
+                'filename' => $filename,
+                'path' => $finalPath,
+                'stored_size' => $storedFileSize,
+                'full_path' => $storedFilePath
+            ]);
+
+            // Hapus folder temporary chunks
             $this->deleteDirectory($tempDir);
 
-            Log::info("File {$filename} berhasil digabung dari " . count($chunkFiles) . " chunk.");
-
-            return response()->json([
-                'success' => true,
-                'message' => 'File berhasil diunggah dan digabung.',
-                'filename' => $filename
-            ]);
+            // Redirect seperti di processUpload()
+            if (pathinfo($filename, PATHINFO_EXTENSION) === 'pdf') {
+                    try {
+                            app(\App\Http\Controllers\DocumentAnalysisController::class)->analyzeDocument($filename);
+                        } catch (\Exception $e) {
+                            \Log::error('Gagal menjalankan analisis otomatis: ' . $e->getMessage());
+                        }
+                return response()->json([
+                    'success' => true,
+                    'redirect' => route('analyze.document', ['filename' => $filename]),
+                    'message' => 'File berhasil digabung dan siap dianalisis.',
+                    'filename' => $filename
+                ]);
+            } else {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'File Word berhasil digabung. Fitur analisis Word masih dikembangkan.',
+                    'filename' => $filename
+                ]);
+            }
 
         } catch (\Exception $e) {
             Log::error('Merge error: ' . $e->getMessage());
@@ -122,6 +166,7 @@ class UploadController extends Controller
             ], 500);
         }
     }
+
 
     protected function deleteDirectory($dir)
     {
