@@ -83,22 +83,22 @@
   </style>
 </head>
 <body class="flex flex-col min-h-screen">
-  <!-- Navbar -->
-  <nav class="navbar shadow-lg border-b border-gray-200">
+  <!-- Navbar (desktop + mobile toggle) -->
+  <nav class="navbar shadow-lg border-b border-gray-200/50 sticky top-0 z-50 will-change-transform">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="flex justify-between h-16">
         <div class="flex items-center">
           <!-- Logo -->
           <div class="flex-shrink-0 flex items-center">
             <a href="{{ url('/') }}" class="flex items-center">
-              <div class="w-10 h-10 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg flex items-center justify-center">
+              <div class="w-10 h-10 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg flex items-center justify-center shadow-lg">
                 <i class="fas fa-graduation-cap text-white text-lg"></i>
               </div>
               <span class="ml-3 text-xl font-bold text-gray-800">FormatCheck ITS</span>
             </a>
           </div>
-          
-          <!-- Navigation Links -->
+
+          <!-- Navigation Links (desktop) -->
           <div class="hidden md:ml-6 md:flex md:space-x-8">
             <a href="{{ route('upload.form') }}" class="border-b-2 border-blue-500 text-gray-900 inline-flex items-center px-1 pt-1 text-sm font-medium">
               <i class="fas fa-upload mr-2"></i>
@@ -112,8 +112,8 @@
         </div>
 
         <!-- Right side -->
-        <div class="flex items-center">
-          <div class="flex items-center space-x-4">
+        <div class="flex items-center space-x-3">
+          <div class="hidden md:flex items-center space-x-4">
             @auth
               <span class="text-sm text-gray-700">
                 <i class="fas fa-user-circle mr-1"></i>
@@ -131,21 +131,45 @@
               </a>
             @endauth
           </div>
+
+          <!-- Mobile menu button -->
+          <div class="md:hidden">
+            <button id="mobileMenuButton" type="button" class="inline-flex items-center justify-center p-3 rounded-xl text-gray-600 hover:text-blue-600 hover:bg-gray-100 transition-all duration-200">
+              <span class="sr-only">Open main menu</span>
+              <i class="fas fa-bars text-xl"></i>
+            </button>
+          </div>
         </div>
       </div>
     </div>
 
-    <!-- Mobile menu -->
-    <div class="md:hidden">
-      <div class="pt-2 pb-3 space-y-1 bg-white">
-        <a href="{{ route('upload.form') }}" class="bg-blue-50 border-blue-500 text-blue-700 block pl-3 pr-4 py-2 border-l-4 text-base font-medium">
-          <i class="fas fa-upload mr-2"></i>
-          Upload TA
-        </a>
-        <a href="{{ route('history') }}" class="border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700 block pl-3 pr-4 py-2 border-l-4 text-base font-medium">
-          <i class="fas fa-history mr-2"></i>
-          Riwayat
-        </a>
+    <!-- Mobile menu (hidden by default, toggled) -->
+    <div id="mobileMenu" class="md:hidden hidden border-t border-gray-200 bg-white/95 backdrop-blur-lg">
+      <div class="pt-2 pb-4 space-y-1">
+        <a href="{{ route('upload.form') }}" class="nav-link block pl-4 pr-4 py-3 border-l-4 border-transparent text-base font-medium text-gray-700 hover:text-blue-600 hover:border-blue-600 hover:bg-blue-50 transition-all duration-200">
+          <i class="fas fa-upload mr-3 text-blue-500"></i>Upload TA</a>
+        <a href="{{ route('history') }}" class="nav-link block pl-4 pr-4 py-3 border-l-4 border-transparent text-base font-medium text-gray-700 hover:text-blue-600 hover:border-blue-600 hover:bg-blue-50 transition-all duration-200">
+          <i class="fas fa-history mr-3 text-purple-500"></i>Riwayat</a>
+
+        <div class="border-t border-gray-200 pt-2 mt-2">
+          @auth
+            <div class="px-4 py-2 text-sm text-gray-600">
+              <i class="fas fa-user-circle mr-2"></i>
+              {{ Auth::user()->name }}
+            </div>
+            <form method="POST" action="{{ route('logout') }}">
+              @csrf
+              <button type="submit" class="w-full text-left nav-link block pl-4 pr-4 py-3 border-l-4 border-transparent text-base font-medium text-gray-700 hover:text-blue-600 hover:border-blue-600 hover:bg-blue-50 transition-all duration-200">
+                <i class="fas fa-sign-out-alt mr-3"></i>Logout
+              </button>
+            </form>
+          @endauth
+          @guest
+            <a href="{{ route('login.form') }}" class="nav-link block pl-4 pr-4 py-3 border-l-4 text-base font-medium text-gray-700 hover:text-blue-600 hover:border-blue-600 hover:bg-blue-50 transition-all duration-200">
+              <i class="fas fa-right-to-bracket mr-3"></i>Login
+            </a>
+          @endguest
+        </div>
       </div>
     </div>
   </nav>
@@ -285,7 +309,7 @@
             </h3>
             <div class="space-y-2 max-h-100 overflow-y-auto custom-scrollbar pr-2">
               @foreach($recentUploads as $recent)
-              <a href="{{ $recent['url'] ?? '#' }}" class="flex items-center justify-between bg-white p-3 rounded-lg border border-gray-200 hover:bg-gray-50 transition block group">
+              <a href="{{ $recent['url'] ?? '#' }}" class="flex items-center justify-between bg-white p-3 rounded-lg border border-gray-200 hover:bg-gray-50 transition group">
                 <div class="flex items-center min-w-0 flex-1">
                   <i class="far fa-file-pdf text-red-500 mr-3 text-lg flex-shrink-0"></i>
                   <div class="min-w-0 flex-1">
@@ -703,6 +727,23 @@
           });
         }, 5000);
       @endif
+      
+      // Mobile menu toggle (integrated)
+      const mobileBtn = document.getElementById('mobileMenuButton');
+      const mobileMenu = document.getElementById('mobileMenu');
+      if (mobileBtn && mobileMenu) {
+        mobileBtn.addEventListener('click', (ev) => {
+          ev.stopPropagation();
+          mobileMenu.classList.toggle('hidden');
+        });
+
+        // Close when clicking outside (only when open)
+        document.addEventListener('click', (e) => {
+          if (!e.target.closest('#mobileMenu') && !e.target.closest('#mobileMenuButton') && mobileMenu && !mobileMenu.classList.contains('hidden')) {
+            mobileMenu.classList.add('hidden');
+          }
+        });
+      }
     });
   </script>
 </body>

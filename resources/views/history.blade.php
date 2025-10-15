@@ -147,8 +147,8 @@
   </style>
 </head>
 <body class="flex flex-col min-h-screen">
-  <!-- Navbar -->
-  <nav class="navbar shadow-lg border-b border-gray-200 no-print">
+  <!-- Navbar (desktop + mobile toggle) -->
+  <nav class="navbar shadow-lg border-b border-gray-200/50 sticky top-0 z-50 no-print will-change-transform">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="flex justify-between h-16">
         <div class="flex items-center">
@@ -161,23 +161,23 @@
               <span class="ml-3 text-xl font-bold text-gray-800">FormatCheck ITS</span>
             </a>
           </div>
-          
-          <!-- Navigation Links -->
-          <div class="hidden md:ml-6 md:flex md:space-x-8">
-            <a href="{{ route('upload.form') }}" class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium transition-colors">
-              <i class="fas fa-upload mr-2"></i>
+
+          <!-- Navigation Links (desktop) -->
+          <div class="hidden md:ml-8 md:flex md:space-x-6">
+            <a href="{{ route('upload.form') }}" class="nav-link border-transparent text-gray-600 hover:text-gray-900 inline-flex items-center px-3 py-2 border-b-2 text-sm font-semibold transition-all duration-200">
+              <i class="fas fa-upload mr-2 text-blue-500"></i>
               Upload TA
             </a>
-            <a href="{{ route('history') }}" class="border-b-2 border-blue-500 text-gray-900 inline-flex items-center px-1 pt-1 text-sm font-medium">
-              <i class="fas fa-history mr-2"></i>
+            <a href="{{ route('history') }}" class="nav-link border-transparent text-gray-600 inline-flex items-center px-3 py-2 border-b-2 text-sm font-semibold transition-all duration-200 text-gray-900">
+              <i class="fas fa-history mr-2 text-purple-500"></i>
               Riwayat
             </a>
           </div>
         </div>
 
-        <!-- Ganti bagian ini -->
-        <div class="flex items-center">
-          <div class="flex items-center space-x-4">
+        <!-- Right side -->
+        <div class="flex items-center space-x-3">
+          <div class="hidden md:flex items-center space-x-4">
             @auth
               <span class="text-sm text-gray-700">
                 <i class="fas fa-user-circle mr-1"></i>
@@ -195,21 +195,45 @@
               </a>
             @endauth
           </div>
+
+          <!-- Mobile menu button -->
+          <div class="md:hidden">
+            <button id="mobileMenuButton" type="button" class="inline-flex items-center justify-center p-3 rounded-xl text-gray-600 hover:text-blue-600 hover:bg-gray-100 transition-all duration-200">
+              <span class="sr-only">Open main menu</span>
+              <i class="fas fa-bars text-xl"></i>
+            </button>
+          </div>
         </div>
       </div>
     </div>
 
-    <!-- Mobile menu -->
-    <div class="md:hidden no-print">
-      <div class="pt-2 pb-3 space-y-1 bg-white">
-        <a href="{{ route('upload.form') }}" class="border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700 block pl-3 pr-4 py-2 border-l-4 text-base font-medium transition-colors">
-          <i class="fas fa-upload mr-2"></i>
-          Upload TA
-        </a>
-        <a href="{{ route('history') }}" class="bg-blue-50 border-blue-500 text-blue-700 block pl-3 pr-4 py-2 border-l-4 text-base font-medium">
-          <i class="fas fa-history mr-2"></i>
-          Riwayat
-        </a>
+    <!-- Mobile menu (hidden by default, toggled) -->
+    <div id="mobileMenu" class="md:hidden hidden border-t border-gray-200 bg-white/95 backdrop-blur-lg no-print">
+      <div class="pt-2 pb-4 space-y-1">
+        <a href="{{ route('upload.form') }}" class="nav-link block pl-4 pr-4 py-3 border-l-4 border-transparent text-base font-medium text-gray-700 hover:text-blue-600 hover:border-blue-600 hover:bg-blue-50 transition-all duration-200">
+          <i class="fas fa-upload mr-3 text-blue-500"></i>Upload TA</a>
+        <a href="{{ route('history') }}" class="nav-link block pl-4 pr-4 py-3 border-l-4 border-transparent text-base font-medium text-gray-700 hover:text-blue-600 hover:border-blue-600 hover:bg-blue-50 transition-all duration-200">
+          <i class="fas fa-history mr-3 text-purple-500"></i>Riwayat</a>
+
+        <div class="border-t border-gray-200 pt-2 mt-2">
+          @auth
+            <div class="px-4 py-2 text-sm text-gray-600">
+              <i class="fas fa-user-circle mr-2"></i>
+              {{ Auth::user()->name }}
+            </div>
+            <form method="POST" action="{{ route('logout') }}">
+              @csrf
+              <button type="submit" class="w-full text-left nav-link block pl-4 pr-4 py-3 border-l-4 border-transparent text-base font-medium text-gray-700 hover:text-blue-600 hover:border-blue-600 hover:bg-blue-50 transition-all duration-200">
+                <i class="fas fa-sign-out-alt mr-3"></i>Logout
+              </button>
+            </form>
+          @endauth
+          @guest
+            <a href="{{ route('login.form') }}" class="nav-link block pl-4 pr-4 py-3 border-l-4 text-gray-700 hover:text-blue-600 hover:border-blue-600 hover:bg-blue-50 transition-all duration-200">
+              <i class="fas fa-right-to-bracket mr-3"></i>Login
+            </a>
+          @endguest
+        </div>
       </div>
     </div>
   </nav>
@@ -271,16 +295,15 @@
       </div>
 
       <!-- Stats Cards -->
-      <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-        <div class="bg-white rounded-xl shadow-lg p-6 text-center animate-fade-in-up" style="animation-delay: 0.1s">
+      <div class="flex gap-4 mb-8 md:grid md:grid-cols-4 md:gap-6 overflow-x-auto pb-2 md:pb-0">
+  <div class="bg-white rounded-xl shadow-lg p-6 text-center animate-fade-in-up w-64 flex-shrink-0" style="animation-delay: 0.1s">
           <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-3">
             <i class="fas fa-file-pdf text-blue-500 text-xl"></i>
           </div>
           <div class="text-2xl font-bold text-gray-800">{{ count($history) }}</div>
           <div class="text-sm text-gray-600">Total Analisis</div>
         </div>
-
-        <div class="bg-white rounded-xl shadow-lg p-6 text-center animate-fade-in-up" style="animation-delay: 0.2s">
+  <div class="bg-white rounded-xl shadow-lg p-6 text-center animate-fade-in-up w-64 flex-shrink-0" style="animation-delay: 0.2s">
           <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-3">
             <i class="fas fa-check-circle text-green-500 text-xl"></i>
           </div>
@@ -290,7 +313,7 @@
           <div class="text-sm text-gray-600">Layak Ajukan</div>
         </div>
 
-        <div class="bg-white rounded-xl shadow-lg p-6 text-center animate-fade-in-up" style="animation-delay: 0.3s">
+  <div class="bg-white rounded-xl shadow-lg p-6 text-center animate-fade-in-up w-64 flex-shrink-0" style="animation-delay: 0.3s">
           <div class="w-12 h-12 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-3">
             <i class="fas fa-exclamation-triangle text-yellow-500 text-xl"></i>
           </div>
@@ -300,7 +323,7 @@
           <div class="text-sm text-gray-600">Perlu Perbaikan</div>
         </div>
 
-        <div class="bg-white rounded-xl shadow-lg p-6 text-center animate-fade-in-up" style="animation-delay: 0.4s">
+  <div class="bg-white rounded-xl shadow-lg p-6 text-center animate-fade-in-up w-64 flex-shrink-0" style="animation-delay: 0.4s">
           <div class="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-3">
             <i class="fas fa-times-circle text-red-500 text-xl"></i>
           </div>
@@ -317,7 +340,7 @@
           <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center">
             <h2 class="text-xl font-bold text-gray-800 mb-2 sm:mb-0">Dokumen yang Telah Dianalisis</h2>
             <div class="flex flex-wrap gap-2">
-              <button type="button" onclick="clearOldHistory()" class="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition-all flex items-center no-print">
+              <button type="button" onclick="clearOldHistory()" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition-all flex items-center no-print">
                     <i class="fas fa-clock mr-2"></i>Hapus Lama
               </button>
               <button onclick="exportHistory()" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition-all flex items-center no-print">
@@ -1058,6 +1081,22 @@
                     hideConfirmModal();
                 }
             });
+
+          // Mobile menu toggle (integrated)
+          const mobileBtn = document.getElementById('mobileMenuButton');
+          const mobileMenu = document.getElementById('mobileMenu');
+          if (mobileBtn && mobileMenu) {
+            mobileBtn.addEventListener('click', (ev) => {
+              ev.stopPropagation();
+              mobileMenu.classList.toggle('hidden');
+            });
+
+            document.addEventListener('click', (e) => {
+              if (!e.target.closest('#mobileMenu') && !e.target.closest('#mobileMenuButton') && mobileMenu && !mobileMenu.classList.contains('hidden')) {
+                mobileMenu.classList.add('hidden');
+              }
+            });
+          }
         });
 
         // ==================== GLOBAL FUNCTIONS ====================

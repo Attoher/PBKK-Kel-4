@@ -239,7 +239,7 @@
             </a>
           @endauth
           @guest
-            <a href="{{ route('login.form') }}" class="nav-link block pl-4 pr-4 py-3 border-l-4 border-blue-500 text-base font-medium text-blue-700 bg-blue-50 transition-all duration-200">
+            <a href="{{ route('login.form') }}" class="nav-link block pl-4 pr-4 py-3 border-l-4 text-gray-700 hover:text-blue-600 hover:border-blue-600 hover:bg-blue-50 transition-all duration-200">
               <i class="fas fa-right-to-bracket mr-3"></i>Login
             </a>
           @endguest

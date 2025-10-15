@@ -103,8 +103,8 @@
   </style>
 </head>
 <body class="flex flex-col min-h-screen">
-  <!-- Navbar -->
-  <nav class="navbar shadow-lg border-b border-gray-200 print-hidden">
+  <!-- Navbar (desktop + mobile toggle) -->
+  <nav class="navbar shadow-lg border-b border-gray-200/50 sticky top-0 z-50 print-hidden will-change-transform">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="flex justify-between h-16">
         <div class="flex items-center">
@@ -113,73 +113,95 @@
             <div class="w-10 h-10 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg flex items-center justify-center">
               <i class="fas fa-graduation-cap text-white text-lg"></i>
             </div>
-            <a href="{{ url('/') }}" class="flex items-center">
-              <span class="ml-3 text-xl font-bold text-gray-800">FormatCheck ITS</span>
+            <a href="{{ url('/') }}" class="flex items-center ml-3">
+              <span class="text-xl font-bold text-gray-800">FormatCheck ITS</span>
             </a>
           </div>
-          
-          <!-- Navigation Links -->
-          <div class="hidden md:ml-6 md:flex md:space-x-8">
-            <a href="{{ route('upload.form') }}" class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
-              <i class="fas fa-upload mr-2"></i>
+
+          <!-- Navigation Links (desktop) -->
+          <div class="hidden md:ml-8 md:flex md:space-x-6">
+            <a href="{{ route('upload.form') }}" class="nav-link border-transparent text-gray-600 hover:text-gray-900 inline-flex items-center px-3 py-2 border-b-2 text-sm font-semibold transition-all duration-200">
+              <i class="fas fa-upload mr-2 text-blue-500"></i>
               Upload TA
             </a>
-            <a href="{{ route('history') }}" class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
-              <i class="fas fa-history mr-2"></i>
+            <a href="{{ route('history') }}" class="nav-link border-transparent text-gray-600 hover:text-gray-900 inline-flex items-center px-3 py-2 border-b-2 text-sm font-semibold transition-all duration-200">
+              <i class="fas fa-history mr-2 text-purple-500"></i>
               Riwayat
             </a>
-            <a href="{{ route('results', ['filename' => $filename ?? '']) }}" class="border-b-2 border-blue-500 text-gray-900 inline-flex items-center px-1 pt-1 text-sm font-medium">
-              <i class="fas fa-chart-bar mr-2"></i>
+            <a href="{{ route('results', ['filename' => $filename ?? '']) }}" class="nav-link border-transparent text-gray-600 hover:text-gray-900 inline-flex items-center px-3 py-2 border-b-2 text-sm font-semibold transition-all duration-200">
+              <i class="fas fa-chart-bar mr-2 text-orange-500"></i>
               Hasil Analisis
             </a>
           </div>
         </div>
 
         <!-- Right side -->
-        <div class="flex items-center space-x-4">
-          <span class="text-sm text-gray-700">
-            <i class="fas fa-file-pdf mr-1"></i>
-            {{ $filename ?? 'Dokumen' }}
-          </span>
-        </div>
-        <div class="flex items-center">
-          <div class="flex items-center space-x-4">
-            @auth
-              <span class="text-sm text-gray-700">
-                <i class="fas fa-user-circle mr-1"></i>
-                {{ Auth::user()->name }}
-              </span>
-              <form method="POST" action="{{ route('logout') }}">
-                @csrf
-                <button type="submit" class="text-sm text-gray-700 hover:text-blue-600 transition">
-                  <i class="fas fa-sign-out-alt mr-1"></i>Logout
-                </button>
-              </form>
-            @else
-              <a href="{{ route('login.form') }}" class="text-sm text-gray-700 hover:text-blue-600 transition">
-                <i class="fas fa-sign-in-alt mr-1"></i>Login
-              </a>
-            @endauth
+        <div class="flex items-center space-x-3">
+          <div class="hidden md:flex items-center space-x-4">
+            <span class="text-sm text-gray-700">
+              <i class="fas fa-file-pdf mr-1"></i>
+              {{ $filename ?? 'Dokumen' }}
+            </span>
+            <div class="flex items-center space-x-4">
+              @auth
+                <span class="text-sm text-gray-700">
+                  <i class="fas fa-user-circle mr-1"></i>
+                  {{ Auth::user()->name }}
+                </span>
+                <form method="POST" action="{{ route('logout') }}">
+                  @csrf
+                  <button type="submit" class="text-sm text-gray-700 hover:text-blue-600 transition">
+                    <i class="fas fa-sign-out-alt mr-1"></i>Logout
+                  </button>
+                </form>
+              @else
+                <a href="{{ route('login.form') }}" class="text-sm text-gray-700 hover:text-blue-600 transition">
+                  <i class="fas fa-sign-in-alt mr-1"></i>Login
+                </a>
+              @endauth
+            </div>
+          </div>
+
+          <!-- Mobile menu button -->
+          <div class="md:hidden">
+            <button id="mobileMenuButton" type="button" class="inline-flex items-center justify-center p-3 rounded-xl text-gray-600 hover:text-blue-600 hover:bg-gray-100 transition-all duration-200">
+              <span class="sr-only">Open main menu</span>
+              <i class="fas fa-bars text-xl"></i>
+            </button>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- Mobile menu -->
-    <div class="md:hidden">
-      <div class="pt-2 pb-3 space-y-1 bg-white">
-        <a href="{{ route('upload.form') }}" class="border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700 block pl-3 pr-4 py-2 border-l-4 text-base font-medium">
-          <i class="fas fa-upload mr-2"></i>
-          Upload TA
-        </a>
-        <a href="{{ route('history') }}" class="border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700 block pl-3 pr-4 py-2 border-l-4 text-base font-medium">
-          <i class="fas fa-history mr-2"></i>
-          Riwayat
-        </a>
-        <a href="{{ route('results', ['filename' => $filename ?? '']) }}" class="bg-blue-50 border-blue-500 text-blue-700 block pl-3 pr-4 py-2 border-l-4 text-base font-medium">
-          <i class="fas fa-chart-bar mr-2"></i>
-          Hasil Analisis
-        </a>
+    <!-- Mobile menu (hidden by default, toggled) -->
+    <div id="mobileMenu" class="md:hidden hidden border-t border-gray-200 bg-white/95 backdrop-blur-lg">
+      <div class="pt-2 pb-4 space-y-1">
+        <a href="{{ route('upload.form') }}" class="nav-link block pl-4 pr-4 py-3 border-l-4 border-transparent text-base font-medium text-gray-700 hover:text-blue-600 hover:border-blue-600 hover:bg-blue-50 transition-all duration-200">
+          <i class="fas fa-upload mr-3 text-blue-500"></i>Upload TA</a>
+        <a href="{{ route('history') }}" class="nav-link block pl-4 pr-4 py-3 border-l-4 border-transparent text-base font-medium text-gray-700 hover:text-blue-600 hover:border-blue-600 hover:bg-blue-50 transition-all duration-200">
+          <i class="fas fa-history mr-3 text-purple-500"></i>Riwayat</a>
+        <a href="{{ route('results', ['filename' => $filename ?? '']) }}" class="nav-link block pl-4 pr-4 py-3 border-l-4 border-transparent text-base font-medium text-gray-700 hover:text-blue-600 hover:border-blue-600 hover:bg-blue-50 transition-all duration-200">
+          <i class="fas fa-chart-bar mr-3 text-orange-500"></i>Hasil Analisis</a>
+
+        <div class="border-t border-gray-200 pt-2 mt-2">
+          @auth
+            <div class="px-4 py-2 text-sm text-gray-600">
+              <i class="fas fa-user-circle mr-2"></i>
+              {{ Auth::user()->name }}
+            </div>
+            <form method="POST" action="{{ route('logout') }}">
+              @csrf
+              <button type="submit" class="w-full text-left nav-link block pl-4 pr-4 py-3 border-l-4 border-transparent text-base font-medium text-gray-700 hover:text-blue-600 hover:border-blue-600 hover:bg-blue-50 transition-all duration-200">
+                <i class="fas fa-sign-out-alt mr-3"></i>Logout
+              </button>
+            </form>
+          @endauth
+          @guest
+            <a href="{{ route('login.form') }}" class="nav-link block pl-4 pr-4 py-3 border-l-4 text-gray-700 hover:text-blue-600 hover:border-blue-600 hover:bg-blue-50 transition-all duration-200">
+              <i class="fas fa-right-to-bracket mr-3"></i>Login
+            </a>
+          @endguest
+        </div>
       </div>
     </div>
   </nav>
@@ -599,6 +621,22 @@
           }, 100);
         });
       }, 500);
+
+      // Mobile menu toggle (integrated)
+      const mobileBtn = document.getElementById('mobileMenuButton');
+      const mobileMenu = document.getElementById('mobileMenu');
+      if (mobileBtn && mobileMenu) {
+        mobileBtn.addEventListener('click', (ev) => {
+          ev.stopPropagation();
+          mobileMenu.classList.toggle('hidden');
+        });
+
+        document.addEventListener('click', (e) => {
+          if (!e.target.closest('#mobileMenu') && !e.target.closest('#mobileMenuButton') && mobileMenu && !mobileMenu.classList.contains('hidden')) {
+            mobileMenu.classList.add('hidden');
+          }
+        });
+      }
     });
 
     // Print optimization
