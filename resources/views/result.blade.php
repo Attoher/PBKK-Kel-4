@@ -138,16 +138,8 @@
         <!-- Right side -->
         <div class="flex items-center space-x-3">
           <div class="hidden md:flex items-center space-x-4">
-            <span class="text-sm text-gray-700">
-              <i class="fas fa-file-pdf mr-1"></i>
-              {{ $filename ?? 'Dokumen' }}
-            </span>
             <div class="flex items-center space-x-4">
               @auth
-                <span class="text-sm text-gray-700">
-                  <i class="fas fa-user-circle mr-1"></i>
-                  {{ Auth::user()->name }}
-                </span>
                 <form method="POST" action="{{ route('logout') }}">
                   @csrf
                   <button type="submit" class="text-sm text-gray-700 hover:text-blue-600 transition">
@@ -180,8 +172,6 @@
           <i class="fas fa-upload mr-3 text-blue-500"></i>Upload TA</a>
         <a href="{{ route('history') }}" class="nav-link block pl-4 pr-4 py-3 border-l-4 border-transparent text-base font-medium text-gray-700 hover:text-blue-600 hover:border-blue-600 hover:bg-blue-50 transition-all duration-200">
           <i class="fas fa-history mr-3 text-purple-500"></i>Riwayat</a>
-        <a href="{{ route('results', ['filename' => $filename ?? '']) }}" class="nav-link block pl-4 pr-4 py-3 border-l-4 border-transparent text-base font-medium text-gray-700 hover:text-blue-600 hover:border-blue-600 hover:bg-blue-50 transition-all duration-200">
-          <i class="fas fa-chart-bar mr-3 text-orange-500"></i>Hasil Analisis</a>
 
         <div class="border-t border-gray-200 pt-2 mt-2">
           @auth
