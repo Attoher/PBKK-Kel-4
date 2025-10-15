@@ -171,13 +171,9 @@
         </div>
 
         <!-- Right side -->
-        <div class="flex items-center space-x-3">
-          <div class="hidden md:flex items-center space-x-4">
+        <div class="flex items-center space-x-3 md:space-x-6">
+          <div class="hidden md:flex items-center space-x-6">
             @auth
-              <span class="text-sm text-gray-700 font-medium">
-                <i class="fas fa-user-circle mr-2 text-blue-500"></i>
-                {{ Auth::user()->name }}
-              </span>
               <form method="POST" action="{{ route('logout') }}">
                 @csrf
                 <button type="submit" class="text-sm text-gray-600 hover:text-blue-600 transition-all duration-200 font-medium">
@@ -193,7 +189,7 @@
             <a
               @auth href="{{ route('upload.form') }}" @endauth
               @guest href="{{ route('login.form') }}" @endguest
-              class="btn-hover inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 px-5 py-3 text-sm font-semibold text-white shadow-lg hover:shadow-xl">
+              class="btn-hover inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 px-5 py-3 text-sm font-semibold text-white shadow-lg hover:shadow-xl ml-4">
               <i class="fas fa-upload"></i>
               <span class="hidden lg:inline">Cek Dokumen</span>
               <span class="lg:hidden">Upload</span>
