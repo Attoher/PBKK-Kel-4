@@ -154,7 +154,7 @@
         <div class="flex items-center">
           <!-- Logo -->
           <div class="flex-shrink-0 flex items-center">
-            <a href="{{ route('upload.form') }}" class="flex items-center">
+            <a href="{{ url('/') }}" class="flex items-center">
               <div class="w-10 h-10 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg flex items-center justify-center">
                 <i class="fas fa-graduation-cap text-white text-lg"></i>
               </div>
@@ -531,7 +531,7 @@
       <div class="flex flex-col md:flex-row justify-between items-center">
         <div class="mb-6 md:mb-0 text-center md:text-left">
           <div class="flex items-center justify-center md:justify-start">
-            <a href="{{ route('upload.form') }}" class="flex items-center">
+            <a href="{{ url('/') }}" class="flex items-center">
               <div class="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg flex items-center justify-center mr-3">
                 <i class="fas fa-graduation-cap text-white text-lg"></i>
               </div>

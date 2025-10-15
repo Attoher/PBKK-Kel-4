@@ -90,10 +90,12 @@
         <div class="flex items-center">
           <!-- Logo -->
           <div class="flex-shrink-0 flex items-center">
-            <div class="w-10 h-10 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg flex items-center justify-center">
-              <i class="fas fa-graduation-cap text-white text-lg"></i>
-            </div>
-            <span class="ml-3 text-xl font-bold text-gray-800">FormatCheck ITS</span>
+            <a href="{{ url('/') }}" class="flex items-center">
+              <div class="w-10 h-10 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg flex items-center justify-center">
+                <i class="fas fa-graduation-cap text-white text-lg"></i>
+              </div>
+              <span class="ml-3 text-xl font-bold text-gray-800">FormatCheck ITS</span>
+            </a>
           </div>
           
           <!-- Navigation Links -->
@@ -413,10 +415,12 @@
       <div class="flex flex-col md:flex-row justify-between items-center">
         <div class="mb-6 md:mb-0 text-center md:text-left">
           <div class="flex items-center justify-center md:justify-start">
-            <div class="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg flex items-center justify-center mr-3">
-              <i class="fas fa-graduation-cap text-white text-lg"></i>
-            </div>
-            <span class="text-xl font-bold">FormatCheck ITS</span>
+            <a href="{{ url('/') }}" class="flex items-center">
+              <div class="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg flex items-center justify-center mr-3">
+                <i class="fas fa-graduation-cap text-white text-lg"></i>
+              </div>
+              <span class="text-xl font-bold">FormatCheck ITS</span>
+            </a>
           </div>
           <p class="text-gray-400 text-sm mt-2">Sistem Deteksi Kelengkapan Format Tugas Akhir</p>
         </div>
