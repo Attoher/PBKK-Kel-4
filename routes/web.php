@@ -5,10 +5,10 @@ use App\Http\Controllers\DocumentAnalysisController;
 use App\Http\Controllers\UploadController;
 use App\Http\Controllers\AuthController;
 
-// Halaman utama
+// Halaman utama - Homepage
 Route::get('/', function () {
-    return redirect()->route('login.form');
-});
+    return view('homepage');
+})->name('homepage');
 
 // Routes untuk autentikasi
 Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login.form');
