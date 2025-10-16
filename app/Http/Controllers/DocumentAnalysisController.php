@@ -148,6 +148,23 @@ class DocumentAnalysisController extends Controller
      */
     private function convertToNewStructure($oldResults)
     {
+        // Jika input sudah dalam struktur baru (mengandung 'score'), kembalikan setelah normalisasi ringan
+        if (isset($oldResults['score'])) {
+            // Pastikan beberapa field ada agar Blade tidak error
+            $normalized = $oldResults;
+            $normalized['score'] = $oldResults['score'] ?? 0;
+            $normalized['percentage'] = $oldResults['percentage'] ?? ($normalized['score'] * 10);
+            $normalized['status'] = $oldResults['status'] ?? (
+                $normalized['score'] >= 8 ? 'LAYAK' : ($normalized['score'] >= 6 ? 'PERLU PERBAIKAN' : 'TIDAK LAYAK')
+            );
+            $normalized['details'] = $oldResults['details'] ?? [];
+            $normalized['document_info'] = $oldResults['document_info'] ?? [];
+            $normalized['recommendations'] = $oldResults['recommendations'] ?? [];
+
+            return $normalized;
+        }
+
+        // Lama: konversi dari struktur legacy
         return [
             "score" => $oldResults['overall_score'] ?? 0,
             "percentage" => round(($oldResults['overall_score'] ?? 0) * 10, 1),
@@ -274,8 +291,17 @@ class DocumentAnalysisController extends Controller
 
             // 2️⃣ Jika tidak ada di session, load dari file results
             if (!$results) {
-                $resultsFilename = pathinfo($filename, PATHINFO_FILENAME) . '_results.json';
+                // Normalisasi nama file: jika parameter sudah mengandung suffix atau .json, gunakan langsung
+                if (\Illuminate\Support\Str::endsWith($filename, ['_results.json', '.json'])) {
+                    $resultsFilename = $filename;
+                } else {
+                    $resultsFilename = pathinfo($filename, PATHINFO_FILENAME) . '_results.json';
+                }
+
                 $resultsPath = 'results/' . $resultsFilename;
+                $privateResultsPath = 'private/results/' . $resultsFilename;
+
+                Log::info('Hasil filename normalisasi', ['input_filename' => $filename, 'results_filename' => $resultsFilename]);
 
                 Log::info('Mencari hasil analisis untuk file: ' . $filename);
 
@@ -284,9 +310,15 @@ class DocumentAnalysisController extends Controller
                     Log::info('Hasil analisis ditemukan di storage', [
                         'results_path' => $resultsPath
                     ]);
+                } elseif (Storage::exists($privateResultsPath)) {
+                    $results = json_decode(Storage::get($privateResultsPath), true);
+                    Log::info('Hasil analisis ditemukan di private storage', [
+                        'results_path' => $privateResultsPath
+                    ]);
                 } else {
                     Log::warning('Hasil analisis tidak ditemukan, menggunakan data default', [
-                        'results_path' => $resultsPath
+                        'results_path' => $resultsPath,
+                        'private_results_path' => $privateResultsPath
                     ]);
                     $results = $this->simulateAnalysis($filename);
                 }

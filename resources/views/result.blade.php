@@ -365,18 +365,32 @@
           @php
             $references = $results['details']['Daftar Pustaka'] ?? [];
             $refCount = $references['references_count'] ?? '';
-            $isRefValid = $refCount !== 'Tidak terdeteksi';
-            $refColor = $isRefValid ? 'success' : 'warning';
+            $refCountStr = is_array($refCount) ? '' : trim((string) $refCount);
+            $hasDigits = preg_match('/\\d+/', $refCountStr);
+
+            // status: success (hijau) jika ada angka > 0,
+            // danger (merah) jika 'tidak' terdeteksi atau kosong,
+            // warning (kuning) untuk kasus lain (mis. format tidak diketahui)
+            if ($hasDigits && intval($refCountStr) > 0) {
+                $refStatus = 'success';
+            } elseif ($refCountStr === '' || stripos($refCountStr, 'tidak') !== false || $refCountStr === '0') {
+                $refStatus = 'danger';
+            } else {
+                $refStatus = 'warning';
+            }
           @endphp
           <div class="result-card bg-white rounded-xl border p-5 shadow-sm 
-              @if($refColor === 'success') border-green-200
-              @else border-yellow-200 @endif">
+              @if($refStatus === 'success') border-green-200
+              @elseif($refStatus === 'warning') border-yellow-200
+              @else border-red-200 @endif">
             <div class="flex items-start mb-4">
               <div class="flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center mr-3
-                  @if($refColor === 'success') bg-green-100 text-green-500
-                  @else bg-yellow-100 text-yellow-500 @endif">
-                <i class="fas @if($refColor === 'success') fa-check
-                    @else fa-exclamation-triangle @endif"></i>
+                  @if($refStatus === 'success') bg-green-100 text-green-500
+                  elseif($refStatus === 'warning') bg-yellow-100 text-yellow-500
+                  @else bg-red-100 text-red-500 @endif">
+                <i class="fas @if($refStatus === 'success') fa-check
+                    @elseif($refStatus === 'warning') fa-exclamation-triangle
+                    @else fa-times-circle @endif"></i>
               </div>
               <div>
                 <h3 class="font-semibold text-gray-800">Daftar Pustaka</h3>
@@ -387,8 +401,9 @@
               </div>
             </div>
             <p class="text-sm 
-                @if($refColor === 'success') text-green-600
-                @else text-yellow-600 @endif font-medium">
+                @if($refStatus === 'success') text-green-600
+                @elseif($refStatus === 'warning') text-yellow-600
+                @else text-red-600 @endif font-medium">
               {{ $references['notes'] ?? 'Daftar pustaka tidak ditemukan' }}
             </p>
           </div>
@@ -499,15 +514,15 @@
         button.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Menyimpan...';
         button.disabled = true;
         
-        // Data dari PHP
+        // Data dari PHP / Blade
         const resultsData = {
             filename: "{{ $filename ?? 'Nama File' }}",
             analysisDate: new Date().toLocaleString('id-ID'),
-            overallScore: {{ $results['score'] ?? 0 }},
+            score: {{ $results['score'] ?? 0 }},
             percentage: {{ $results['percentage'] ?? 0 }},
             status: "{{ $results['status'] ?? 'TIDAK DIKETAHUI' }}",
-            details: <?php echo json_encode($results['details'] ?? []); ?>,
-            document_info: <?php echo json_encode($results['document_info'] ?? []); ?>
+            details: @json($results['details'] ?? []),
+            document_info: @json($results['document_info'] ?? [])
         };
 
         const blob = new Blob([JSON.stringify(resultsData, null, 2)], { type: 'application/json' });
