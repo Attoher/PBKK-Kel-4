@@ -144,7 +144,7 @@ class UploadController extends Controller
                     try {
                             app(\App\Http\Controllers\DocumentAnalysisController::class)->analyzeDocument($filename);
                         } catch (\Exception $e) {
-                            \Log::error('Gagal menjalankan analisis otomatis: ' . $e->getMessage());
+                            Log::error('Gagal menjalankan analisis otomatis: ' . $e->getMessage());
                         }
                 return response()->json([
                     'success' => true,

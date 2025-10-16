@@ -148,14 +148,14 @@
 </head>
 <body class="flex flex-col min-h-screen">
   <!-- Navbar (desktop + mobile toggle) -->
-  <nav class="navbar shadow-lg border-b border-gray-200/50 sticky top-0 z-50 no-print will-change-transform">
+  <nav class="navbar shadow-lg border-b border-gray-200/50 sticky top-0 z-50 will-change-transform">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="flex justify-between h-16">
         <div class="flex items-center">
           <!-- Logo -->
           <div class="flex-shrink-0 flex items-center">
             <a href="{{ url('/') }}" class="flex items-center">
-              <div class="w-10 h-10 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg flex items-center justify-center">
+              <div class="w-10 h-10 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg flex items-center justify-center shadow-lg">
                 <i class="fas fa-graduation-cap text-white text-lg"></i>
               </div>
               <span class="ml-3 text-xl font-bold text-gray-800">FormatCheck ITS</span>
@@ -163,13 +163,13 @@
           </div>
 
           <!-- Navigation Links (desktop) -->
-          <div class="hidden md:ml-8 md:flex md:space-x-6">
-            <a href="{{ route('upload.form') }}" class="nav-link border-transparent text-gray-600 hover:text-gray-900 inline-flex items-center px-3 py-2 border-b-2 text-sm font-semibold transition-all duration-200">
-              <i class="fas fa-upload mr-2 text-blue-500"></i>
+          <div class="hidden md:ml-6 md:flex md:space-x-8">
+            <a href="{{ route('upload.form') }}" class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
+              <i class="fas fa-upload mr-2"></i>
               Upload TA
             </a>
-            <a href="{{ route('history') }}" class="nav-link border-transparent text-gray-600 inline-flex items-center px-3 py-2 border-b-2 text-sm font-semibold transition-all duration-200 text-gray-900">
-              <i class="fas fa-history mr-2 text-purple-500"></i>
+            <a href="{{ route('history') }}" class="border-b-2 border-blue-500 text-gray-900 inline-flex items-center px-1 pt-1 text-sm font-medium">
+              <i class="fas fa-history mr-2"></i>
               Riwayat
             </a>
           </div>
@@ -208,7 +208,7 @@
     </div>
 
     <!-- Mobile menu (hidden by default, toggled) -->
-    <div id="mobileMenu" class="md:hidden hidden border-t border-gray-200 bg-white/95 backdrop-blur-lg no-print">
+    <div id="mobileMenu" class="md:hidden hidden border-t border-gray-200 bg-white/95 backdrop-blur-lg">
       <div class="pt-2 pb-4 space-y-1">
         <a href="{{ route('upload.form') }}" class="nav-link block pl-4 pr-4 py-3 border-l-4 border-transparent text-base font-medium text-gray-700 hover:text-blue-600 hover:border-blue-600 hover:bg-blue-50 transition-all duration-200">
           <i class="fas fa-upload mr-3 text-blue-500"></i>Upload TA</a>
@@ -229,7 +229,7 @@
             </form>
           @endauth
           @guest
-            <a href="{{ route('login.form') }}" class="nav-link block pl-4 pr-4 py-3 border-l-4 text-gray-700 hover:text-blue-600 hover:border-blue-600 hover:bg-blue-50 transition-all duration-200">
+            <a href="{{ route('login.form') }}" class="nav-link block pl-4 pr-4 py-3 border-l-4 text-base font-medium text-gray-700 hover:text-blue-600 hover:border-blue-600 hover:bg-blue-50 transition-all duration-200">
               <i class="fas fa-right-to-bracket mr-3"></i>Login
             </a>
           @endguest

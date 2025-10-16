@@ -114,7 +114,7 @@ class DocumentAnalysisController extends Controller
 
         // Jalankan Python dengan path file sebagai argumen
         $command = escapeshellcmd("python \"$pythonScript\" \"$filePath\"");
-        \Log::info("Menjalankan AI Analysis Command: $command");
+        Log::info("Menjalankan AI Analysis Command: $command");
 
         $output = shell_exec($command . " 2>&1");
 
@@ -126,13 +126,13 @@ class DocumentAnalysisController extends Controller
         $output = trim($output);
         $output = preg_replace('/^```json\s*|\s*```$/', '', $output);
 
-        \Log::info("Output AI (cleaned, preview 500 chars): " . substr($output, 0, 500));
+        Log::info("Output AI (cleaned, preview 500 chars): " . substr($output, 0, 500));
 
         // Parse hasil JSON dari Python
         $results = json_decode($output, true);
         if ($results === null) {
             // Simpan raw output untuk debugging
-            \Log::error("AI response bukan JSON valid", ['raw_output' => $output]);
+            Log::error("AI response bukan JSON valid", ['raw_output' => $output]);
             throw new \Exception("Output dari Python bukan JSON valid");
         }
 

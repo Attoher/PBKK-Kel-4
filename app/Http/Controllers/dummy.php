@@ -116,7 +116,7 @@ class DocumentAnalysisController extends Controller
 
         // Jalankan Python dengan argumen file
         $command = escapeshellcmd("python3 \"{$pythonScript}\" \"{$filePath}\"");
-        \Log::info("Menjalankan Python: {$command}");
+        Log::info("Menjalankan Python: {$command}");
 
         // Jalankan dan tangkap output & error
         $output = shell_exec($command . " 2>&1");
