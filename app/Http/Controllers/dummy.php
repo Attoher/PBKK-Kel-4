@@ -12,193 +12,191 @@ class DocumentAnalysisController extends Controller
 {
     public function analyzeDocument($filename)
     {
-        // ✅ 1. Validasi nama file
+        // Validasi filename
         if (!preg_match('/^[a-zA-Z0-9_\-\.]+$/', $filename)) {
             Log::error('Nama file tidak valid: ' . $filename);
             return redirect()->route('upload.form')
                 ->with('error', 'Nama file tidak valid.');
         }
-
-        // ✅ 2. Path absolut file di storage private
-        $fullPath = storage_path('app/private/uploads/' . $filename);
-
-        if (!file_exists($fullPath)) {
-            Log::error('File tidak ditemukan di path: ' . $fullPath);
+        
+        // Gunakan Storage::exists() bukan file_exists()
+        $filePath = 'uploads/' . $filename;
+        
+        if (!Storage::exists($filePath)) {
+            Log::error('File tidak ditemukan: ' . $filePath);
             return redirect()->route('upload.form')
-                ->with('error', 'File tidak ditemukan di direktori private.');
+                ->with('error', 'File tidak ditemukan. Silakan upload ulang.');
         }
-
-        // ✅ 3. Pastikan format file benar (hanya PDF)
+        
+        // Dapatkan extension dari filename
         $extension = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
+        
+        if ($extension === 'pdf') {
+            try {
+                Log::info('Memulai analisis PDF: ' . $filename);
 
-        if ($extension !== 'pdf') {
-            return redirect()->route('upload.form')
-                ->with('error', 'Analisis hanya tersedia untuk file PDF.');
-        }
+                // Gunakan full storage path untuk Python
+                $fullPath = Storage::path($filePath);
 
-        try {
-            Log::info('Memulai analisis PDF menggunakan AI:', ['filename' => $filename]);
+                // 🔹 Panggil Python (ini akan menjalankan tes_model_ai_simple.py)
+                $analysisResults = $this->analyzeWithPython($fullPath);
 
-            // ✅ 4. Jalankan Python script untuk analisis AI
-            $analysisResults = $this->analyzeWithPython($fullPath);
+                Log::info('Analisis Python berhasil', [
+                    'filename' => $filename,
+                    'has_output' => !empty($analysisResults),
+                    'output_preview' => substr(json_encode($analysisResults), 0, 300)
+                ]);
 
-            Log::info('Analisis AI (Python) berhasil dijalankan', [
-                'filename' => $filename,
-                'has_output' => !empty($analysisResults),
-                'output_preview' => substr(json_encode($analysisResults), 0, 300)
-            ]);
+            } catch (\Exception $e) {
+                Log::error('Analisis Python gagal: ' . $e->getMessage());
 
-        } catch (\Exception $e) {
-            Log::error('❌ Analisis Python gagal: ' . $e->getMessage());
-            Log::warning('⚠️ Menggunakan hasil simulasi sebagai fallback untuk file: ' . $filename);
-
-            // Fallback ke hasil simulasi jika Python gagal
-            $analysisResults = $this->simulateAnalysis($filename);
-        }
-
-        // ✅ 5. Simpan hasil analisis ke storage/results
-        try {
-            $resultsFilename = pathinfo($filename, PATHINFO_FILENAME) . '_results.json';
-            $resultsPath = 'results/' . $resultsFilename;
-
-            // Pastikan direktori 'results' tersedia
-            if (!Storage::exists('results')) {
-                Storage::makeDirectory('results');
-                Log::info('📁 Folder results dibuat.');
+                // Tambahkan logging yang lebih informatif
+                Log::warning('Menggunakan analisis simulasi sebagai fallback untuk: ' . $filename);
+                $analysisResults = $this->simulateAnalysis($filename);
             }
 
-            // Simpan hasil analisis ke file JSON
-            $saved = Storage::put(
-                $resultsPath,
-                json_encode($analysisResults, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE)
-            );
+            // Simpan results
+            try {
+                $resultsFilename = pathinfo($filename, PATHINFO_FILENAME) . '_results.json';
+                $resultsPath = 'results/' . $resultsFilename;
 
-            Log::info('✅ Hasil analisis disimpan', [
-                'results_filename' => $resultsFilename,
-                'results_path' => $resultsPath,
-                'saved' => $saved,
-                'file_exists' => Storage::exists($resultsPath),
-                'file_size' => $saved ? Storage::size($resultsPath) : 0
-            ]);
+                // Pastikan directory results exists
+                if (!Storage::exists('results')) {
+                    Storage::makeDirectory('results');
+                    Log::info('Directory results dibuat');
+                }
 
-            if (!$saved || !Storage::exists($resultsPath)) {
-                throw new \Exception('Gagal menyimpan atau memverifikasi file hasil analisis.');
+                // Simpan results
+                $saved = Storage::put($resultsPath, json_encode($analysisResults, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
+
+                Log::info('Menyimpan hasil analisis:', [
+                    'results_filename' => $resultsFilename,
+                    'results_path' => $resultsPath,
+                    'saved' => $saved,
+                    'file_exists' => Storage::exists($resultsPath),
+                    'file_size' => $saved ? Storage::size($resultsPath) : 0
+                ]);
+
+                if (!$saved || !Storage::exists($resultsPath)) {
+                    throw new \Exception('Gagal menyimpan atau memverifikasi file results');
+                }
+
+            } catch (\Exception $e) {
+                Log::error('Gagal menyimpan results: ' . $e->getMessage());
+                return redirect()->route('upload.form')
+                    ->with('error', 'Gagal menyimpan hasil analisis: ' . $e->getMessage());
             }
 
-        } catch (\Exception $e) {
-            Log::error('❌ Gagal menyimpan hasil analisis: ' . $e->getMessage());
-            return redirect()->route('upload.form')
-                ->with('error', 'Gagal menyimpan hasil analisis: ' . $e->getMessage());
+            // Redirect ke results dengan data
+            return redirect()->route('results', ['filename' => $filename])
+                ->with('results', $analysisResults)
+                ->with('success', 'Analisis berhasil!');
         }
-
-        // ✅ 6. Redirect ke halaman hasil analisis
-        return redirect()->route('results', ['filename' => $filename])
-            ->with('results', $analysisResults)
-            ->with('success', 'Analisis berhasil dilakukan!');
+         else {
+            return redirect()->route('upload.form')
+                ->with('error', 'Analisis untuk format file ini belum tersedia. Silakan upload file PDF.');
+        }
     }
-
+    
     /**
      * Analisis menggunakan Python script
      */
     private function analyzeWithPython($filePath)
     {
+        // Ganti ke skrip AI Ollama kamu (sesuai nama file yang kamu simpan)
         $pythonScript = base_path('python/analyze_pdf.py');
 
         if (!file_exists($pythonScript)) {
             throw new \Exception("Python script tidak ditemukan: " . $pythonScript);
         }
 
-        if (!file_exists($filePath)) {
-            throw new \Exception("File tidak ditemukan: " . $filePath);
+        if (!file_exists($filePath) || !is_readable($filePath)) {
+            throw new \Exception("File tidak dapat diakses: " . $filePath);
         }
 
-        // Jalankan Python dengan path file sebagai argumen
-        $command = escapeshellcmd("python \"$pythonScript\" \"$filePath\"");
-        \Log::info("Menjalankan AI Analysis Command: $command");
+        // Jalankan Python dengan argumen file
+        $command = escapeshellcmd("python3 \"{$pythonScript}\" \"{$filePath}\"");
+        \Log::info("Menjalankan Python: {$command}");
 
+        // Jalankan dan tangkap output & error
         $output = shell_exec($command . " 2>&1");
 
         if (!$output) {
-            throw new \Exception("Python tidak menghasilkan output");
+            throw new \Exception("Python script tidak mengembalikan output");
         }
 
-        // Bersihkan output dari blok kode ```json ... ```
-        $output = trim($output);
-        $output = preg_replace('/^```json\s*|\s*```$/', '', $output);
-
-        \Log::info("Output AI (cleaned, preview 500 chars): " . substr($output, 0, 500));
-
-        // Parse hasil JSON dari Python
-        $results = json_decode($output, true);
-        if ($results === null) {
-            // Simpan raw output untuk debugging
-            \Log::error("AI response bukan JSON valid", ['raw_output' => $output]);
-            throw new \Exception("Output dari Python bukan JSON valid");
-        }
+        // Output dari analyze_pdf.py adalah teks/JSON hasil analisis Ollama
+        $results = [
+            'analysis_text' => $output,
+            'file_name' => basename($filePath),
+            'timestamp' => now()->toDateTimeString()
+        ];
 
         return $results;
     }
-
-
     /**
      * Pastikan struktur results lengkap
      */
-    /**
-     * Konversi struktur lama ke struktur baru
-     */
-    private function convertToNewStructure($oldResults)
+    private function ensureResultsStructure($results)
     {
-        return [
-            "score" => $oldResults['overall_score'] ?? 0,
-            "percentage" => round(($oldResults['overall_score'] ?? 0) * 10, 1),
-            "status" => ($oldResults['overall_score'] ?? 0) >= 8 ? 'LAYAK' : 
-                    (($oldResults['overall_score'] ?? 0) >= 6 ? 'PERLU PERBAIKAN' : 'TIDAK LAYAK'),
-            "details" => [
-                "Abstrak" => [
-                    "status" => ($oldResults['abstract']['status'] ?? '') === 'success' ? '✓' : '✗',
-                    "notes" => $oldResults['abstract']['message'] ?? 'Abstrak tidak ditemukan',
-                    "id_word_count" => $oldResults['abstract']['id_word_count'] ?? 0,
-                    "en_word_count" => $oldResults['abstract']['en_word_count'] ?? 0
-                ],
-                "Format Teks" => [
-                    "font" => $oldResults['format']['font_family'] ?? 'Times New Roman',
-                    "size" => "12pt",
-                    "spacing" => $oldResults['format']['line_spacing'] ?? '1.5',
-                    "notes" => $oldResults['format']['message'] ?? 'Format teks diasumsikan sesuai standar ITS.'
-                ],
-                "Margin" => [
-                    "top" => ($oldResults['margin']['top'] ?? '3.0') . 'cm',
-                    "bottom" => ($oldResults['margin']['bottom'] ?? '2.5') . 'cm',
-                    "left" => ($oldResults['margin']['left'] ?? '3.0') . 'cm',
-                    "right" => ($oldResults['margin']['right'] ?? '2.0') . 'cm',
-                    "notes" => $oldResults['margin']['message'] ?? 'Margin diasumsikan sesuai standar ITS.'
-                ],
-                "Struktur Bab" => [
-                    "Bab 1" => ($oldResults['chapters']['bab1'] ?? false) ? '✓' : '✗',
-                    "Bab 2" => ($oldResults['chapters']['bab2'] ?? false) ? '✓' : '✗',
-                    "Bab 3" => ($oldResults['chapters']['bab3'] ?? false) ? '✓' : '✗',
-                    "Bab 4" => ($oldResults['chapters']['bab4'] ?? false) ? '✓' : '✗',
-                    "Bab 5" => ($oldResults['chapters']['bab5'] ?? false) ? '✓' : '✗',
-                    "notes" => $oldResults['chapters']['message'] ?? 'Struktur bab tidak terdeteksi.'
-                ],
-                "Daftar Pustaka" => [
-                    "references_count" => "≥" . ($oldResults['references']['count'] ?? 0),
-                    "format" => ($oldResults['references']['apa_compliant'] ?? false) ? 'APA' : 'Tidak diketahui',
-                    "notes" => $oldResults['references']['message'] ?? 'Daftar pustaka tidak ditemukan.'
-                ],
-                "Cover & Halaman Formal" => [
-                    "status" => ($oldResults['cover']['found'] ?? false) ? '✓' : '✗',
-                    "notes" => $oldResults['cover']['message'] ?? 'Cover dan halaman formal tidak terdeteksi.'
-                ]
+        // Default structure
+        $defaultStructure = [
+            "metadata" => [
+                "title" => "Tidak Diketahui",
+                "author" => "Tidak diketahui", 
+                "page_count" => 0,
+                "file_size" => "0 KB",
+                "file_format" => "PDF"
             ],
-            "document_info" => [
-                "jenis_dokumen" => $oldResults['document_type'] ?? 'Tidak Diketahui',
-                "total_halaman" => $oldResults['metadata']['page_count'] ?? 0,
-                "ukuran_file" => $oldResults['metadata']['file_size'] ?? 'unknown',
-                "format_file" => $oldResults['metadata']['file_format'] ?? 'PDF'
+            "abstract" => [
+                "found" => false,
+                "id_word_count" => 0,
+                "en_word_count" => 0,
+                "status" => "error",
+                "message" => "Abstrak tidak ditemukan"
             ],
-            "recommendations" => $oldResults['recommendations'] ?? []
+            "format" => [
+                "font_family" => "Times New Roman",
+                "line_spacing" => "1",
+                "status" => "warning", 
+                "message" => "Format teks diasumsikan sesuai"
+            ],
+            "margin" => [
+                "top" => "3.0",
+                "bottom" => "2.5", 
+                "left" => "3.0",
+                "right" => "2.0",
+                "status" => "warning",
+                "message" => "Margin diasumsikan sesuai standar ITS"
+            ],
+            "chapters" => [
+                "bab1" => false,
+                "bab2" => false,
+                "bab3" => false,
+                "bab4" => false,
+                "bab5" => false,
+                "status" => "error",
+                "message" => "Struktur bab tidak terdeteksi"
+            ],
+            "references" => [
+                "count" => 0,
+                "min_references" => 20,
+                "apa_compliant" => false,
+                "status" => "error",
+                "message" => "Daftar pustaka tidak ditemukan"
+            ],
+            "cover" => [
+                "found" => false,
+                "status" => "error", 
+                "message" => "Halaman cover tidak terdeteksi"
+            ],
+            "overall_score" => 0,
+            "document_type" => "Tidak Diketahui",
+            "recommendations" => []
         ];
+        
+        // Merge dengan results dari Python
+        return array_merge($defaultStructure, $results);
     }
     
     /**
@@ -268,72 +266,38 @@ class DocumentAnalysisController extends Controller
     
     public function showResults($filename)
     {
-        try {
-            // 1️⃣ Ambil hasil dari session terlebih dahulu
-            $results = session('results');
-
-            // 2️⃣ Jika tidak ada di session, load dari file results
-            if (!$results) {
-                $resultsFilename = pathinfo($filename, PATHINFO_FILENAME) . '_results.json';
-                $resultsPath = 'results/' . $resultsFilename;
-
-                Log::info('Mencari hasil analisis untuk file: ' . $filename);
-
-                if (Storage::exists($resultsPath)) {
-                    $results = json_decode(Storage::get($resultsPath), true);
-                    Log::info('Hasil analisis ditemukan di storage', [
-                        'results_path' => $resultsPath
-                    ]);
-                } else {
-                    Log::warning('Hasil analisis tidak ditemukan, menggunakan data default', [
-                        'results_path' => $resultsPath
-                    ]);
-                    $results = $this->simulateAnalysis($filename);
-                }
-            }
-
-            // 3️⃣ Konversi ke struktur baru
-            $newResults = $this->convertToNewStructure($results);
+        // Coba ambil dari session terlebih dahulu
+        $results = session('results');
+        
+        if (!$results) {
+            // Jika tidak ada di session, coba load dari file
+            $resultsFilename = pathinfo($filename, PATHINFO_FILENAME) . '_results.json';
             
-            // 4️⃣ Siapkan data untuk Blade
-            $displayResults = [
-                'filename' => $filename,
-                'score' => $newResults['score'],
-                'percentage' => $newResults['percentage'],
-                'status' => $newResults['status'],
-                'details' => $newResults['details'],
-                'document_info' => $newResults['document_info'],
-                'recommendations' => $newResults['recommendations']
-            ];
-
-            Log::info('Menampilkan hasil analisis (struktur baru)', [
-                'filename' => $filename,
-                'score' => $displayResults['score'],
-                'status' => $displayResults['status']
-            ]);
-
-            // 5️⃣ Return view dengan struktur baru
-            return view('result', [
-                'filename' => $filename,
-                'results' => $displayResults
-            ]);
-
-        } catch (\Exception $e) {
-            Log::error('Gagal menampilkan hasil analisis: ' . $e->getMessage(), [
-                'filename' => $filename,
-                'exception' => $e->getTraceAsString()
-            ]);
-
-            // Jika gagal, tetap tampilkan simulasi sederhana
-            $results = $this->simulateAnalysis($filename);
-
-            return view('result', [
-                'filename' => $filename,
-                'results' => $this->ensureResultsStructure($results)
-            ])->with('error', 'Terjadi kesalahan saat menampilkan hasil analisis.');
+            Log::info('Mencari hasil analisis: results/' . $resultsFilename);
+            
+            if (Storage::exists('results/' . $resultsFilename)) {
+                $results = json_decode(Storage::get('results/' . $resultsFilename), true);
+                Log::info('Hasil analisis ditemukan di storage');
+            } else {
+                Log::warning('Hasil analisis tidak ditemukan, menggunakan data default');
+                // Fallback ke data default
+                $results = $this->simulateAnalysis($filename);
+            }
         }
-    }
 
+        // Pastikan struktur data lengkap
+        $results = $this->ensureResultsStructure($results);
+        
+        Log::info('Menampilkan results dengan metadata:', [
+            'page_count' => $results['metadata']['page_count'] ?? 'N/A',
+            'file_size' => $results['metadata']['file_size'] ?? 'N/A'
+        ]);
+
+        return view('result', [
+            'filename' => $filename,
+            'results' => $results
+        ]);
+    }
         
     /**
      * Download hasil analisis - VERSI DIPERBAIKI

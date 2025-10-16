@@ -46,6 +46,7 @@ class UploadController extends Controller
         ]);
 
         $uploadId = $request->input('uploadId');
+        $uploadId = preg_replace('/[^a-zA-Z0-9_-]/', '_', $uploadId);
         $index = $request->input('chunkIndex');
         $chunk = $request->file('file');
 
@@ -78,6 +79,7 @@ class UploadController extends Controller
         ]);
 
         $uploadId = $request->input('uploadId');
+        $uploadId = preg_replace('/[^a-zA-Z0-9_-]/', '_', $uploadId); // <-- tambahkan ini
         $originalName = $request->input('fileName');
         $filename = time() . '_' . $this->sanitizeFilename($originalName);
 
@@ -181,15 +183,25 @@ class UploadController extends Controller
 
     private function sanitizeFilename($filename)
     {
+        // Ambil nama dasar tanpa path
         $filename = basename($filename);
-        $filename = preg_replace('/[^a-zA-Z0-9_\-\.]/', '_', $filename);
+
+        // Ganti semua karakter selain huruf, angka, titik, underscore, atau tanda minus jadi underscore
+        $filename = preg_replace('/[^a-zA-Z0-9._-]+/', '_', $filename);
+
+        // Hapus underscore berurutan biar lebih rapi
+        $filename = preg_replace('/_+/', '_', $filename);
+
+        // Pangkas jika terlalu panjang (misal lebih dari 100 karakter)
         if (strlen($filename) > 100) {
             $ext = pathinfo($filename, PATHINFO_EXTENSION);
             $name = substr(pathinfo($filename, PATHINFO_FILENAME), 0, 95);
             $filename = "{$name}.{$ext}";
         }
+
         return $filename;
     }
+
 
     private function formatFileSize($bytes)
     {

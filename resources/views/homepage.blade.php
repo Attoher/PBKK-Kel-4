@@ -152,7 +152,7 @@
           <!-- Navigation Links -->
           <div class="hidden md:ml-8 md:flex md:space-x-6">
             <a href="#fitur" class="nav-link border-transparent text-gray-600 hover:text-gray-900 inline-flex items-center px-3 py-2 border-b-2 text-sm font-semibold transition-all duration-200">
-              <i class="fas fa-sparkles mr-2 text-blue-500"></i>
+              <i class="fas fa-rocket mr-2 text-blue-500"></i>
               Fitur
             </a>
             <a href="#cara-kerja" class="nav-link border-transparent text-gray-600 hover:text-gray-900 inline-flex items-center px-3 py-2 border-b-2 text-sm font-semibold transition-all duration-200">
@@ -209,7 +209,7 @@
     <div id="mobileMenu" class="md:hidden hidden border-t border-gray-200 bg-white/95 backdrop-blur-lg">
       <div class="pt-2 pb-4 space-y-1">
         <a href="#fitur" class="nav-link block pl-4 pr-4 py-3 border-l-4 border-transparent text-base font-medium text-gray-700 hover:text-blue-600 hover:border-blue-600 hover:bg-blue-50 transition-all duration-200">
-          <i class="fas fa-sparkles mr-3 text-blue-500"></i>Fitur</a>
+          <i class="fas fa-rocket mr-2 text-blue-500"></i>Fitur</a>
         <a href="#cara-kerja" class="nav-link block pl-4 pr-4 py-3 border-l-4 border-transparent text-base font-medium text-gray-700 hover:text-blue-600 hover:border-blue-600 hover:bg-blue-50 transition-all duration-200">
           <i class="fas fa-gears mr-3 text-purple-500"></i>Cara Kerja</a>
         <a href="#panduan" class="nav-link block pl-4 pr-4 py-3 border-l-4 border-transparent text-base font-medium text-gray-700 hover:text-blue-600 hover:border-blue-600 hover:bg-blue-50 transition-all duration-200">
@@ -358,7 +358,7 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="mx-auto max-w-4xl text-center mb-16 lg:mb-20">
         <div class="inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-blue-500 to-purple-500 px-4 py-2 text-sm text-white font-semibold mb-6">
-          <i class="fas fa-stars"></i>
+          <i class="fas fa-rocket"></i>
           Fitur Unggulan
         </div>
         <h2 class="text-4xl md:text-5xl lg:text-6xl font-extrabold text-gray-900 mb-6">Pemeriksaan <span>Menyeluruh</span></h2>

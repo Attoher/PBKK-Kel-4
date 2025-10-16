@@ -5,8 +5,8 @@ import os
 import time
 from datetime import datetime
 import requests
-from requests.exceptions import RequestException
 import PyPDF2
+from requests.exceptions import RequestException
 
 # ===== CONFIG =====
 models = [
@@ -126,17 +126,13 @@ def query_model(model, prompt, url, timeout):
 
 # ===== MAIN =====
 if __name__ == "__main__":
-    # Pastikan output Python menggunakan UTF-8
-    if sys.stdout.encoding.lower() != 'utf-8':
-        sys.stdout.reconfigure(encoding='utf-8')
-
     if len(sys.argv) < 2:
-        print(json.dumps({"error": "File PDF tidak diberikan"}, ensure_ascii=False))
+        print(json.dumps({"error": "File PDF tidak diberikan"}))
         sys.exit(1)
 
     pdf_path = sys.argv[1]
     if not os.path.exists(pdf_path):
-        print(json.dumps({"error": f"File PDF '{pdf_path}' tidak ditemukan"}, ensure_ascii=False))
+        print(json.dumps({"error": f"File PDF '{pdf_path}' tidak ditemukan"}))
         sys.exit(1)
 
     pdf_content = read_pdf_content(pdf_path)
@@ -151,12 +147,10 @@ if __name__ == "__main__":
     # Output JSON siap untuk front-end
     if result['success']:
         try:
+            # Pastikan JSON valid
             response_json = json.loads(result['response'])
             print(json.dumps(response_json, ensure_ascii=False, indent=2))
         except Exception as e:
-            print(json.dumps({
-                "error": f"AI response bukan JSON valid: {e}",
-                "raw_response": result['response']
-            }, ensure_ascii=False))
+            print(json.dumps({"error": f"AI response bukan JSON valid: {e}", "raw_response": result['response']}))
     else:
-        print(json.dumps({"error": result.get("error", "Unknown error")}, ensure_ascii=False))
+        print(json.dumps({"error": result.get("error", "Unknown error")}))
