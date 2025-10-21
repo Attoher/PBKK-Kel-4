@@ -7,11 +7,14 @@ import requests
 from requests.exceptions import RequestException, ConnectionError, Timeout
 import PyPDF2
 from openai import OpenAI
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # ===== CONFIG OPENROUTER =====
-OPENROUTER_API_KEY = "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"
+OPENROUTER_API_KEY = "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"
 OPENROUTER_BASE_URL = "https://openrouter.ai/api/v1"
-OPENROUTER_MODEL = "tngtech/deepseek-r1t2-chimera:free"
+OPENROUTER_MODEL = "anthropic/claude-3.5-sonnet"
 
 # Initialize client
 client = OpenAI(
