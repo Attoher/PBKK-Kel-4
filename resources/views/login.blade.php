@@ -301,20 +301,6 @@
                     <div>{{ session('error') }}</div>
                 </div>
             @endif
-
-            @if($errors->has('login'))
-                <div class="mt-6 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg">
-                    <div class="flex items-center mb-2">
-                        <i class="fas fa-exclamation-circle mr-2"></i>
-                        <strong class="font-medium">Terjadi kesalahan:</strong>
-                    </div>
-                    <ul class="list-disc list-inside text-sm">
-                        @foreach($errors->get('login') as $error)
-                            <li>{{ $error }}</li>
-                        @endforeach
-                    </ul>
-                </div>
-            @endif
           </div>
         </div>
         
