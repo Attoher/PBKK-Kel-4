@@ -12,9 +12,8 @@ cmds = [
 cmds = [
     "mkdir -p storage/app/public storage/framework/cache storage/framework/sessions storage/framework/views storage/logs database",
     "touch database/database.sqlite",
-    "chmod -R 775 storage bootstrap/cache database",
-    "php artisan migrate --force"
+    "chmod -R 775 storage bootstrap/cache database"
 ]
 
 [start]
-cmd = ". /tmp/venv/bin/activate && php artisan serve --host=0.0.0.0 --port=$PORT"
+cmd = ". /tmp/venv/bin/activate && php artisan migrate --force && php artisan serve --host=0.0.0.0 --port=$PORT"
