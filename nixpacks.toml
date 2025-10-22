@@ -5,7 +5,7 @@ nixPkgs = ["php82", "php82Packages.composer", "python311", "stdenv.cc.cc.lib", "
 cmds = [
     "composer install --no-dev --optimize-autoloader",
     "python -m venv /tmp/venv",
-    ". /tmp/venv/bin/activate && pip install -r python/requirements.txt"
+    ". /tmp/venv/bin/activate && pip install --no-cache-dir -r python/requirements.txt"
 ]
 
 [phases.build]
