@@ -10,9 +10,10 @@ cmds = [
 
 [phases.build]
 cmds = [
-    "php artisan config:cache",
-    "php artisan route:cache",
-    "chmod -R 775 storage bootstrap/cache"
+    "mkdir -p storage/app/public storage/framework/cache storage/framework/sessions storage/framework/views storage/logs database",
+    "touch database/database.sqlite",
+    "chmod -R 775 storage bootstrap/cache database",
+    "php artisan migrate --force"
 ]
 
 [start]
