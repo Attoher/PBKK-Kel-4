@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-echo "🚀 Starting Laravel application..."
+echo "🚀 Starting Laravel application with pypdfium2..."
 
 # Activate Python virtual environment
 echo "📦 Activating Python virtual environment..."
