@@ -34,6 +34,7 @@ fi
 
 # Check storage permissions
 echo "📁 Checking storage permissions..."
+mkdir -p storage/app/uploads storage/app/chunks storage/app/public
 chmod -R 777 storage bootstrap/cache database
 
 # Create storage link

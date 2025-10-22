@@ -38,32 +38,49 @@ class UploadController extends Controller
      */
     public function uploadChunk(Request $request)
     {
-        $request->validate([
-            'uploadId' => 'required|string',
-            'chunkIndex' => 'required|integer',
-            'totalChunks' => 'required|integer',
-            'file' => 'required|file',
-        ]);
+        try {
+            $request->validate([
+                'uploadId' => 'required|string',
+                'chunkIndex' => 'required|integer',
+                'totalChunks' => 'required|integer',
+                'file' => 'required|file',
+            ]);
 
-        $uploadId = $request->input('uploadId');
-        $uploadId = preg_replace('/[^a-zA-Z0-9_-]/', '_', $uploadId);
-        $index = $request->input('chunkIndex');
-        $chunk = $request->file('file');
+            $uploadId = $request->input('uploadId');
+            $uploadId = preg_replace('/[^a-zA-Z0-9_-]/', '_', $uploadId);
+            $index = $request->input('chunkIndex');
+            $chunk = $request->file('file');
 
-        $tempDir = storage_path("app/chunks/{$uploadId}");
-        if (!file_exists($tempDir)) {
-            mkdir($tempDir, 0777, true);
+            $tempDir = storage_path("app/chunks/{$uploadId}");
+            if (!file_exists($tempDir)) {
+                if (!mkdir($tempDir, 0777, true)) {
+                    throw new \Exception("Gagal membuat folder chunks: {$tempDir}");
+                }
+                Log::info("Created chunk directory: {$tempDir}");
+            }
+
+            $chunkPath = "{$tempDir}/chunk_{$index}";
+            $chunk->move($tempDir, "chunk_{$index}");
+
+            Log::info("Chunk {$index} uploaded for uploadId: {$uploadId}");
+
+            return response()->json([
+                'success' => true,
+                'message' => "Chunk {$index} uploaded successfully",
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Upload chunk error: ' . $e->getMessage(), [
+                'uploadId' => $request->input('uploadId'),
+                'chunkIndex' => $request->input('chunkIndex'),
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            
+            return response()->json([
+                'success' => false,
+                'message' => 'Terjadi kesalahan saat mengupload chunk: ' . $e->getMessage()
+            ], 500);
         }
-
-        $chunkPath = "{$tempDir}/chunk_{$index}";
-        $chunk->move($tempDir, "chunk_{$index}");
-
-        Log::info("Chunk {$index} uploaded for uploadId: {$uploadId}");
-
-        return response()->json([
-            'success' => true,
-            'message' => "Chunk {$index} uploaded successfully",
-        ]);
     }
 
     /**
