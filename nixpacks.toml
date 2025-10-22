@@ -1,12 +1,11 @@
 [phases.setup]
-nixPkgs = ["php82", "php82Packages.composer", "python311", "stdenv.cc.cc.lib", "zlib", "freetype", "gumbo"]
+nixPkgs = ["php82", "php82Packages.composer", "python311"]
 
 [phases.install]
 cmds = [
     "composer install --no-dev --optimize-autoloader",
     "python -m venv /tmp/venv",
-    "export LD_LIBRARY_PATH=/nix/store/*-gcc-*/lib:$LD_LIBRARY_PATH",
-    ". /tmp/venv/bin/activate && LD_LIBRARY_PATH=/nix/store/*-gcc-*/lib:$LD_LIBRARY_PATH pip install --no-cache-dir -r python/requirements.txt"
+    ". /tmp/venv/bin/activate && pip install --no-cache-dir -r python/requirements.txt"
 ]
 
 [phases.build]

@@ -1,4 +1,4 @@
-PyMuPDF>=1.23.0
+pypdfium2
 PyPDF2
 openai
 python-dotenv

@@ -3,9 +3,6 @@ set -e
 
 echo "🚀 Starting Laravel application..."
 
-# Set library path for PyMuPDF
-export LD_LIBRARY_PATH=/nix/store/*-gcc-*/lib:$LD_LIBRARY_PATH
-
 # Activate Python virtual environment
 echo "📦 Activating Python virtual environment..."
 . /tmp/venv/bin/activate
@@ -42,9 +39,10 @@ which python || echo "⚠️ Python binary not found"
 
 # Test Python modules
 echo "📦 Testing Python modules..."
-python -c "import fitz; print('✓ PyMuPDF installed')" || echo "⚠️ PyMuPDF not found"
-python -c "import PyPDF2; print('✓ PyPDF2 installed')" || echo "⚠️ PyPDF2 not found"
-python -c "import openai; print('✓ openai installed')" || echo "⚠️ openai not found"
+echo "📦 Testing Python modules..."
+python -c "import pypdfium2; print('✓ pypdfium2 installed')" 2>/dev/null || echo "⚠️ pypdfium2 not found"
+python -c "import PyPDF2; print('✓ PyPDF2 installed')" 2>/dev/null || echo "⚠️ PyPDF2 not found"
+python -c "import openai; print('✓ openai installed')" 2>/dev/null || echo "⚠️ openai not found"
 
 # Check storage permissions
 echo "📁 Checking storage permissions..."

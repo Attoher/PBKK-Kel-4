@@ -47,7 +47,7 @@ Panduan deploy aplikasi Laravel + Python ke platform cloud gratis.
     APP_DEBUG=true
     APP_KEY=base64:q36FLfYNrRgFaBXaPIgz02qRcyPISRIWjPR3ZxiStQI=
 
-    OPENROUTER_API_KEY=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
+    OPENROUTER_API_KEY=YOUR_OPENROUTER_API_KEY_HERE
     OPENROUTER_BASE_URL=https://openrouter.ai/api/v1
     OPENROUTER_MODEL=meta-llama/llama-3.2-3b-instruct:free
 
