@@ -44,7 +44,7 @@ Panduan deploy aplikasi Laravel + Python ke platform cloud gratis.
 
     ```
     APP_ENV=production
-    APP_DEBUG=false
+    APP_DEBUG=true
     APP_KEY=base64:q36FLfYNrRgFaBXaPIgz02qRcyPISRIWjPR3ZxiStQI=
 
     OPENROUTER_API_KEY=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
@@ -54,9 +54,15 @@ Panduan deploy aplikasi Laravel + Python ke platform cloud gratis.
     DB_CONNECTION=sqlite
     SESSION_DRIVER=database
     CACHE_STORE=database
+    LOG_CHANNEL=stack
+    LOG_LEVEL=debug
     ```
 
-    ⚠️ **WAJIB CEK**: Pastikan APP_KEY terisi dengan benar!
+    ⚠️ **CHECKLIST WAJIB**:
+    - [ ] APP_KEY ada dan benar (jangan kosong!)
+    - [ ] OPENROUTER_API_KEY ada dan benar
+    - [ ] DB_CONNECTION=sqlite (jangan mysql!)
+    - [ ] APP_DEBUG=true (untuk debugging, ubah ke false setelah jalan)
 
 4. **Deploy!**
     - Railway akan otomatis build & deploy setelah push ke GitHub
