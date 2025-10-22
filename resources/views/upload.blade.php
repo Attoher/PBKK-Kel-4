@@ -639,12 +639,20 @@
               body: formData
             });
 
-            if (!response.ok) throw new Error('Gagal upload chunk');
+            const responseText = await response.text();
+            console.log('Chunk upload response:', responseText);
+
+            if (!response.ok) {
+              console.error('Chunk upload failed:', response.status, responseText);
+              throw new Error(`Gagal upload chunk: ${response.status} - ${responseText.substring(0, 100)}`);
+            }
           } catch (error) {
-            showNotification('Terjadi kesalahan saat mengupload file.');
+            console.error('Upload error:', error);
+            showNotification(`Terjadi kesalahan saat mengupload file: ${error.message}`);
             submitBtn.disabled = false;
             submitText.textContent = 'Analisis Dokumen';
             submitLoading.classList.add('hidden');
+            progressContainer.classList.add('hidden');
             return;
           }
 
@@ -656,6 +664,8 @@
 
         // Setelah semua chunk dikirim, minta server untuk gabungkan
         try {
+          console.log('Merging chunks...', { uploadId, fileName: file.name });
+          
           const mergeResponse = await fetch('{{ route('upload.merge') }}', {
             method: 'POST',
             headers: {
@@ -665,20 +675,28 @@
             body: JSON.stringify({ uploadId, fileName: file.name })
           });
 
-          if (!mergeResponse.ok) throw new Error('Gagal menggabungkan file');
+          const mergeText = await mergeResponse.text();
+          console.log('Merge response:', mergeText);
 
-          const result = await mergeResponse.json();
+          if (!mergeResponse.ok) {
+            console.error('Merge failed:', mergeResponse.status, mergeText);
+            throw new Error(`Gagal menggabungkan file: ${mergeResponse.status} - ${mergeText.substring(0, 100)}`);
+          }
+
+          const result = JSON.parse(mergeText);
+          console.log('Merge result:', result);
 
           // Jika sukses, redirect ke halaman hasil
           if (result.success && result.filename) {
+              console.log('Redirecting to:', `/results/${result.filename}`);
               window.location.href = `/results/${result.filename}`;
           } else {
               showNotification(result.message || 'Gagal menyelesaikan upload.');
           }
 
-
         } catch (error) {
-          showNotification('Terjadi kesalahan saat menggabungkan file.');
+          console.error('Merge error:', error);
+          showNotification(`Terjadi kesalahan saat menggabungkan file: ${error.message}`);
         } finally {
           submitBtn.disabled = false;
           submitText.textContent = 'Analisis Dokumen';
