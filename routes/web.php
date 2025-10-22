@@ -20,6 +20,7 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 // Routes untuk upload
 Route::get('/upload', [UploadController::class, 'showUploadForm'])->name('upload.form');
 Route::post('/upload', [UploadController::class, 'processUpload'])->name('upload.process');
+Route::get('/upload/test', [UploadController::class, 'testConnection'])->name('upload.test');
 
 // Routes untuk analisis dokumen
 Route::get('/analyze/{filename}', [DocumentAnalysisController::class, 'analyzeDocument'])->name('analyze.document');

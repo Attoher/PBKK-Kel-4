@@ -32,6 +32,20 @@ class UploadController extends Controller
     }
 
     /**
+     * Test endpoint untuk debugging
+     */
+    public function testConnection()
+    {
+        return response()->json([
+            'status' => 'ok',
+            'message' => 'Upload controller is reachable',
+            'timestamp' => now()->toDateTimeString(),
+            'storage_path' => storage_path('app/uploads'),
+            'chunks_path' => storage_path('app/chunks')
+        ]);
+    }
+
+    /**
      * -----------------------------
      * 🔹 Upload per chunk
      * -----------------------------
@@ -39,6 +53,13 @@ class UploadController extends Controller
     public function uploadChunk(Request $request)
     {
         try {
+            Log::info('uploadChunk called', [
+                'uploadId' => $request->input('uploadId'),
+                'chunkIndex' => $request->input('chunkIndex'),
+                'has_file' => $request->hasFile('file'),
+                'headers' => $request->headers->all()
+            ]);
+
             $request->validate([
                 'uploadId' => 'required|string',
                 'chunkIndex' => 'required|integer',

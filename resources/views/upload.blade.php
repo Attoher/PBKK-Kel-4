@@ -621,6 +621,14 @@
         const uploadId = Date.now() + '_' + file.name; // unique upload session ID
         let uploadedChunks = 0;
 
+        // Debug info
+        console.log('🚀 Upload Configuration:', {
+          uploadUrl: '{{ route('upload.chunk') }}',
+          mergeUrl: '{{ route('upload.merge') }}',
+          baseUrl: '{{ url('/') }}',
+          csrfToken: document.querySelector('meta[name="csrf-token"]')?.getAttribute('content')?.substring(0, 10) + '...'
+        });
+
         for (let start = 0; start < file.size; start += chunkSize) {
           const end = Math.min(file.size, start + chunkSize);
           const chunk = file.slice(start, end);
