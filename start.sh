@@ -3,6 +3,9 @@ set -e
 
 echo "🚀 Starting Laravel application..."
 
+# Set library path for PyMuPDF
+export LD_LIBRARY_PATH=/nix/store/*-gcc-*/lib:$LD_LIBRARY_PATH
+
 # Activate Python virtual environment
 echo "📦 Activating Python virtual environment..."
 . /tmp/venv/bin/activate
