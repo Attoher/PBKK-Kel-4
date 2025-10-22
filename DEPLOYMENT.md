@@ -130,6 +130,43 @@ Jika ingin performa lebih baik, pisahkan frontend & backend:
 
 ## 🔧 Troubleshooting
 
+### Error: "Tidak dapat terhubung ke server" / "Failed to fetch"
+
+**Penyebab:**
+- Railway deployment belum selesai atau gagal
+- Server crash atau tidak berjalan
+- Network/firewall blocking
+
+**Solusi:**
+
+1. **Cek Status Deployment di Railway:**
+   - Buka Railway Dashboard → Deployments
+   - Pastikan status deployment **"SUCCESS"** (hijau)
+   - Jika **"BUILDING"** (kuning) → tunggu selesai
+   - Jika **"FAILED"** (merah) → klik "View Logs" untuk lihat error
+
+2. **Cek Railway Logs:**
+   ```
+   Railway Dashboard → Deployments → Latest → View Logs
+   ```
+   Cari error seperti:
+   - `Error: externally-managed-environment` → Python env issue
+   - `ERROR: failed to build` → Build gagal
+   - `Port already in use` → Restart deployment
+
+3. **Test Server Manually:**
+   - Buka: https://pbkk-kel-4-production.up.railway.app/
+   - Jika error 500/404 → server jalan tapi ada bug
+   - Jika timeout/no response → server tidak jalan
+
+4. **Restart Deployment:**
+   - Railway Dashboard → Deployments
+   - Klik "..." → "Redeploy"
+
+5. **Cek Environment Variables:**
+   - Railway Dashboard → Variables
+   - Pastikan APP_KEY, OPENROUTER_API_KEY sudah di-set
+
 ### Error: "Storage directory not writable"
 
 ```bash
@@ -157,6 +194,23 @@ pip install -r python/requirements.txt
 touch database/database.sqlite
 php artisan migrate --force
 ```
+
+### Error: Upload Chunk Failed (403/500)
+
+**Cek Railway Logs:**
+```
+Keyword: "Upload chunk error" atau "Merge error"
+```
+
+**Penyebab umum:**
+- Folder storage/app/chunks tidak bisa dibuat → permission issue
+- Memory limit exceeded → file terlalu besar
+- CSRF token mismatch → refresh browser
+
+**Solusi:**
+- Pastikan build phase membuat folder chunks
+- Cek permission di start.sh (chmod 777)
+- Clear browser cache dan refresh
 
 ---
 
