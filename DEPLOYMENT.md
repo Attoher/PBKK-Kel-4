@@ -25,7 +25,7 @@ Panduan deploy aplikasi Laravel + Python ke platform cloud gratis.
    ```bash
    git add .
    git commit -m "Ready for deployment"
-   git push origin main
+   git push origin feature/fixsementara  # atau branch lain
    ```
 
 2. **Buka Railway.app**
@@ -33,6 +33,7 @@ Panduan deploy aplikasi Laravel + Python ke platform cloud gratis.
    - Klik "New Project"
    - Pilih "Deploy from GitHub repo"
    - Pilih repository `PBKK-Kel-4`
+   - **PENTING**: Klik "Settings" → "Source" → Pilih branch `feature/fixsementara`
 
 3. **Set Environment Variables**
    

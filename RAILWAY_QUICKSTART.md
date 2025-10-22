@@ -7,7 +7,7 @@
 ```bash
 git add .
 git commit -m "Ready for deployment"
-git push origin feature/aitry
+git push origin feature/fixsementara  # Ganti dengan nama branch Anda
 ```
 
 ### 2. Deploy di Railway
@@ -17,7 +17,19 @@ git push origin feature/aitry
 3. Klik **"New Project"**
 4. Pilih **"Deploy from GitHub repo"**
 5. Pilih repository **`PBKK-Kel-4`**
-6. Pilih branch **`feature/aitry`** atau **`main`**
+6. **Deploy akan otomatis pakai branch default (main)**
+
+### 2.1. Ganti ke Branch Lain (PENTING!)
+
+Setelah deploy pertama kali:
+
+1. Klik project Anda di Railway
+2. Klik **"Settings"** (ikon gear)
+3. Scroll ke **"Source"**
+4. Klik **"Configure"** atau **"Change Branch"**
+5. Pilih branch **`feature/fixsementara`**
+6. Klik **"Update"**
+7. Railway akan **otomatis redeploy** dari branch baru
 
 ### 3. Set Environment Variables
 
