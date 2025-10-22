@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="csrf-token" content="{{ csrf_token() }}">
   <title>Upload TA - Deteksi Format ITS</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -631,10 +632,19 @@
           formData.append('totalChunks', totalChunks);
 
           try {
+            const csrfToken = document.querySelector('input[name=_token]') || document.querySelector('meta[name="csrf-token"]');
+            if (!csrfToken) {
+              throw new Error('CSRF token tidak ditemukan. Refresh halaman dan coba lagi.');
+            }
+
+            const tokenValue = csrfToken.value || csrfToken.getAttribute('content');
+            console.log('Uploading chunk', Math.floor(start / chunkSize), 'to:', '{{ route('upload.chunk') }}');
+
             const response = await fetch('{{ route('upload.chunk') }}', {
               method: 'POST',
               headers: {
-                'X-CSRF-TOKEN': document.querySelector('input[name=_token]').value
+                'X-CSRF-TOKEN': tokenValue,
+                'Accept': 'application/json'
               },
               body: formData
             });
@@ -644,11 +654,15 @@
 
             if (!response.ok) {
               console.error('Chunk upload failed:', response.status, responseText);
-              throw new Error(`Gagal upload chunk: ${response.status} - ${responseText.substring(0, 100)}`);
+              throw new Error(`Gagal upload chunk (${response.status}): ${responseText.substring(0, 100)}`);
             }
           } catch (error) {
             console.error('Upload error:', error);
-            showNotification(`Terjadi kesalahan saat mengupload file: ${error.message}`);
+            let errorMsg = error.message;
+            if (error.message === 'Failed to fetch') {
+              errorMsg = 'Tidak dapat terhubung ke server. Pastikan koneksi internet stabil dan Railway server berjalan.';
+            }
+            showNotification(`Terjadi kesalahan saat mengupload file: ${errorMsg}`);
             submitBtn.disabled = false;
             submitText.textContent = 'Analisis Dokumen';
             submitLoading.classList.add('hidden');
