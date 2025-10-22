@@ -1,0 +1,17 @@
+[phases.setup]
+nixPkgs = ["...", "python311", "python311Packages.pip"]
+
+[phases.install]
+cmds = [
+    "composer install --no-dev --optimize-autoloader",
+    "pip install -r python/requirements.txt"
+]
+
+[phases.build]
+cmds = [
+    "php artisan config:cache",
+    "php artisan route:cache"
+]
+
+[start]
+cmd = "php artisan serve --host=0.0.0.0 --port=$PORT"

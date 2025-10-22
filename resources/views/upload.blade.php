@@ -280,9 +280,17 @@
             @endif
 
             @if(session('error'))
-              <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg flex items-start">
-                <i class="fas fa-exclamation-circle mt-0.5 mr-3 flex-shrink-0"></i>
-                <div>{{ session('error') }}</div>
+              <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg">
+                <div class="flex items-start mb-2">
+                  <i class="fas fa-exclamation-circle mt-0.5 mr-3 flex-shrink-0"></i>
+                  <div class="font-semibold">{{ session('error') }}</div>
+                </div>
+                @if(session('suggestion'))
+                  <div class="ml-8 mt-2 text-sm text-red-600 bg-red-50 p-3 rounded border-l-4 border-red-500">
+                    <i class="fas fa-lightbulb mr-2"></i>
+                    <strong>Saran:</strong> {{ session('suggestion') }}
+                  </div>
+                @endif
               </div>
             @endif
 

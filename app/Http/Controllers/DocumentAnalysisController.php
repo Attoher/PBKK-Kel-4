@@ -62,9 +62,24 @@ class DocumentAnalysisController extends Controller
                 ]);
 
             } catch (\Exception $e) {
+                $errorMsg = $e->getMessage();
+                
+                // Jika error adalah validasi dokumen (bukan TA), tampilkan error langsung
+                if (str_contains($errorMsg, 'tidak terdeteksi sebagai Tugas Akhir')) {
+                    Log::warning('Dokumen ditolak: bukan format TA', [
+                        'filename' => $filename,
+                        'error' => $errorMsg
+                    ]);
+                    
+                    return redirect()->route('upload.form')
+                        ->with('error', $errorMsg)
+                        ->with('suggestion', 'Pastikan dokumen yang diupload adalah Tugas Akhir/Skripsi yang memiliki struktur lengkap (Abstrak, Bab, Daftar Pustaka, dll.)');
+                }
+                
+                // Error lainnya (connection, timeout, dll) -> gunakan fallback
                 Log::error('Analisis Python gagal, menggunakan fallback', [
                     'filename' => $filename,
-                    'error' => $e->getMessage()
+                    'error' => $errorMsg
                 ]);
                 
                 $analysisResults = $this->simulateAnalysis($filename);
@@ -188,20 +203,22 @@ class DocumentAnalysisController extends Controller
         $envVars = '';
 
         if ($isWindows) {
+            // PowerShell style environment variables
             foreach ($env as $key => $value) {
                 if ($value) {
-                    $envVars .= 'set ' . $key . '=' . $value . ' && ';
+                    $envVars .= '$env:' . $key . '=\\"' . addslashes($value) . '\\"; ';
                 }
             }
+            // PowerShell command with proper escaping
+            return 'powershell -Command "' . $envVars . 'python \\"' . $pythonScript . '\\" \\"' . $filePath . '\\""';
         } else {
             foreach ($env as $key => $value) {
                 if ($value) {
                     $envVars .= $key . '=' . escapeshellarg($value) . ' ';
                 }
             }
+            return $envVars . 'python "' . $pythonScript . '" "' . $filePath . '"';
         }
-
-        return $envVars . escapeshellcmd("python \"$pythonScript\" \"$filePath\"");
     }
 
     /**
@@ -318,13 +335,10 @@ class DocumentAnalysisController extends Controller
                 'error' => $e->getMessage()
             ]);
 
-            // Fallback ke simulasi
-            $results = $this->simulateAnalysis($filename);
-            
-            return view('result', [
-                'filename' => $filename,
-                'results' => $this->prepareDisplayResults($filename, $results)
-            ])->with('error', 'Terjadi kesalahan saat menampilkan hasil analisis.');
+            // Redirect ke upload dengan pesan error (TIDAK pakai simulasi)
+            return redirect()->route('upload.form')
+                ->with('error', 'Hasil analisis tidak ditemukan.')
+                ->with('suggestion', 'File mungkin ditolak karena bukan dokumen Tugas Akhir atau analisis gagal. Silakan upload ulang dokumen TA yang valid.');
         }
     }
 
@@ -357,12 +371,13 @@ class DocumentAnalysisController extends Controller
             }
         }
 
-        Log::warning('Hasil analisis tidak ditemukan, menggunakan simulasi', [
+        // Jangan pakai simulasi! Throw exception untuk ditangani di showResults
+        Log::warning('Hasil analisis tidak ditemukan', [
             'filename' => $filename,
             'searched_paths' => $possiblePaths
         ]);
         
-        return $this->simulateAnalysis($filename);
+        throw new \Exception('Hasil analisis tidak ditemukan. File mungkin ditolak karena bukan dokumen TA atau analisis belum selesai.');
     }
 
     /**

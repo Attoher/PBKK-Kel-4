@@ -366,17 +366,23 @@
             $references = $results['details']['Daftar Pustaka'] ?? [];
             $refCount = $references['references_count'] ?? '';
             $refCountStr = is_array($refCount) ? '' : trim((string) $refCount);
-            $hasDigits = preg_match('/\\d+/', $refCountStr);
+            
+            // Extract angka dari string seperti "≥21"
+            preg_match('/(\d+)/', $refCountStr, $matches);
+            $refNumber = isset($matches[1]) ? intval($matches[1]) : 0;
 
-            // status: success (hijau) jika ada angka > 0,
-            // danger (merah) jika 'tidak' terdeteksi atau kosong,
-            // warning (kuning) untuk kasus lain (mis. format tidak diketahui)
-            if ($hasDigits && intval($refCountStr) > 0) {
+            // Status: success (hijau centang) jika >= 20 referensi (standar TA)
+            // warning (kuning) jika 1-19 referensi
+            // danger (merah silang) jika 0 atau tidak terdeteksi
+            if ($refNumber >= 20) {
                 $refStatus = 'success';
-            } elseif ($refCountStr === '' || stripos($refCountStr, 'tidak') !== false || $refCountStr === '0') {
-                $refStatus = 'danger';
-            } else {
+                $refIcon = 'fa-check-circle';
+            } elseif ($refNumber > 0) {
                 $refStatus = 'warning';
+                $refIcon = 'fa-exclamation-triangle';
+            } else {
+                $refStatus = 'danger';
+                $refIcon = 'fa-times-circle';
             }
           @endphp
           <div class="result-card bg-white rounded-xl border p-5 shadow-sm 
@@ -386,11 +392,9 @@
             <div class="flex items-start mb-4">
               <div class="flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center mr-3
                   @if($refStatus === 'success') bg-green-100 text-green-500
-                  elseif($refStatus === 'warning') bg-yellow-100 text-yellow-500
+                  @elseif($refStatus === 'warning') bg-yellow-100 text-yellow-500
                   @else bg-red-100 text-red-500 @endif">
-                <i class="fas @if($refStatus === 'success') fa-check
-                    @elseif($refStatus === 'warning') fa-exclamation-triangle
-                    @else fa-times-circle @endif"></i>
+                <i class="fas {{ $refIcon }}"></i>
               </div>
               <div>
                 <h3 class="font-semibold text-gray-800">Daftar Pustaka</h3>

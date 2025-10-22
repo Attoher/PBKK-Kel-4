@@ -22,3 +22,16 @@
 Homestead.json
 Homestead.yaml
 Thumbs.db
+
+# Storage files (uploaded PDFs)
+/storage/app/private/uploads/*.pdf
+/storage/app/private/results/*.json
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+
+# Database (keep structure, ignore data)
+/database/database.sqlite
