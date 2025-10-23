@@ -12,7 +12,7 @@ load_dotenv()
 
 # ===== CONFIG OPENROUTER =====
 # Prioritas: Environment Variable dari Laravel > Hardcoded (fallback)
-OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY", "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")
+OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY", "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")
 OPENROUTER_BASE_URL = os.getenv("OPENROUTER_BASE_URL", "https://openrouter.ai/api/v1")
 OPENROUTER_MODEL = os.getenv("OPENROUTER_MODEL", "meta-llama/llama-3.2-3b-instruct:free")
 
@@ -112,57 +112,190 @@ def extract_pdf_format_and_margin(pdf_path):
         }
 
 
+def detect_chapters(full_text):
+    """Deteksi keberadaan bab dalam teks dengan berbagai format"""
+    import re
+    
+    # Split teks menjadi halaman-halaman untuk analisis per halaman
+    pages = full_text.split('--- HALAMAN')
+    
+    # Format penulisan bab yang mungkin
+    chapter_patterns = [
+        (r'BAB\s+[1-5]', lambda x: str(int(re.findall(r'\d+', x)[0]))),           # BAB 1, BAB 2, ...
+        (r'BAB\s+[IVX]+', lambda x: str({'I':1, 'II':2, 'III':3, 'IV':4, 'V':5}[x.split()[-1]])),  # BAB I, BAB II, ...
+        (r'Bab\s+[1-5]', lambda x: str(int(re.findall(r'\d+', x)[0]))),           # Bab 1, Bab 2, ...
+        (r'Bab\s+[IVX]+', lambda x: str({'I':1, 'II':2, 'III':3, 'IV':4, 'V':5}[x.split()[-1]])),  # Bab I, Bab II, ...
+        (r'CHAPTER\s+[1-5]', lambda x: str(int(re.findall(r'\d+', x)[0]))),       # CHAPTER 1, CHAPTER 2, ...
+    ]
+    
+    # Kata kunci spesifik untuk setiap bab (diperluas)
+    chapter_keywords = {
+        '1': ['PENDAHULUAN', 'INTRODUCTION', 'LATAR BELAKANG MASALAH', 'LATAR BELAKANG'],
+        '2': ['TINJAUAN PUSTAKA', 'LANDASAN TEORI', 'STUDI LITERATUR', 'KAJIAN PUSTAKA', 'DASAR TEORI', 'TINJAUAN TEORI'],
+        '3': ['METODOLOGI', 'METODE PENELITIAN', 'PERANCANGAN SISTEM', 'DESAIN SISTEM', 'PERANCANGAN', 'ANALISIS DAN PERANCANGAN', 'METODOLOGI PENELITIAN'],
+        '4': ['HASIL', 'IMPLEMENTASI', 'PENGUJIAN', 'EVALUASI', 'ANALISIS HASIL', 'HASIL DAN PEMBAHASAN', 'IMPLEMENTASI DAN PENGUJIAN', 'HASIL PENELITIAN'],
+        '5': ['KESIMPULAN', 'PENUTUP', 'CONCLUSION', 'SARAN', 'KESIMPULAN DAN SARAN']
+    }
+    
+    found_chapters = {}
+    
+    # Cari bab berdasarkan pattern di setiap halaman
+    for page in pages:
+        page_upper = page.upper()
+        
+        # Cek pattern formal (BAB X, dll)
+        for pattern, converter in chapter_patterns:
+            matches = re.finditer(pattern, page_upper)
+            for match in matches:
+                try:
+                    # Ambil konteks sekitar
+                    start = max(0, match.start() - 100)
+                    end = min(len(page_upper), match.end() + 100)
+                    context = page_upper[start:end]
+                    
+                    # Jika ini benar-benar judul bab (ada di awal halaman atau setelah baris kosong)
+                    if match.start() < 200 or '\n\n' in context[:match.start()-start]:
+                        num = converter(match.group())
+                        if num in ['1','2','3','4','5']:
+                            found_chapters[num] = True
+                except:
+                    continue
+        
+        # Cek kata kunci di setiap halaman
+        for num, keywords in chapter_keywords.items():
+            if num not in found_chapters:  # Hanya cek jika belum ditemukan
+                for keyword in keywords:
+                    if keyword in page_upper:
+                        # Verifikasi konteks kata kunci
+                        keyword_pos = page_upper.find(keyword)
+                        if keyword_pos < 300:  # Kata kunci muncul di awal halaman
+                            found_chapters[num] = True
+                            break
+    
+    # Format hasil
+    return {
+        'Bab 1': '✓' if '1' in found_chapters else '✗',
+        'Bab 2': '✓' if '2' in found_chapters else '✗',
+        'Bab 3': '✓' if '3' in found_chapters else '✗',
+        'Bab 4': '✓' if '4' in found_chapters else '✗',
+        'Bab 5': '✓' if '5' in found_chapters else '✗'
+    }
+    
+    found_chapters = {}
+    text_upper = text.upper()
+    
+    # Cek format penulisan bab
+    patterns = [
+        (r'BAB\s+[1-5]', lambda x: str(int(x[-1]))),  # BAB 1-5
+        (r'BAB\s+[IVX]+', lambda x: str({'I':1, 'II':2, 'III':3, 'IV':4, 'V':5}[x.split()[-1]])),  # BAB I-V
+        (r'CHAPTER\s+[1-5]', lambda x: str(int(x[-1]))),  # CHAPTER 1-5
+    ]
+    
+    import re
+    for pattern, converter in patterns:
+        matches = re.finditer(pattern, text_upper)
+        for match in matches:
+            bab_num = converter(match.group())
+            found_chapters[bab_num] = True
+    
+    # Cek kata kunci spesifik
+    for num, keywords in chapter_keywords.items():
+        if num not in found_chapters:  # Hanya cek jika belum ditemukan
+            for keyword in keywords:
+                if keyword in text_upper:
+                    found_chapters[num] = True
+                    break
+    
+    # Format output
+    result = {
+        'Bab 1': '✓' if '1' in found_chapters else '✗',
+        'Bab 2': '✓' if '2' in found_chapters else '✗',
+        'Bab 3': '✓' if '3' in found_chapters else '✗',
+        'Bab 4': '✓' if '4' in found_chapters else '✗',
+        'Bab 5': '✓' if '5' in found_chapters else '✗'
+    }
+    
+    return result
+
 def count_references(full_text):
-    """Hitung jumlah referensi di Daftar Pustaka"""
+    """Hitung jumlah referensi di Daftar Pustaka dengan metode yang lebih akurat"""
     try:
         import re
         
-        # Cari bagian Daftar Pustaka - harus di HALAMAN sendiri (bukan di daftar isi)
-        # Pattern: "--- HALAMAN XX ---" diikuti "DAFTAR PUSTAKA"
+        # Split teks menjadi halaman-halaman
         pages = full_text.split('--- HALAMAN')
         
+        # Temukan bagian Daftar Pustaka
         ref_section = ""
+        ref_start = False
         
         for page in pages:
-            page_lower = page.lower()
-            # Cari halaman yang punya "daftar pustaka" di awal (bukan di tengah daftar isi)
-            lines = page_lower.split('\n')
-            for line in lines[:20]:  # Cek 20 baris pertama halaman
-                if any(kw in line for kw in ['daftar pustaka', 'references', 'bibliography']):
-                    # Pastikan bukan daftar isi (cek apakah ada titik-titik ".....")
-                    if '.....' not in page[:500]:  # Jika tidak ada titik2 (bukan daftar isi)
-                        ref_section = page
-                        break
-            if ref_section:
-                break
+            # Cek apakah ini awal dari Daftar Pustaka
+            if not ref_start and any(kw in page.upper() for kw in ['DAFTAR PUSTAKA', 'REFERENCES', 'BIBLIOGRAPHY']):
+                if '.....' not in page[:500]:  # Bukan daftar isi
+                    ref_start = True
+            
+            # Jika sudah di bagian Daftar Pustaka, tambahkan ke ref_section
+            if ref_start:
+                ref_section += page
+                # Hentikan jika sudah mencapai bagian lain (misalnya LAMPIRAN)
+                if any(kw in page.upper() for kw in ['LAMPIRAN', 'BIODATA', 'APPENDIX']):
+                    break
         
         if not ref_section:
             return 0, "Bagian Daftar Pustaka tidak ditemukan"
+            
+        # Bersihkan teks referensi
+        ref_lines = ref_section.split('\n')
+        cleaned_refs = []
+        current_ref = ""
         
-        # Hitung referensi dengan berbagai pattern:
-        # Pattern 1: [1], [2], [3] - IEEE style
-        bracket_refs = len(re.findall(r'\[\d+\]', ref_section))
+        for line in ref_lines:
+            line = line.strip()
+            # Abaikan nomor halaman
+            if re.match(r'^\d+\s*$', line):
+                continue
+                
+            # Gabungkan baris yang terpotong
+            if line and (line[0].isupper() or line[0] == '[' or re.match(r'^\d+\.', line)):
+                if current_ref:
+                    cleaned_refs.append(current_ref)
+                current_ref = line
+            elif line:
+                current_ref += " " + line
+                
+        if current_ref:
+            cleaned_refs.append(current_ref)
+            
+        # Hitung referensi dengan berbagai pattern
+        ref_count = 0
+        format_style = "Unknown"
         
-        # Pattern 2: 1., 2., 3. di awal baris
-        numbered_refs = len(re.findall(r'^\d+\.', ref_section, re.MULTILINE))
+        # Pattern untuk IEEE style
+        ieee_pattern = len([r for r in cleaned_refs if re.match(r'^\[\d+\]', r.strip())])
         
-        # Pattern 3: Tahun (2015), (2020), dll
-        year_refs = len(re.findall(r'\(\d{4}\)', ref_section))
+        # Pattern untuk APA style
+        apa_patterns = [
+            # Author, A. B. (year)
+            len([r for r in cleaned_refs if re.search(r'[A-Z][a-z]+,\s+[A-Z]\.(\s+[A-Z]\.)*\s*\(\d{4}\)', r)]),
+            # DOI atau URL
+            len([r for r in cleaned_refs if 'doi.org' in r.lower() or 'http' in r.lower()]),
+            # Akhiran dengan tahun
+            len([r for r in cleaned_refs if re.search(r'\(\d{4}\)[^\)]*$', r)])
+        ]
         
-        # Pattern 4: Author, A. (year) - APA style
-        author_year = len(re.findall(r'[A-Z][a-z]+,\s+[A-Z]\.\s*\(\d{4}\)', ref_section))
-        
-        # Pattern 5: Hitung baris yang mengandung URL atau DOI (paling akurat)
-        doi_count = len(re.findall(r'https?://|doi\.org', ref_section))
-        
-        # Pattern 6: Nama dengan koma (Author, X) di awal baris
-        author_comma = len(re.findall(r'^[A-Z][a-z]+,\s+[A-Z]', ref_section, re.MULTILINE))
-        
-        # Gunakan yang terbanyak dan paling masuk akal
-        ref_count = max(bracket_refs, numbered_refs, year_refs // 2, author_year, doi_count, author_comma)
-        
+        if ieee_pattern > max(apa_patterns):
+            ref_count = ieee_pattern
+            format_style = "IEEE"
+        else:
+            ref_count = max(apa_patterns)
+            format_style = "APA"
+            
+        # Fallback ke menghitung baris yang valid
         if ref_count == 0:
-            return 0, "Referensi tidak terdeteksi (format mungkin tidak standar)"
+            ref_count = len([r for r in cleaned_refs if len(r.split()) > 5])  # Minimal 5 kata
+            
+        return ref_count, format_style
         
         # Deteksi format (APA vs IEEE)
         if bracket_refs > numbered_refs:
@@ -178,7 +311,10 @@ def count_references(full_text):
 
 def create_full_prompt(pdf_content):
     """Buat prompt lengkap untuk analisis front-end"""
-    pdf_preview = pdf_content['full_text'][:8000]
+    pdf_preview = pdf_content['full_text'][:32000]  # Ditingkatkan ke 32000 karakter
+    
+    # Deteksi bab menggunakan fungsi khusus
+    chapter_status = detect_chapters(pdf_content['full_text'])
     
     # Validasi sederhana: deteksi kata kunci TA
     text_lower = pdf_content['full_text'].lower()
@@ -199,6 +335,13 @@ def create_full_prompt(pdf_content):
 - Total Karakter Teks: {len(pdf_content['full_text'])}
 - Estimasi Kata: {len(pdf_content['full_text'].split())}
 - Daftar Pustaka: {ref_count} referensi terdeteksi (format {ref_format})
+
+**DETEKSI BAB OTOMATIS:**
+- Bab 1 (Pendahuluan): {chapter_status['Bab 1']}
+- Bab 2 (Tinjauan Pustaka): {chapter_status['Bab 2']}
+- Bab 3 (Metodologi): {chapter_status['Bab 3']}
+- Bab 4 (Hasil/Implementasi): {chapter_status['Bab 4']}
+- Bab 5 (Kesimpulan): {chapter_status['Bab 5']}
 
 **KONTEN DOKUMEN (Preview):**
 {pdf_preview}

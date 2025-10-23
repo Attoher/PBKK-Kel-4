@@ -575,6 +575,20 @@
           </div>
         </div>
 
+        <!-- Recommendations -->
+        @if(isset($results['recommendations']) && count($results['recommendations']) > 0)
+        <div class="mb-8 p-6 bg-yellow-50 rounded-xl border border-yellow-200">
+          <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center break-words">
+            <i class="fas fa-lightbulb text-yellow-500 mr-2"></i> Rekomendasi Perbaikan
+          </h3>
+          <ul class="list-disc list-inside space-y-2">
+            @foreach($results['recommendations'] as $recommendation)
+              <li class="text-gray-700 break-words">{{ $recommendation }}</li>
+            @endforeach
+          </ul>
+        </div>
+        @endif
+
         <!-- Document Info -->
         <div class="mb-8 p-6 bg-gray-50 rounded-xl border border-gray-200">
           <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center break-words">

@@ -15,6 +15,42 @@ models = [
 url = "http://localhost:11434/api/generate"
 timeout_seconds = 3000
 
+# Helper function untuk deteksi bab
+def detect_chapters(text):
+    """Deteksi keberadaan bab dalam teks"""
+    chapters = {
+        'Bab 1': False, 'BAB I': False,
+        'Bab 2': False, 'BAB II': False,
+        'Bab 3': False, 'BAB III': False,
+        'Bab 4': False, 'BAB IV': False,
+        'Bab 5': False, 'BAB V': False
+    }
+    
+    chapter_keywords = {
+        '1': ['PENDAHULUAN', 'INTRODUCTION', 'LATAR BELAKANG'],
+        '2': ['TINJAUAN PUSTAKA', 'LANDASAN TEORI', 'STUDI LITERATUR'],
+        '3': ['METODOLOGI', 'METODE PENELITIAN', 'PERANCANGAN'],
+        '4': ['HASIL', 'IMPLEMENTASI', 'PENGUJIAN'],
+        '5': ['KESIMPULAN', 'PENUTUP', 'CONCLUSION']
+    }
+    
+    found_chapters = set()
+    
+    # Cek format angka dan romawi
+    for chapter in chapters.keys():
+        if chapter in text.upper():
+            chapter_num = chapter[-1]
+            found_chapters.add(chapter_num)
+    
+    # Cek kata kunci tiap bab
+    for num, keywords in chapter_keywords.items():
+        for keyword in keywords:
+            if keyword in text.upper():
+                found_chapters.add(num)
+                break
+    
+    return found_chapters
+
 # ===== PROMPT FRONT-END =====
 EVALUATION_FRONTEND_PROMPT = """
 TUGAS: Analisis dokumen Tugas Akhir dan hasilkan JSON untuk front-end ITS.
@@ -32,8 +68,18 @@ TUGAS: Analisis dokumen Tugas Akhir dan hasilkan JSON untuk front-end ITS.
 3. Untuk setiap bagian, isi:
    - Status/indikator (misal: YA, TIDAK, TIDAK TERDETEKSI / ✗ / ✓)
    - Catatan singkat bila perlu
-4. Hitung skor kelengkapan format ITS (0-10) dan persentase.
-5. Tentukan status dokumen: "LAYAK" atau "TIDAK LAYAK"
+4. Untuk struktur bab, gunakan deteksi bab yang sudah diberikan di atas
+5. Hitung skor kelengkapan format ITS (0-10) dan persentase.
+6. Tentukan status dokumen: "LAYAK" atau "TIDAK LAYAK"
+
+PETUNJUK DETEKSI BAB:
+- Bab dianggap ada (✓) jika ditemukan judulnya (BAB 1/I, BAB 2/II, dsb)
+- Bab juga dianggap ada jika ditemukan kata kunci spesifik:
+  * Bab 1: PENDAHULUAN, INTRODUCTION, LATAR BELAKANG
+  * Bab 2: TINJAUAN PUSTAKA, LANDASAN TEORI, STUDI LITERATUR
+  * Bab 3: METODOLOGI, METODE PENELITIAN, PERANCANGAN
+  * Bab 4: HASIL, IMPLEMENTASI, PENGUJIAN
+  * Bab 5: KESIMPULAN, PENUTUP, CONCLUSION
 
 **Output JSON harus valid, contoh format front-end:**
 {
@@ -81,8 +127,24 @@ def read_pdf_content(file_path):
 # ===== generate prompt lengkap =====
 def create_full_prompt(pdf_content):
     """Buat prompt lengkap untuk analisis front-end"""
-    pdf_preview = pdf_content['full_text'][:8000]  # preview agar tidak terlalu panjang
+    pdf_preview = pdf_content['full_text'][:32000]  # Ditingkatkan menjadi 32000 karakter
+    
+    # Deteksi bab yang ada
+    found_chapters = detect_chapters(pdf_content['full_text'])
+    chapter_status = {
+        'Bab 1': '✓' if '1' in found_chapters else '✗',
+        'Bab 2': '✓' if '2' in found_chapters else '✗',
+        'Bab 3': '✓' if '3' in found_chapters else '✗',
+        'Bab 4': '✓' if '4' in found_chapters else '✗',
+        'Bab 5': '✓' if '5' in found_chapters else '✗'
+    }
+    
+    chapter_info = "\n".join([f"- {bab}: {status}" for bab, status in chapter_status.items()])
+    
     return f"""ANALISIS DOKUMEN TUGAS AKHIR UNTUK FRONT-END
+
+DETEKSI BAB:
+{chapter_info}
 
 **DATA DOKUMEN:**
 - Jumlah halaman: {pdf_content['total_pages']}
