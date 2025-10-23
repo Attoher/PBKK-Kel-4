@@ -64,12 +64,145 @@
         background: #0067ac !important;
       }
     }
+
+    /* Responsive text fixes */
+    .text-overflow-fix {
+      overflow-wrap: break-word;
+      word-wrap: break-word;
+      hyphens: auto;
+    }
+
+    .break-words {
+      word-break: break-word;
+      overflow-wrap: break-word;
+    }
+
+    .filename-truncate {
+      max-width: 100%;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* Mobile optimizations */
+    @media (max-width: 768px) {
+      .result-card {
+        margin: 0.5rem 0;
+        padding: 1rem !important;
+      }
+      
+      .text-3xl {
+        font-size: 1.5rem !important;
+      }
+      
+      .text-2xl {
+        font-size: 1.25rem !important;
+      }
+      
+      .flex-col.md\:flex-row {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+      }
+      
+      .score-circle {
+        transform: scale(0.8);
+        margin: 0 auto;
+      }
+      
+      .p-8 {
+        padding: 1.5rem !important;
+      }
+      
+      .p-6 {
+        padding: 1rem !important;
+      }
+      
+      .grid.grid-cols-1.md\:grid-cols-2 {
+        grid-template-columns: 1fr !important;
+        gap: 0.75rem !important;
+      }
+      
+      /* Ensure text doesn't overflow in cards */
+      .result-card h3,
+      .result-card p {
+        word-break: break-word;
+        overflow-wrap: break-word;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .flex.justify-between {
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+      
+      .flex.justify-between > * {
+        width: 100%;
+        text-align: left;
+      }
+      
+      .flex.flex-col.sm\:flex-row {
+        flex-direction: column !important;
+        gap: 0.75rem;
+      }
+      
+      .flex.flex-col.sm\:flex-row > * {
+        width: 100%;
+      }
+      
+      .filename-truncate {
+        max-width: 200px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .text-xl {
+        font-size: 1.125rem !important;
+      }
+      
+      .text-lg {
+        font-size: 1rem !important;
+      }
+      
+      .w-24.h-24 {
+        width: 4rem !important;
+        height: 4rem !important;
+      }
+      
+      .grid.grid-cols-1.md\:grid-cols-2.gap-4 {
+        gap: 0.5rem !important;
+      }
+    }
+
+    .no-horizontal-scroll {
+      max-width: 100%;
+      overflow-x: hidden;
+    }
+
+    .safe-area {
+      padding-left: env(safe-area-inset-left);
+      padding-right: env(safe-area-inset-right);
+    }
+
+    .line-clamp-2 {
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .line-clamp-3 {
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
   </style>
 </head>
-<body class="flex flex-col min-h-screen">
+<body class="flex flex-col min-h-screen no-horizontal-scroll">
   <!-- Navbar (desktop + mobile toggle) -->
   <nav class="navbar shadow-lg border-b border-gray-200/50 sticky top-0 z-50 print-hidden will-change-transform">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 safe-area">
       <div class="flex justify-between h-16">
         <div class="flex items-center">
           <!-- Logo -->
@@ -78,21 +211,21 @@
               <i class="fas fa-graduation-cap text-white text-lg"></i>
             </div>
             <a href="{{ url('/') }}" class="flex items-center ml-3">
-              <span class="text-xl font-bold text-gray-800">FormatCheck ITS</span>
+              <span class="text-xl font-bold text-gray-800 break-words">FormatCheck ITS</span>
             </a>
           </div>
 
           <!-- Navigation Links (desktop) -->
           <div class="hidden md:ml-8 md:flex md:space-x-6">
-            <a href="{{ route('upload.form') }}" class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
+            <a href="{{ route('upload.form') }}" class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium break-words">
               <i class="fas fa-upload mr-2 text-blue-500"></i>
               Upload TA
             </a>
-            <a href="{{ route('history') }}" class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
+            <a href="{{ route('history') }}" class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium break-words">
               <i class="fas fa-history mr-2 text-purple-500"></i>
               Riwayat
             </a>
-            <a href="{{ route('results', ['filename' => $filename ?? '']) }}" class="border-b-2 border-blue-500 text-gray-900 inline-flex items-center px-1 pt-1 text-sm font-medium">
+            <a href="{{ route('results', ['filename' => $filename ?? '']) }}" class="border-b-2 border-blue-500 text-gray-900 inline-flex items-center px-1 pt-1 text-sm font-medium break-words">
               <i class="fas fa-chart-bar mr-2 text-orange-500"></i>
               Hasil Analisis
             </a>
@@ -106,12 +239,12 @@
               @auth
                 <form method="POST" action="{{ route('logout') }}">
                   @csrf
-                  <button type="submit" class="text-sm text-gray-700 hover:text-blue-600 transition">
+                  <button type="submit" class="text-sm text-gray-700 hover:text-blue-600 transition break-words">
                     <i class="fas fa-sign-out-alt mr-1"></i>Logout
                   </button>
                 </form>
               @else
-                <a href="{{ route('login.form') }}" class="text-sm text-gray-700 hover:text-blue-600 transition">
+                <a href="{{ route('login.form') }}" class="text-sm text-gray-700 hover:text-blue-600 transition break-words">
                   <i class="fas fa-sign-in-alt mr-1"></i>Login
                 </a>
               @endauth
@@ -132,26 +265,26 @@
     <!-- Mobile menu (hidden by default, toggled) -->
     <div id="mobileMenu" class="md:hidden hidden border-t border-gray-200 bg-white/95 backdrop-blur-lg">
       <div class="pt-2 pb-4 space-y-1">
-        <a href="{{ route('upload.form') }}" class="nav-link block pl-4 pr-4 py-3 border-l-4 border-transparent text-base font-medium text-gray-700 hover:text-blue-600 hover:border-blue-600 hover:bg-blue-50 transition-all duration-200">
+        <a href="{{ route('upload.form') }}" class="nav-link block pl-4 pr-4 py-3 border-l-4 border-transparent text-base font-medium text-gray-700 hover:text-blue-600 hover:border-blue-600 hover:bg-blue-50 transition-all duration-200 break-words">
           <i class="fas fa-upload mr-3 text-blue-500"></i>Upload TA</a>
-        <a href="{{ route('history') }}" class="nav-link block pl-4 pr-4 py-3 border-l-4 border-transparent text-base font-medium text-gray-700 hover:text-blue-600 hover:border-blue-600 hover:bg-blue-50 transition-all duration-200">
+        <a href="{{ route('history') }}" class="nav-link block pl-4 pr-4 py-3 border-l-4 border-transparent text-base font-medium text-gray-700 hover:text-blue-600 hover:border-blue-600 hover:bg-blue-50 transition-all duration-200 break-words">
           <i class="fas fa-history mr-3 text-purple-500"></i>Riwayat</a>
 
         <div class="border-t border-gray-200 pt-2 mt-2">
           @auth
-            <div class="px-4 py-2 text-sm text-gray-600">
+            <div class="px-4 py-2 text-sm text-gray-600 break-words">
               <i class="fas fa-user-circle mr-2"></i>
               {{ Auth::user()->name }}
             </div>
             <form method="POST" action="{{ route('logout') }}">
               @csrf
-              <button type="submit" class="w-full text-left nav-link block pl-4 pr-4 py-3 border-l-4 border-transparent text-base font-medium text-gray-700 hover:text-blue-600 hover:border-blue-600 hover:bg-blue-50 transition-all duration-200">
+              <button type="submit" class="w-full text-left nav-link block pl-4 pr-4 py-3 border-l-4 border-transparent text-base font-medium text-gray-700 hover:text-blue-600 hover:border-blue-600 hover:bg-blue-50 transition-all duration-200 break-words">
                 <i class="fas fa-sign-out-alt mr-3"></i>Logout
               </button>
             </form>
           @endauth
           @guest
-            <a href="{{ route('login.form') }}" class="nav-link block pl-4 pr-4 py-3 border-l-4 text-gray-700 hover:text-blue-600 hover:border-blue-600 hover:bg-blue-50 transition-all duration-200">
+            <a href="{{ route('login.form') }}" class="nav-link block pl-4 pr-4 py-3 border-l-4 text-gray-700 hover:text-blue-600 hover:border-blue-600 hover:bg-blue-50 transition-all duration-200 break-words">
               <i class="fas fa-right-to-bracket mr-3"></i>Login
             </a>
           @endguest
@@ -161,21 +294,21 @@
   </nav>
 
   <!-- Main Content -->
-  <main class="flex-grow flex items-center justify-center p-4 py-8">
+  <main class="flex-grow flex items-center justify-center p-4 py-8 safe-area">
     <div class="bg-white rounded-2xl shadow-2xl overflow-hidden w-full max-w-6xl">
       <!-- Header -->
       <div class="bg-gradient-to-r from-blue-600 to-purple-600 p-6 text-white text-center">
-        <h1 class="text-3xl font-bold mb-2">Hasil Analisis Format Tugas Akhir ITS</h1>
-        <p class="text-blue-100">Dokumen: <span class="font-medium">{{ $filename ?? 'Nama File' }}</span></p>
-        <p class="text-blue-100 text-sm mt-1">Dianalisis pada: {{ date('d F Y H:i') }}</p>
+        <h1 class="text-2xl md:text-3xl font-bold mb-2 break-words">Hasil Analisis Format Tugas Akhir ITS</h1>
+        <p class="text-blue-100 break-words">Dokumen: <span class="font-medium filename-truncate">{{ $filename ?? 'Nama File' }}</span></p>
+        <p class="text-blue-100 text-sm mt-1 break-words">Dianalisis pada: {{ date('d F Y H:i') }}</p>
       </div>
       
-      <div class="p-8">
+      <div class="p-6 md:p-8">
         @if(isset($results) && is_array($results))
         <!-- Score Summary -->
-        <div class="flex flex-col md:flex-row items-center justify-between mb-10 p-6 bg-blue-50 rounded-xl border border-blue-200">
+        <div class="flex flex-col md:flex-row items-center justify-between mb-8 md:mb-10 p-6 bg-blue-50 rounded-xl border border-blue-200">
           <div class="flex items-center mb-4 md:mb-0">
-            <div class="relative w-24 h-24 mr-4">
+            <div class="relative w-20 h-20 md:w-24 md:h-24 mr-4">
               <svg class="w-full h-full" viewBox="0 0 36 36">
                 <path class="circle-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#eee" stroke-width="3.8"/>
                 <path class="circle" 
@@ -188,13 +321,13 @@
                     font-size="10" font-weight="bold">{{ $results['score'] ?? 0 }}/10</text>
               </svg>
             </div>
-            <div>
-              <h2 class="text-2xl font-bold text-gray-800">Skor Kelengkapan Format ITS</h2>
-              <p class="text-gray-600">Dokumen Anda memenuhi {{ $results['percentage'] ?? 0 }}% persyaratan format ITS</p>
-              <p class="text-sm text-gray-500">{{ $results['document_info']['jenis_dokumen'] ?? 'Tipe Dokumen' }}</p>
+            <div class="min-w-0">
+              <h2 class="text-xl md:text-2xl font-bold text-gray-800 break-words">Skor Kelengkapan Format ITS</h2>
+              <p class="text-gray-600 break-words">Dokumen Anda memenuhi {{ $results['percentage'] ?? 0 }}% persyaratan format ITS</p>
+              <p class="text-sm text-gray-500 break-words">{{ $results['document_info']['jenis_dokumen'] ?? 'Tipe Dokumen' }}</p>
             </div>
           </div>
-          <div class="px-4 py-2 rounded-full font-semibold 
+          <div class="px-4 py-2 rounded-full font-semibold break-words 
               @if(($results['status'] ?? '') === 'LAYAK') bg-green-100 text-green-800
               @elseif(($results['status'] ?? '') === 'PERLU PERBAIKAN') bg-yellow-100 text-yellow-800
               @else bg-red-100 text-red-800 @endif">
@@ -206,9 +339,9 @@
         </div>
 
         <!-- Detail Analysis -->
-        <h2 class="text-xl font-bold text-gray-800 mb-6">Detail Analisis Format ITS</h2>
+        <h2 class="text-xl font-bold text-gray-800 mb-6 break-words">Detail Analisis Format ITS</h2>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 mb-8 md:mb-10">
           <!-- Abstrak Card -->
           @php
             $abstrak = $results['details']['Abstrak'] ?? [];
@@ -216,7 +349,7 @@
             $isAbstrakValid = $abstrakStatus === 'YA' || $abstrakStatus === '✓';
             $abstrakColor = $isAbstrakValid ? 'success' : 'warning';
           @endphp
-          <div class="result-card bg-white rounded-xl border p-5 shadow-sm 
+          <div class="result-card bg-white rounded-xl border p-4 md:p-5 shadow-sm 
               @if($abstrakColor === 'success') border-green-200
               @else border-yellow-200 @endif">
             <div class="flex items-start mb-4">
@@ -226,14 +359,14 @@
                 <i class="fas @if($abstrakColor === 'success') fa-check
                     @else fa-exclamation-triangle @endif"></i>
               </div>
-              <div>
-                <h3 class="font-semibold text-gray-800">Abstrak</h3>
-                <p class="text-sm text-gray-600">Status: {{ $abstrakStatus }}</p>
+              <div class="min-w-0 flex-1">
+                <h3 class="font-semibold text-gray-800 break-words">Abstrak</h3>
+                <p class="text-sm text-gray-600 break-words">Status: {{ $abstrakStatus }}</p>
               </div>
             </div>
-            <p class="text-sm 
+            <p class="text-sm line-clamp-2
                 @if($abstrakColor === 'success') text-green-600
-                @else text-yellow-600 @endif font-medium">
+                @else text-yellow-600 @endif font-medium break-words">
               {{ $abstrak['notes'] ?? 'Abstrak tidak ditemukan' }}
             </p>
           </div>
@@ -245,7 +378,7 @@
             $isFormatValid = $font !== 'Tidak terdeteksi';
             $formatColor = $isFormatValid ? 'success' : 'warning';
           @endphp
-          <div class="result-card bg-white rounded-xl border p-5 shadow-sm 
+          <div class="result-card bg-white rounded-xl border p-4 md:p-5 shadow-sm 
               @if($formatColor === 'success') border-green-200
               @else border-yellow-200 @endif">
             <div class="flex items-start mb-4">
@@ -255,17 +388,17 @@
                 <i class="fas @if($formatColor === 'success') fa-check
                     @else fa-exclamation-triangle @endif"></i>
               </div>
-              <div>
-                <h3 class="font-semibold text-gray-800">Format Teks</h3>
-                <p class="text-sm text-gray-600">
+              <div class="min-w-0 flex-1">
+                <h3 class="font-semibold text-gray-800 break-words">Format Teks</h3>
+                <p class="text-sm text-gray-600 line-clamp-2 break-words">
                   Font: {{ $format['font'] ?? 'Tidak terdeteksi' }}, 
                   Spacing: {{ $format['spacing'] ?? 'Tidak terdeteksi' }}
                 </p>
               </div>
             </div>
-            <p class="text-sm 
+            <p class="text-sm line-clamp-2
                 @if($formatColor === 'success') text-green-600
-                @else text-yellow-600 @endif font-medium">
+                @else text-yellow-600 @endif font-medium break-words">
               {{ $format['notes'] ?? 'Format teks tidak terdeteksi' }}
             </p>
           </div>
@@ -277,7 +410,7 @@
             $isMarginValid = $topMargin !== 'Tidak terdeteksi';
             $marginColor = $isMarginValid ? 'success' : 'warning';
           @endphp
-          <div class="result-card bg-white rounded-xl border p-5 shadow-sm 
+          <div class="result-card bg-white rounded-xl border p-4 md:p-5 shadow-sm 
               @if($marginColor === 'success') border-green-200
               @else border-yellow-200 @endif">
             <div class="flex items-start mb-4">
@@ -287,17 +420,17 @@
                 <i class="fas @if($marginColor === 'success') fa-check
                     @else fa-exclamation-triangle @endif"></i>
               </div>
-              <div>
-                <h3 class="font-semibold text-gray-800">Margin</h3>
-                <p class="text-sm text-gray-600">
+              <div class="min-w-0 flex-1">
+                <h3 class="font-semibold text-gray-800 break-words">Margin</h3>
+                <p class="text-sm text-gray-600 line-clamp-2 break-words">
                   Atas: {{ $margin['top'] ?? 'Tidak terdeteksi' }}, 
                   Bawah: {{ $margin['bottom'] ?? 'Tidak terdeteksi' }}
                 </p>
               </div>
             </div>
-            <p class="text-sm 
+            <p class="text-sm line-clamp-2
                 @if($marginColor === 'success') text-green-600
-                @else text-yellow-600 @endif font-medium">
+                @else text-yellow-600 @endif font-medium break-words">
               {{ $margin['notes'] ?? 'Margin tidak terdeteksi' }}
             </p>
           </div>
@@ -321,7 +454,7 @@
             $completionRate = $totalChapters > 0 ? ($completedChapters / $totalChapters) * 100 : 0;
             $chaptersColor = $completionRate >= 80 ? 'success' : ($completionRate >= 60 ? 'warning' : 'danger');
           @endphp
-          <div class="result-card bg-white rounded-xl border p-5 shadow-sm 
+          <div class="result-card bg-white rounded-xl border p-4 md:p-5 shadow-sm 
               @if($chaptersColor === 'success') border-green-200
               @elseif($chaptersColor === 'warning') border-yellow-200
               @else border-red-200 @endif">
@@ -334,9 +467,9 @@
                     @elseif($chaptersColor === 'warning') fa-exclamation-triangle
                     @else fa-times @endif"></i>
               </div>
-              <div>
-                <h3 class="font-semibold text-gray-800">Struktur Bab</h3>
-                <p class="text-sm text-gray-600">
+              <div class="min-w-0 flex-1">
+                <h3 class="font-semibold text-gray-800 break-words">Struktur Bab</h3>
+                <p class="text-sm text-gray-600 line-clamp-2 break-words">
                   @for($i = 1; $i <= 5; $i++)
                     @if(isset($chapters["Bab $i"]))
                     Bab {{ $i }}: {{ $chapters["Bab $i"] }} 
@@ -353,10 +486,10 @@
                   style="width: {{ $completionRate }}%">
               </div>
             </div>
-            <p class="text-sm 
+            <p class="text-sm line-clamp-2
                 @if($chaptersColor === 'success') text-green-600
                 @elseif($chaptersColor === 'warning') text-yellow-600
-                @else text-red-600 @endif font-medium">
+                @else text-red-600 @endif font-medium break-words">
               {{ $chapters['notes'] ?? 'Struktur bab tidak terdeteksi' }}
             </p>
           </div>
@@ -385,7 +518,7 @@
                 $refIcon = 'fa-times-circle';
             }
           @endphp
-          <div class="result-card bg-white rounded-xl border p-5 shadow-sm 
+          <div class="result-card bg-white rounded-xl border p-4 md:p-5 shadow-sm 
               @if($refStatus === 'success') border-green-200
               @elseif($refStatus === 'warning') border-yellow-200
               @else border-red-200 @endif">
@@ -396,18 +529,18 @@
                   @else bg-red-100 text-red-500 @endif">
                 <i class="fas {{ $refIcon }}"></i>
               </div>
-              <div>
-                <h3 class="font-semibold text-gray-800">Daftar Pustaka</h3>
-                <p class="text-sm text-gray-600">
+              <div class="min-w-0 flex-1">
+                <h3 class="font-semibold text-gray-800 break-words">Daftar Pustaka</h3>
+                <p class="text-sm text-gray-600 line-clamp-2 break-words">
                   {{ $references['references_count'] ?? 'Tidak terdeteksi' }} referensi,
                   Format: {{ $references['format'] ?? 'Tidak terdeteksi' }}
                 </p>
               </div>
             </div>
-            <p class="text-sm 
+            <p class="text-sm line-clamp-2
                 @if($refStatus === 'success') text-green-600
                 @elseif($refStatus === 'warning') text-yellow-600
-                @else text-red-600 @endif font-medium">
+                @else text-red-600 @endif font-medium break-words">
               {{ $references['notes'] ?? 'Daftar pustaka tidak ditemukan' }}
             </p>
           </div>
@@ -419,7 +552,7 @@
             $isCoverValid = $coverStatus === 'YA' || $coverStatus === '✓';
             $coverColor = $isCoverValid ? 'success' : 'warning';
           @endphp
-          <div class="result-card bg-white rounded-xl border p-5 shadow-sm 
+          <div class="result-card bg-white rounded-xl border p-4 md:p-5 shadow-sm 
               @if($coverColor === 'success') border-green-200
               @else border-yellow-200 @endif">
             <div class="flex items-start mb-4">
@@ -429,14 +562,14 @@
                 <i class="fas @if($coverColor === 'success') fa-check
                     @else fa-exclamation-triangle @endif"></i>
               </div>
-              <div>
-                <h3 class="font-semibold text-gray-800">Cover & Halaman Formal</h3>
-                <p class="text-sm text-gray-600">Status: {{ $coverStatus }}</p>
+              <div class="min-w-0 flex-1">
+                <h3 class="font-semibold text-gray-800 break-words">Cover & Halaman Formal</h3>
+                <p class="text-sm text-gray-600 break-words">Status: {{ $coverStatus }}</p>
               </div>
             </div>
-            <p class="text-sm 
+            <p class="text-sm line-clamp-2
                 @if($coverColor === 'success') text-green-600
-                @else text-yellow-600 @endif font-medium">
+                @else text-yellow-600 @endif font-medium break-words">
               {{ $cover['notes'] ?? 'Halaman formal tidak terdeteksi' }}
             </p>
           </div>
@@ -444,7 +577,7 @@
 
         <!-- Document Info -->
         <div class="mb-8 p-6 bg-gray-50 rounded-xl border border-gray-200">
-          <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+          <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center break-words">
             <i class="fas fa-info-circle mr-2"></i> Informasi Dokumen
           </h3>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
@@ -453,20 +586,20 @@
             @endphp
             
             <div class="flex justify-between">
-              <span class="text-gray-600">Jenis Dokumen:</span>
-              <span class="font-medium">{{ $docInfo['jenis_dokumen'] ?? 'Tidak Diketahui' }}</span>
+              <span class="text-gray-600 break-words">Jenis Dokumen:</span>
+              <span class="font-medium break-words">{{ $docInfo['jenis_dokumen'] ?? 'Tidak Diketahui' }}</span>
             </div>
             <div class="flex justify-between">
-              <span class="text-gray-600">Total Halaman:</span>
-              <span class="font-medium">{{ $docInfo['total_halaman'] ?? 'Tidak Diketahui' }}</span>
+              <span class="text-gray-600 break-words">Total Halaman:</span>
+              <span class="font-medium break-words">{{ $docInfo['total_halaman'] ?? 'Tidak Diketahui' }}</span>
             </div>
             <div class="flex justify-between">
-              <span class="text-gray-600">Ukuran File:</span>
-              <span class="font-medium">{{ $docInfo['ukuran_file'] ?? 'Tidak Diketahui' }}</span>
+              <span class="text-gray-600 break-words">Ukuran File:</span>
+              <span class="font-medium break-words">{{ $docInfo['ukuran_file'] ?? 'Tidak Diketahui' }}</span>
             </div>
             <div class="flex justify-between">
-              <span class="text-gray-600">Format File:</span>
-              <span class="font-medium">{{ $docInfo['format_file'] ?? 'Tidak Diketahui' }}</span>
+              <span class="text-gray-600 break-words">Format File:</span>
+              <span class="font-medium break-words">{{ $docInfo['format_file'] ?? 'Tidak Diketahui' }}</span>
             </div>
           </div>
         </div>
@@ -476,9 +609,9 @@
           <div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
             <i class="fas fa-exclamation-triangle text-red-500 text-2xl"></i>
           </div>
-          <h3 class="text-xl font-semibold text-gray-800 mb-2">Data Hasil Tidak Tersedia</h3>
-          <p class="text-gray-600 mb-4">Tidak dapat memuat hasil analisis.</p>
-          <a href="{{ route('upload.form') }}" class="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg transition-all">
+          <h3 class="text-xl font-semibold text-gray-800 mb-2 break-words">Data Hasil Tidak Tersedia</h3>
+          <p class="text-gray-600 mb-4 break-words">Tidak dapat memuat hasil analisis.</p>
+          <a href="{{ route('upload.form') }}" class="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg transition-all break-words">
             <i class="fas fa-upload mr-2"></i> Upload Ulang
           </a>
         </div>
@@ -486,13 +619,13 @@
 
         <!-- Action Buttons -->
         <div class="flex flex-col sm:flex-row gap-4 print-hidden">
-          <a href="{{ route('upload.form') }}" class="flex-1 bg-blue-500 hover:bg-blue-600 text-white text-center font-semibold py-3 px-4 rounded-lg transition-all">
+          <a href="{{ route('upload.form') }}" class="flex-1 bg-blue-500 hover:bg-blue-600 text-white text-center font-semibold py-3 px-4 rounded-lg transition-all break-words">
             <i class="fas fa-upload mr-2"></i> Analisis File Lain
           </a>
-          <button onclick="saveResults()" class="flex-1 bg-white border border-gray-300 hover:bg-gray-100 text-gray-800 font-semibold py-3 px-4 rounded-lg transition-all">
+          <button onclick="saveResults()" class="flex-1 bg-white border border-gray-300 hover:bg-gray-100 text-gray-800 font-semibold py-3 px-4 rounded-lg transition-all break-words">
             <i class="fas fa-download mr-2"></i> Simpan Hasil
           </button>
-          <button onclick="window.print()" class="flex-1 bg-purple-500 hover:bg-purple-600 text-white font-semibold py-3 px-4 rounded-lg transition-all">
+          <button onclick="window.print()" class="flex-1 bg-purple-500 hover:bg-purple-600 text-white font-semibold py-3 px-4 rounded-lg transition-all break-words">
             <i class="fas fa-print mr-2"></i> Cetak Laporan
           </button>
         </div>
@@ -502,8 +635,8 @@
 
   <!-- Footer -->
   <footer class="bg-gray-800 text-white py-6 mt-8 print-hidden">
-    <div class="max-w-6xl mx-auto px-4 text-center">
-      <p class="text-gray-400 text-sm">
+    <div class="max-w-6xl mx-auto px-4 text-center safe-area">
+      <p class="text-gray-400 text-sm break-words">
         © 2025 Sistem Deteksi Kelengkapan Format Tugas Akhir - ITS.
       </p>
     </div>

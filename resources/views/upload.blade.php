@@ -81,12 +81,124 @@
     .custom-scrollbar::-webkit-scrollbar-thumb:hover {
       background: #a8a8a8;
     }
+
+    /* Responsive text fixes */
+    .text-overflow-fix {
+      overflow-wrap: break-word;
+      word-wrap: break-word;
+      hyphens: auto;
+    }
+
+    .break-words {
+      word-break: break-word;
+      overflow-wrap: break-word;
+    }
+
+    .file-name-truncate {
+      max-width: 200px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* Mobile optimizations */
+    @media (max-width: 768px) {
+      .file-upload-container {
+        padding: 1.5rem !important;
+        margin: 0 0.5rem;
+      }
+      
+      .text-3xl {
+        font-size: 1.5rem !important;
+      }
+      
+      .md\:flex {
+        flex-direction: column;
+      }
+      
+      .md\:w-1\/2 {
+        width: 100% !important;
+      }
+      
+      .border-r.border-gray-200 {
+        border-right: none !important;
+        border-bottom: 1px solid #e5e7eb;
+      }
+      
+      /* Requirements list */
+      .requirement-item {
+        padding: 0.75rem !important;
+      }
+      
+      .requirement-item h3 {
+        font-size: 0.875rem !important;
+      }
+      
+      .requirement-item p {
+        font-size: 0.75rem !important;
+      }
+      
+      .p-8 {
+        padding: 1.5rem !important;
+      }
+      
+      .p-6 {
+        padding: 1rem !important;
+      }
+      
+      .grid.grid-cols-2 {
+        grid-template-columns: 1fr !important;
+        gap: 0.75rem !important;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .file-name-truncate {
+        max-width: 150px;
+      }
+      
+      .text-2xl {
+        font-size: 1.25rem !important;
+      }
+      
+      .grid.gap-4 {
+        gap: 0.5rem !important;
+      }
+      
+      .max-h-100 {
+        max-height: 200px;
+      }
+    }
+
+    .no-horizontal-scroll {
+      max-width: 100%;
+      overflow-x: hidden;
+    }
+
+    .safe-area {
+      padding-left: env(safe-area-inset-left);
+      padding-right: env(safe-area-inset-right);
+    }
+
+    .line-clamp-2 {
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .line-clamp-3 {
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
   </style>
 </head>
-<body class="flex flex-col min-h-screen">
+<body class="flex flex-col min-h-screen no-horizontal-scroll">
   <!-- Navbar (desktop + mobile toggle) -->
   <nav class="navbar shadow-lg border-b border-gray-200/50 sticky top-0 z-50 will-change-transform">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 safe-area">
       <div class="flex justify-between h-16">
         <div class="flex items-center">
           <!-- Logo -->
@@ -95,17 +207,17 @@
               <div class="w-10 h-10 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg flex items-center justify-center shadow-lg">
                 <i class="fas fa-graduation-cap text-white text-lg"></i>
               </div>
-              <span class="ml-3 text-xl font-bold text-gray-800">FormatCheck ITS</span>
+              <span class="ml-3 text-xl font-bold text-gray-800 break-words">FormatCheck ITS</span>
             </a>
           </div>
 
           <!-- Navigation Links (desktop) -->
           <div class="hidden md:ml-6 md:flex md:space-x-8">
-            <a href="{{ route('upload.form') }}" class="border-b-2 border-blue-500 text-gray-900 inline-flex items-center px-1 pt-1 text-sm font-medium">
+            <a href="{{ route('upload.form') }}" class="border-b-2 border-blue-500 text-gray-900 inline-flex items-center px-1 pt-1 text-sm font-medium break-words">
               <i class="fas fa-upload mr-2"></i>
               Upload TA
             </a>
-            <a href="{{ route('history') }}" class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
+            <a href="{{ route('history') }}" class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium break-words">
               <i class="fas fa-history mr-2"></i>
               Riwayat
             </a>
@@ -116,18 +228,18 @@
         <div class="flex items-center space-x-3">
           <div class="hidden md:flex items-center space-x-4">
             @auth
-              <span class="text-sm text-gray-700">
+              <span class="text-sm text-gray-700 break-words">
                 <i class="fas fa-user-circle mr-1"></i>
                 {{ Auth::user()->name }}
               </span>
               <form method="POST" action="{{ route('logout') }}">
                 @csrf
-                <button type="submit" class="text-sm text-gray-700 hover:text-blue-600 transition">
+                <button type="submit" class="text-sm text-gray-700 hover:text-blue-600 transition break-words">
                   <i class="fas fa-sign-out-alt mr-1"></i>Logout
                 </button>
               </form>
             @else
-              <a href="{{ route('login.form') }}" class="text-sm text-gray-700 hover:text-blue-600 transition">
+              <a href="{{ route('login.form') }}" class="text-sm text-gray-700 hover:text-blue-600 transition break-words">
                 <i class="fas fa-sign-in-alt mr-1"></i>Login
               </a>
             @endauth
@@ -147,26 +259,26 @@
     <!-- Mobile menu (hidden by default, toggled) -->
     <div id="mobileMenu" class="md:hidden hidden border-t border-gray-200 bg-white/95 backdrop-blur-lg">
       <div class="pt-2 pb-4 space-y-1">
-        <a href="{{ route('upload.form') }}" class="nav-link block pl-4 pr-4 py-3 border-l-4 border-transparent text-base font-medium text-gray-700 hover:text-blue-600 hover:border-blue-600 hover:bg-blue-50 transition-all duration-200">
+        <a href="{{ route('upload.form') }}" class="nav-link block pl-4 pr-4 py-3 border-l-4 border-transparent text-base font-medium text-gray-700 hover:text-blue-600 hover:border-blue-600 hover:bg-blue-50 transition-all duration-200 break-words">
           <i class="fas fa-upload mr-3 text-blue-500"></i>Upload TA</a>
-        <a href="{{ route('history') }}" class="nav-link block pl-4 pr-4 py-3 border-l-4 border-transparent text-base font-medium text-gray-700 hover:text-blue-600 hover:border-blue-600 hover:bg-blue-50 transition-all duration-200">
+        <a href="{{ route('history') }}" class="nav-link block pl-4 pr-4 py-3 border-l-4 border-transparent text-base font-medium text-gray-700 hover:text-blue-600 hover:border-blue-600 hover:bg-blue-50 transition-all duration-200 break-words">
           <i class="fas fa-history mr-3 text-purple-500"></i>Riwayat</a>
 
         <div class="border-t border-gray-200 pt-2 mt-2">
           @auth
-            <div class="px-4 py-2 text-sm text-gray-600">
+            <div class="px-4 py-2 text-sm text-gray-600 break-words">
               <i class="fas fa-user-circle mr-2"></i>
               {{ Auth::user()->name }}
             </div>
             <form method="POST" action="{{ route('logout') }}">
               @csrf
-              <button type="submit" class="w-full text-left nav-link block pl-4 pr-4 py-3 border-l-4 border-transparent text-base font-medium text-gray-700 hover:text-blue-600 hover:border-blue-600 hover:bg-blue-50 transition-all duration-200">
+              <button type="submit" class="w-full text-left nav-link block pl-4 pr-4 py-3 border-l-4 border-transparent text-base font-medium text-gray-700 hover:text-blue-600 hover:border-blue-600 hover:bg-blue-50 transition-all duration-200 break-words">
                 <i class="fas fa-sign-out-alt mr-3"></i>Logout
               </button>
             </form>
           @endauth
           @guest
-            <a href="{{ route('login.form') }}" class="nav-link block pl-4 pr-4 py-3 border-l-4 text-base font-medium text-gray-700 hover:text-blue-600 hover:border-blue-600 hover:bg-blue-50 transition-all duration-200">
+            <a href="{{ route('login.form') }}" class="nav-link block pl-4 pr-4 py-3 border-l-4 text-base font-medium text-gray-700 hover:text-blue-600 hover:border-blue-600 hover:bg-blue-50 transition-all duration-200 break-words">
               <i class="fas fa-right-to-bracket mr-3"></i>Login
             </a>
           @endguest
@@ -180,7 +292,7 @@
     <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg relative shadow-lg notification">
       <div class="flex items-start">
         <i class="fas fa-exclamation-triangle mt-1 mr-3 flex-shrink-0"></i>
-        <span class="block flex-1" id="notification-message"></span>
+        <span class="block flex-1 break-words" id="notification-message"></span>
       </div>
       <button onclick="hideNotification()" class="absolute top-2 right-2 p-1 text-red-500 hover:text-red-700">
         <i class="fas fa-times text-sm"></i>
@@ -193,7 +305,7 @@
     <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg relative shadow-lg notification">
       <div class="flex items-start">
         <i class="fas fa-check-circle mt-1 mr-3 flex-shrink-0"></i>
-        <span class="block flex-1" id="success-message"></span>
+        <span class="block flex-1 break-words" id="success-message"></span>
       </div>
       <button onclick="hideSuccessNotification()" class="absolute top-2 right-2 p-1 text-green-500 hover:text-green-700">
         <i class="fas fa-times text-sm"></i>
@@ -202,31 +314,31 @@
   </div>
 
   <!-- Main Content -->
-  <main class="flex-grow flex items-center justify-center p-4 py-8">
+  <main class="flex-grow flex items-center justify-center p-4 py-8 safe-area">
     <div class="bg-white rounded-2xl shadow-2xl overflow-hidden w-full max-w-6xl">
       <!-- Header -->
       <div class="bg-gradient-to-r from-blue-600 to-purple-600 p-6 text-white text-center">
-        <h1 class="text-3xl font-bold mb-2">Cek Format Tugas Akhir ITS</h1>
-        <p class="text-blue-100">Unggah file tugas akhir untuk memeriksa kelengkapan format sesuai panduan ITS</p>
+        <h1 class="text-2xl md:text-3xl font-bold mb-2 break-words">Cek Format Tugas Akhir ITS</h1>
+        <p class="text-blue-100 break-words">Unggah file tugas akhir untuk memeriksa kelengkapan format sesuai panduan ITS</p>
       </div>
       
       <div class="md:flex">
         <!-- Upload Section -->
-        <div class="md:w-1/2 p-8 border-r border-gray-200">
+        <div class="md:w-1/2 p-6 md:p-8 border-r border-gray-200">
           <form action="{{ route('upload.process') }}" method="POST" enctype="multipart/form-data" class="space-y-6" id="uploadForm">
             @csrf
             
-            <div class="file-upload-container border-2 border-dashed border-gray-300 rounded-xl p-8 text-center cursor-pointer transition-all duration-300 hover:border-blue-400 hover:bg-blue-50"
+            <div class="file-upload-container border-2 border-dashed border-gray-300 rounded-xl p-6 md:p-8 text-center cursor-pointer transition-all duration-300 hover:border-blue-400 hover:bg-blue-50"
                  id="dropArea">
               <div class="flex justify-center mb-4">
                 <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center">
                   <i class="fas fa-file-upload text-blue-500 text-2xl"></i>
                 </div>
               </div>
-              <p class="text-gray-600 mb-2">Tarik file ke sini atau klik untuk mengupload</p>
-              <p class="text-xs text-gray-400 mb-4">Format yang didukung: PDF, DOC, DOCX (Maks. 10MB)</p>
+              <p class="text-gray-600 mb-2 break-words">Tarik file ke sini atau klik untuk mengupload</p>
+              <p class="text-xs text-gray-400 mb-4 break-words">Format yang didukung: PDF, DOC, DOCX (Maks. 10MB)</p>
               <input id="file" name="file" type="file" class="hidden" required accept=".pdf,.doc,.docx">
-              <label for="file" class="inline-block px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition cursor-pointer font-medium">
+              <label for="file" class="inline-block px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition cursor-pointer font-medium break-words">
                 Pilih File
               </label>
             </div>
@@ -234,14 +346,14 @@
             <!-- File Preview -->
             <div id="file-preview" class="p-4 bg-gray-50 rounded-lg hidden border border-gray-200">
               <div class="flex items-center justify-between">
-                <div class="flex items-center">
-                  <i class="far fa-file-pdf text-red-500 text-2xl mr-3"></i>
-                  <div>
-                    <p id="file-name" class="font-medium text-gray-800 text-sm"></p>
-                    <p id="file-size" class="text-xs text-gray-500 mt-1"></p>
+                <div class="flex items-center min-w-0">
+                  <i class="far fa-file-pdf text-red-500 text-2xl mr-3 flex-shrink-0"></i>
+                  <div class="min-w-0 flex-1">
+                    <p id="file-name" class="font-medium text-gray-800 text-sm file-name-truncate"></p>
+                    <p id="file-size" class="text-xs text-gray-500 mt-1 break-words"></p>
                   </div>
                 </div>
-                <button type="button" id="remove-file" class="text-gray-400 hover:text-gray-600 transition">
+                <button type="button" id="remove-file" class="text-gray-400 hover:text-gray-600 transition flex-shrink-0 ml-2">
                   <i class="fas fa-times"></i>
                 </button>
               </div>
@@ -250,16 +362,16 @@
             <!-- Progress Bar (Initially Hidden) -->
             <div id="progress-container" class="hidden">
               <div class="flex justify-between mb-2">
-                <span class="text-sm font-medium text-blue-600">Mengupload...</span>
-                <span id="progress-percentage" class="text-sm font-medium text-blue-600">0%</span>
+                <span class="text-sm font-medium text-blue-600 break-words">Mengupload...</span>
+                <span id="progress-percentage" class="text-sm font-medium text-blue-600 break-words">0%</span>
               </div>
               <div class="w-full bg-gray-200 rounded-full h-2.5">
                 <div id="progress-bar" class="progress-bar bg-blue-600 h-2.5 rounded-full transition-all duration-300" style="width: 0%"></div>
               </div>
-              <p class="text-xs text-gray-500 mt-2 text-center">Harap tunggu, file sedang diproses...</p>
+              <p class="text-xs text-gray-500 mt-2 text-center break-words">Harap tunggu, file sedang diproses...</p>
             </div>
 
-            <button type="submit" id="submit-btn" class="w-full py-3 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-lg font-semibold shadow-md hover:from-blue-600 hover:to-purple-600 transition-all flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed">
+            <button type="submit" id="submit-btn" class="w-full py-3 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-lg font-semibold shadow-md hover:from-blue-600 hover:to-purple-600 transition-all flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed break-words">
               <i class="fas fa-search mr-2"></i> 
               <span id="submit-text">Analisis Dokumen</span>
               <i id="submit-loading" class="fas fa-spinner fa-spin ml-2 hidden"></i>
@@ -270,11 +382,11 @@
               <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg">
                 <div class="flex items-center mb-2">
                   <i class="fas fa-exclamation-circle mr-2"></i>
-                  <strong class="font-medium">Terjadi kesalahan:</strong>
+                  <strong class="font-medium break-words">Terjadi kesalahan:</strong>
                 </div>
-                <ul class="list-disc list-inside text-sm">
+                <ul class="list-disc list-inside text-sm space-y-1">
                   @foreach($errors->all() as $error)
-                    <li>{{ $error }}</li>
+                    <li class="break-words">{{ $error }}</li>
                   @endforeach
                 </ul>
               </div>
@@ -284,12 +396,12 @@
               <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg">
                 <div class="flex items-start mb-2">
                   <i class="fas fa-exclamation-circle mt-0.5 mr-3 flex-shrink-0"></i>
-                  <div class="font-semibold">{{ session('error') }}</div>
+                  <div class="font-semibold break-words">{{ session('error') }}</div>
                 </div>
                 @if(session('suggestion'))
-                  <div class="ml-8 mt-2 text-sm text-red-600 bg-red-50 p-3 rounded border-l-4 border-red-500">
+                  <div class="ml-0 md:ml-8 mt-2 text-sm text-red-600 bg-red-50 p-3 rounded border-l-4 border-red-500">
                     <i class="fas fa-lightbulb mr-2"></i>
-                    <strong>Saran:</strong> {{ session('suggestion') }}
+                    <strong class="break-words">Saran:</strong> <span class="break-words">{{ session('suggestion') }}</span>
                   </div>
                 @endif
               </div>
@@ -298,14 +410,14 @@
             @if(session('success'))
               <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg flex items-start">
                 <i class="fas fa-check-circle mt-0.5 mr-3 flex-shrink-0"></i>
-                <div>{{ session('success') }}</div>
+                <div class="break-words">{{ session('success') }}</div>
               </div>
             @endif
 
             @if(session('info'))
               <div class="bg-blue-100 border border-blue-400 text-blue-700 px-4 py-3 rounded-lg flex items-start">
                 <i class="fas fa-info-circle mt-0.5 mr-3 flex-shrink-0"></i>
-                <div>{{ session('info') }}</div>
+                <div class="break-words">{{ session('info') }}</div>
               </div>
             @endif
           </form>
@@ -313,7 +425,7 @@
           <!-- Recent Uploads -->
           @if(isset($recentUploads) && count($recentUploads) > 0)
           <div class="mt-8">
-            <h3 class="text-md font-semibold text-gray-800 mb-3 flex items-center">
+            <h3 class="text-md font-semibold text-gray-800 mb-3 flex items-center break-words">
               <i class="fas fa-history mr-2 text-blue-500"></i> Upload Terbaru
             </h3>
             <div class="space-y-2 max-h-100 overflow-y-auto custom-scrollbar pr-2">
@@ -322,13 +434,13 @@
                 <div class="flex items-center min-w-0 flex-1">
                   <i class="far fa-file-pdf text-red-500 mr-3 text-lg flex-shrink-0"></i>
                   <div class="min-w-0 flex-1">
-                    <p class="text-sm font-medium text-gray-800 truncate" title="{{ $recent['name'] }}">
+                    <p class="text-sm font-medium text-gray-800 file-name-truncate" title="{{ $recent['name'] }}">
                       {{ \Illuminate\Support\Str::limit($recent['name'], 25) }}
                     </p>
-                    <p class="text-xs text-gray-500 mt-1">{{ $recent['size'] }}</p>
+                    <p class="text-xs text-gray-500 mt-1 break-words">{{ $recent['size'] }}</p>
                   </div>
                 </div>
-                <span class="text-xs text-gray-400 whitespace-nowrap ml-2 group-hover:text-blue-500 transition">
+                <span class="text-xs text-gray-400 whitespace-nowrap ml-2 group-hover:text-blue-500 transition break-words">
                   {{ \Illuminate\Support\Carbon::parse($recent['uploaded_at'])->diffForHumans() }}
                 </span>
               </a>
@@ -339,18 +451,18 @@
         </div>
         
         <!-- Requirements Section -->
-        <div class="md:w-1/2 bg-gray-50 p-8">
-          <h2 class="text-xl font-bold text-gray-800 mb-4">Kelengkapan Format ITS</h2>
-          <p class="text-gray-600 mb-6">Sistem memeriksa dokumen berdasarkan panduan format ITS:</p>
+        <div class="md:w-1/2 bg-gray-50 p-6 md:p-8">
+          <h2 class="text-xl font-bold text-gray-800 mb-4 break-words">Kelengkapan Format ITS</h2>
+          <p class="text-gray-600 mb-6 break-words">Sistem memeriksa dokumen berdasarkan panduan format ITS:</p>
           
           <div class="space-y-4 mb-6">
             <div class="requirement-item flex items-start p-3 rounded-lg hover:bg-white transition">
               <div class="flex-shrink-0 w-8 h-8 bg-green-100 rounded-full flex items-center justify-center mr-3 mt-1">
                 <i class="fas fa-file-alt text-green-500 text-sm"></i>
               </div>
-              <div class="flex-1">
-                <h3 class="font-medium text-gray-800">Struktur Dokumen</h3>
-                <p class="text-sm text-gray-600 mt-1">Cover, Abstrak (ID+EN), Daftar Isi, Bab 1-3 (Proposal) / Bab 1-5 (Laporan)</p>
+              <div class="flex-1 min-w-0">
+                <h3 class="font-medium text-gray-800 break-words">Struktur Dokumen</h3>
+                <p class="text-sm text-gray-600 mt-1 line-clamp-2 break-words">Cover, Abstrak (ID+EN), Daftar Isi, Bab 1-3 (Proposal) / Bab 1-5 (Laporan)</p>
               </div>
             </div>
             
@@ -358,9 +470,9 @@
               <div class="flex-shrink-0 w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center mr-3 mt-1">
                 <i class="fas fa-font text-blue-500 text-sm"></i>
               </div>
-              <div class="flex-1">
-                <h3 class="font-medium text-gray-800">Format Teks</h3>
-                <p class="text-sm text-gray-600 mt-1">Times New Roman 12pt, spasi 1, margin 3-2.5-3-2cm</p>
+              <div class="flex-1 min-w-0">
+                <h3 class="font-medium text-gray-800 break-words">Format Teks</h3>
+                <p class="text-sm text-gray-600 mt-1 line-clamp-2 break-words">Times New Roman 12pt, spasi 1, margin 3-2.5-3-2cm</p>
               </div>
             </div>
             
@@ -368,9 +480,9 @@
               <div class="flex-shrink-0 w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center mr-3 mt-1">
                 <i class="fas fa-book text-purple-500 text-sm"></i>
               </div>
-              <div class="flex-1">
-                <h3 class="font-medium text-gray-800">Abstrak</h3>
-                <p class="text-sm text-gray-600 mt-1">200-300 kata, Bahasa Indonesia & Inggris</p>
+              <div class="flex-1 min-w-0">
+                <h3 class="font-medium text-gray-800 break-words">Abstrak</h3>
+                <p class="text-sm text-gray-600 mt-1 line-clamp-2 break-words">200-300 kata, Bahasa Indonesia & Inggris</p>
               </div>
             </div>
             
@@ -378,9 +490,9 @@
               <div class="flex-shrink-0 w-8 h-8 bg-yellow-100 rounded-full flex items-center justify-center mr-3 mt-1">
                 <i class="fas fa-list-ol text-yellow-500 text-sm"></i>
               </div>
-              <div class="flex-1">
-                <h3 class="font-medium text-gray-800">Bab 1 Pendahuluan</h3>
-                <p class="text-sm text-gray-600 mt-1">Latar belakang, rumusan masalah, batasan, tujuan, manfaat</p>
+              <div class="flex-1 min-w-0">
+                <h3 class="font-medium text-gray-800 break-words">Bab 1 Pendahuluan</h3>
+                <p class="text-sm text-gray-600 mt-1 line-clamp-2 break-words">Latar belakang, rumusan masalah, batasan, tujuan, manfaat</p>
               </div>
             </div>
             
@@ -388,9 +500,9 @@
               <div class="flex-shrink-0 w-8 h-8 bg-red-100 rounded-full flex items-center justify-center mr-3 mt-1">
                 <i class="fas fa-graduation-cap text-red-500 text-sm"></i>
               </div>
-              <div class="flex-1">
-                <h3 class="font-medium text-gray-800">Daftar Pustaka</h3>
-                <p class="text-sm text-gray-600 mt-1">Format APA Edisi ke-7, sitasi konsisten</p>
+              <div class="flex-1 min-w-0">
+                <h3 class="font-medium text-gray-800 break-words">Daftar Pustaka</h3>
+                <p class="text-sm text-gray-600 mt-1 line-clamp-2 break-words">Format APA Edisi ke-7, sitasi konsisten</p>
               </div>
             </div>
 
@@ -398,9 +510,9 @@
               <div class="flex-shrink-0 w-8 h-8 bg-indigo-100 rounded-full flex items-center justify-center mr-3 mt-1">
                 <i class="fas fa-palette text-indigo-500 text-sm"></i>
               </div>
-              <div class="flex-1">
-                <h3 class="font-medium text-gray-800">Cover & Halaman Judul</h3>
-                <p class="text-sm text-gray-600 mt-1">Background biru ITS, font Trebuchet MS, teks putih</p>
+              <div class="flex-1 min-w-0">
+                <h3 class="font-medium text-gray-800 break-words">Cover & Halaman Judul</h3>
+                <p class="text-sm text-gray-600 mt-1 line-clamp-2 break-words">Background biru ITS, font Trebuchet MS, teks putih</p>
               </div>
             </div>
           </div>
@@ -411,9 +523,9 @@
               <div class="flex-shrink-0">
                 <i class="fas fa-info-circle text-blue-500 text-lg mt-0.5"></i>
               </div>
-              <div class="ml-3">
-                <h3 class="text-sm font-medium text-blue-800">Panduan Format ITS</h3>
-                <p class="text-sm text-blue-600 mt-1">Pastikan dokumen mengikuti Buku Panduan Format Tugas Akhir ITS. Cover menggunakan Trebuchet MS dengan background biru ITS.</p>
+              <div class="ml-3 min-w-0">
+                <h3 class="text-sm font-medium text-blue-800 break-words">Panduan Format ITS</h3>
+                <p class="text-sm text-blue-600 mt-1 break-words">Pastikan dokumen mengikuti Buku Panduan Format Tugas Akhir ITS. Cover menggunakan Trebuchet MS dengan background biru ITS.</p>
               </div>
             </div>
           </div>
@@ -421,20 +533,20 @@
           <!-- Quick Stats -->
           <div class="grid grid-cols-2 gap-4 text-center">
             <div class="bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
-              <div class="text-2xl font-bold text-blue-600">5</div>
-              <div class="text-sm text-gray-600 mt-1">Bab Wajib</div>
+              <div class="text-2xl font-bold text-blue-600 break-words">5</div>
+              <div class="text-sm text-gray-600 mt-1 break-words">Bab Wajib</div>
             </div>
             <div class="bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
-              <div class="text-2xl font-bold text-green-600">200-300</div>
-              <div class="text-sm text-gray-600 mt-1">Kata Abstrak</div>
+              <div class="text-2xl font-bold text-green-600 break-words">200-300</div>
+              <div class="text-sm text-gray-600 mt-1 break-words">Kata Abstrak</div>
             </div>
             <div class="bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
-              <div class="text-2xl font-bold text-purple-600">A4</div>
-              <div class="text-sm text-gray-600 mt-1">Ukuran Kertas</div>
+              <div class="text-2xl font-bold text-purple-600 break-words">A4</div>
+              <div class="text-sm text-gray-600 mt-1 break-words">Ukuran Kertas</div>
             </div>
             <div class="bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
-              <div class="text-2xl font-bold text-orange-600">APA 7</div>
-              <div class="text-sm text-gray-600 mt-1">Format Pustaka</div>
+              <div class="text-2xl font-bold text-orange-600 break-words">APA 7</div>
+              <div class="text-sm text-gray-600 mt-1 break-words">Format Pustaka</div>
             </div>
           </div>
         </div>
@@ -444,7 +556,7 @@
 
   <!-- Footer -->
   <footer class="bg-gray-800 text-white py-8 mt-12">
-    <div class="max-w-6xl mx-auto px-4">
+    <div class="max-w-6xl mx-auto px-4 safe-area">
       <div class="flex flex-col md:flex-row justify-between items-center">
         <div class="mb-6 md:mb-0 text-center md:text-left">
           <div class="flex items-center justify-center md:justify-start">
@@ -452,10 +564,10 @@
               <div class="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg flex items-center justify-center mr-3">
                 <i class="fas fa-graduation-cap text-white text-lg"></i>
               </div>
-              <span class="text-xl font-bold">FormatCheck ITS</span>
+              <span class="text-xl font-bold break-words">FormatCheck ITS</span>
             </a>
           </div>
-          <p class="text-gray-400 text-sm mt-2">Sistem Deteksi Kelengkapan Format Tugas Akhir</p>
+          <p class="text-gray-400 text-sm mt-2 break-words">Sistem Deteksi Kelengkapan Format Tugas Akhir</p>
         </div>
         
         <div class="flex space-x-6">
@@ -472,7 +584,7 @@
       </div>
       
       <div class="border-t border-gray-700 mt-6 pt-6 text-center">
-        <p class="text-gray-400 text-sm">
+        <p class="text-gray-400 text-sm break-words">
           © 2025 Sistem Deteksi Kelengkapan Format Tugas Akhir - ITS. All rights reserved.
         </p>
       </div>
@@ -579,9 +691,9 @@
           // Change icon based on file type
           const fileIcon = filePreview.querySelector('i');
           if (file.type === 'application/pdf' || fileExtension === '.pdf') {
-            fileIcon.className = 'far fa-file-pdf text-red-500 text-2xl mr-3';
+            fileIcon.className = 'far fa-file-pdf text-red-500 text-2xl mr-3 flex-shrink-0';
           } else {
-            fileIcon.className = 'far fa-file-word text-blue-500 text-2xl mr-3';
+            fileIcon.className = 'far fa-file-word text-blue-500 text-2xl mr-3 flex-shrink-0';
           }
 
           // Show success message for valid file

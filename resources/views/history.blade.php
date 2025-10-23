@@ -144,12 +144,133 @@
         100% { transform: rotate(360deg); }
     }
 
+    /* Responsive text fixes */
+    .text-overflow-fix {
+      overflow-wrap: break-word;
+      word-wrap: break-word;
+      hyphens: auto;
+    }
+
+    .break-words {
+      word-break: break-word;
+      overflow-wrap: break-word;
+    }
+
+    .filename-truncate {
+      max-width: 100%;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* Mobile optimizations */
+    @media (max-width: 768px) {
+      .history-card {
+        padding: 1rem !important;
+        margin: 0.5rem 0;
+      }
+      
+      .flex-col.lg\:flex-row {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+      }
+      
+      .flex.items-center.space-x-4 {
+        flex-wrap: wrap;
+        gap: 0.5rem;
+      }
+      
+      .score-badge {
+        min-width: auto !important;
+        padding: 0.5rem !important;
+      }
+      
+      .text-3xl {
+        font-size: 1.5rem !important;
+      }
+      
+      /* Stats cards scroll */
+      .flex.gap-4.mb-8.md\:grid {
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        padding-bottom: 1rem;
+        -webkit-overflow-scrolling: touch;
+      }
+      
+      .flex.gap-4.mb-8.md\:grid > div {
+        flex: 0 0 auto;
+        width: 250px;
+      }
+      
+      .p-6 {
+        padding: 1rem !important;
+      }
+      
+      .p-8 {
+        padding: 1.5rem !important;
+      }
+      
+      .action-buttons {
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+      
+      .action-buttons > * {
+        width: 100%;
+        justify-content: center;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .filename-truncate {
+        max-width: 180px;
+      }
+      
+      .text-2xl {
+        font-size: 1.25rem !important;
+      }
+      
+      .text-xl {
+        font-size: 1.125rem !important;
+      }
+      
+      .grid.grid-cols-1.md\:grid-cols-2 {
+        grid-template-columns: 1fr !important;
+        gap: 0.75rem !important;
+      }
+      
+      .flex.flex-col.sm\:flex-row {
+        flex-direction: column !important;
+        gap: 0.75rem;
+      }
+      
+      .flex.flex-col.sm\:flex-row > * {
+        width: 100%;
+      }
+    }
+
+    .no-horizontal-scroll {
+      max-width: 100%;
+      overflow-x: hidden;
+    }
+
+    .safe-area {
+      padding-left: env(safe-area-inset-left);
+      padding-right: env(safe-area-inset-right);
+    }
+
+    .line-clamp-2 {
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
   </style>
 </head>
-<body class="flex flex-col min-h-screen">
+<body class="flex flex-col min-h-screen no-horizontal-scroll">
   <!-- Navbar (desktop + mobile toggle) -->
   <nav class="navbar shadow-lg border-b border-gray-200/50 sticky top-0 z-50 will-change-transform">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 safe-area">
       <div class="flex justify-between h-16">
         <div class="flex items-center">
           <!-- Logo -->
@@ -158,17 +279,17 @@
               <div class="w-10 h-10 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg flex items-center justify-center shadow-lg">
                 <i class="fas fa-graduation-cap text-white text-lg"></i>
               </div>
-              <span class="ml-3 text-xl font-bold text-gray-800">FormatCheck ITS</span>
+              <span class="ml-3 text-xl font-bold text-gray-800 break-words">FormatCheck ITS</span>
             </a>
           </div>
 
           <!-- Navigation Links (desktop) -->
           <div class="hidden md:ml-6 md:flex md:space-x-8">
-            <a href="{{ route('upload.form') }}" class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
+            <a href="{{ route('upload.form') }}" class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium break-words">
               <i class="fas fa-upload mr-2"></i>
               Upload TA
             </a>
-            <a href="{{ route('history') }}" class="border-b-2 border-blue-500 text-gray-900 inline-flex items-center px-1 pt-1 text-sm font-medium">
+            <a href="{{ route('history') }}" class="border-b-2 border-blue-500 text-gray-900 inline-flex items-center px-1 pt-1 text-sm font-medium break-words">
               <i class="fas fa-history mr-2"></i>
               Riwayat
             </a>
@@ -179,18 +300,18 @@
         <div class="flex items-center space-x-3">
           <div class="hidden md:flex items-center space-x-4">
             @auth
-              <span class="text-sm text-gray-700">
+              <span class="text-sm text-gray-700 break-words">
                 <i class="fas fa-user-circle mr-1"></i>
                 {{ Auth::user()->name }}
               </span>
               <form method="POST" action="{{ route('logout') }}">
                 @csrf
-                <button type="submit" class="text-sm text-gray-700 hover:text-blue-600 transition">
+                <button type="submit" class="text-sm text-gray-700 hover:text-blue-600 transition break-words">
                   <i class="fas fa-sign-out-alt mr-1"></i>Logout
                 </button>
               </form>
             @else
-              <a href="{{ route('login.form') }}" class="text-sm text-gray-700 hover:text-blue-600 transition">
+              <a href="{{ route('login.form') }}" class="text-sm text-gray-700 hover:text-blue-600 transition break-words">
                 <i class="fas fa-sign-in-alt mr-1"></i>Login
               </a>
             @endauth
@@ -210,26 +331,26 @@
     <!-- Mobile menu (hidden by default, toggled) -->
     <div id="mobileMenu" class="md:hidden hidden border-t border-gray-200 bg-white/95 backdrop-blur-lg">
       <div class="pt-2 pb-4 space-y-1">
-        <a href="{{ route('upload.form') }}" class="nav-link block pl-4 pr-4 py-3 border-l-4 border-transparent text-base font-medium text-gray-700 hover:text-blue-600 hover:border-blue-600 hover:bg-blue-50 transition-all duration-200">
+        <a href="{{ route('upload.form') }}" class="nav-link block pl-4 pr-4 py-3 border-l-4 border-transparent text-base font-medium text-gray-700 hover:text-blue-600 hover:border-blue-600 hover:bg-blue-50 transition-all duration-200 break-words">
           <i class="fas fa-upload mr-3 text-blue-500"></i>Upload TA</a>
-        <a href="{{ route('history') }}" class="nav-link block pl-4 pr-4 py-3 border-l-4 border-transparent text-base font-medium text-gray-700 hover:text-blue-600 hover:border-blue-600 hover:bg-blue-50 transition-all duration-200">
+        <a href="{{ route('history') }}" class="nav-link block pl-4 pr-4 py-3 border-l-4 border-transparent text-base font-medium text-gray-700 hover:text-blue-600 hover:border-blue-600 hover:bg-blue-50 transition-all duration-200 break-words">
           <i class="fas fa-history mr-3 text-purple-500"></i>Riwayat</a>
 
         <div class="border-t border-gray-200 pt-2 mt-2">
           @auth
-            <div class="px-4 py-2 text-sm text-gray-600">
+            <div class="px-4 py-2 text-sm text-gray-600 break-words">
               <i class="fas fa-user-circle mr-2"></i>
               {{ Auth::user()->name }}
             </div>
             <form method="POST" action="{{ route('logout') }}">
               @csrf
-              <button type="submit" class="w-full text-left nav-link block pl-4 pr-4 py-3 border-l-4 border-transparent text-base font-medium text-gray-700 hover:text-blue-600 hover:border-blue-600 hover:bg-blue-50 transition-all duration-200">
+              <button type="submit" class="w-full text-left nav-link block pl-4 pr-4 py-3 border-l-4 border-transparent text-base font-medium text-gray-700 hover:text-blue-600 hover:border-blue-600 hover:bg-blue-50 transition-all duration-200 break-words">
                 <i class="fas fa-sign-out-alt mr-3"></i>Logout
               </button>
             </form>
           @endauth
           @guest
-            <a href="{{ route('login.form') }}" class="nav-link block pl-4 pr-4 py-3 border-l-4 text-base font-medium text-gray-700 hover:text-blue-600 hover:border-blue-600 hover:bg-blue-50 transition-all duration-200">
+            <a href="{{ route('login.form') }}" class="nav-link block pl-4 pr-4 py-3 border-l-4 text-base font-medium text-gray-700 hover:text-blue-600 hover:border-blue-600 hover:bg-blue-50 transition-all duration-200 break-words">
               <i class="fas fa-right-to-bracket mr-3"></i>Login
             </a>
           @endguest
@@ -243,7 +364,7 @@
     <div class="relative top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
       <div class="bg-white rounded-lg p-6 shadow-lg text-center min-w-48">
         <div class="spinner mb-4"></div>
-        <p id="loadingMessage" class="text-gray-700">Memproses...</p>
+        <p id="loadingMessage" class="text-gray-700 break-words">Memproses...</p>
       </div>
     </div>
   </div>
@@ -253,7 +374,7 @@
     <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg relative shadow-lg" id="notificationContent">
       <div class="flex items-start">
         <i class="fas fa-check-circle mt-1 mr-3 flex-shrink-0"></i>
-        <span class="block flex-1" id="notificationMessage"></span>
+        <span class="block flex-1 break-words" id="notificationMessage"></span>
       </div>
       <button onclick="hideNotification()" class="absolute top-3 right-3 p-1 text-green-500 hover:text-green-700 transition">
         <i class="fas fa-times text-sm"></i>
@@ -263,21 +384,21 @@
 
     <!-- Confirm Modal -->
     <div id="confirmModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden z-50">
-        <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+        <div class="relative top-20 mx-auto p-5 border w-96 max-w-[90vw] shadow-lg rounded-md bg-white">
             <div class="mt-3 text-center">
                 <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100">
                     <i class="fas fa-exclamation-triangle text-red-600 text-xl"></i>
                 </div>
-                <h3 class="text-lg font-medium text-gray-900 mt-2" id="modalTitle">Konfirmasi Hapus</h3>
-                <div class="mt-2 px-7 py-3">
-                    <p class="text-sm text-gray-500" id="modalMessage">Apakah Anda yakin ingin menghapus?</p>
-                    <div id="modalDetails" class="text-xs text-gray-400 mt-2 text-left bg-gray-50 p-2 rounded max-h-32 overflow-y-auto hidden"></div>
+                <h3 class="text-lg font-medium text-gray-900 mt-2 break-words" id="modalTitle">Konfirmasi Hapus</h3>
+                <div class="mt-2 px-4 md:px-7 py-3">
+                    <p class="text-sm text-gray-500 break-words" id="modalMessage">Apakah Anda yakin ingin menghapus?</p>
+                    <div id="modalDetails" class="text-xs text-gray-400 mt-2 text-left bg-gray-50 p-2 rounded max-h-32 overflow-y-auto hidden break-words"></div>
                 </div>
-                <div class="flex justify-center space-x-4 mt-4">
-                    <button id="confirmCancel" class="px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400 transition font-medium">
+                <div class="flex justify-center space-x-4 mt-4 flex-wrap gap-2">
+                    <button id="confirmCancel" class="px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400 transition font-medium break-words">
                         Batal
                     </button>
-                    <button id="confirmOk" class="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition font-medium">
+                    <button id="confirmOk" class="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition font-medium break-words">
                         Hapus
                     </button>
                 </div>
@@ -287,50 +408,51 @@
 
   <!-- Main Content -->
   <main class="flex-grow py-8">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 safe-area">
       <!-- Header -->
       <div class="text-center mb-8">
-        <h1 class="text-3xl font-bold text-white mb-2">Riwayat Analisis Dokumen</h1>
-        <p class="text-blue-100 text-lg">Lihat sejarah analisis format Tugas Akhir Anda</p>
+        <h1 class="text-2xl md:text-3xl font-bold text-white mb-2 break-words">Riwayat Analisis Dokumen</h1>
+        <p class="text-blue-100 text-lg break-words">Lihat sejarah analisis format Tugas Akhir Anda</p>
       </div>
 
       <!-- Stats Cards -->
-      <div class="flex gap-4 mb-8 md:grid md:grid-cols-4 md:gap-6 overflow-x-auto pb-2 md:pb-0">
-  <div class="bg-white rounded-xl shadow-lg p-6 text-center animate-fade-in-up w-64 flex-shrink-0" style="animation-delay: 0.1s">
+      <div class="flex gap-4 mb-8 md:grid md:grid-cols-4 md:gap-6 overflow-x-auto pb-2 md:pb-0 custom-scrollbar">
+        <div class="bg-white rounded-xl shadow-lg p-6 text-center animate-fade-in-up w-64 flex-shrink-0" style="animation-delay: 0.1s">
           <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-3">
             <i class="fas fa-file-pdf text-blue-500 text-xl"></i>
           </div>
-          <div class="text-2xl font-bold text-gray-800">{{ count($history) }}</div>
-          <div class="text-sm text-gray-600">Total Analisis</div>
+          <div class="text-2xl font-bold text-gray-800 break-words">{{ count($history) }}</div>
+          <div class="text-sm text-gray-600 break-words">Total Analisis</div>
         </div>
-  <div class="bg-white rounded-xl shadow-lg p-6 text-center animate-fade-in-up w-64 flex-shrink-0" style="animation-delay: 0.2s">
+        
+        <div class="bg-white rounded-xl shadow-lg p-6 text-center animate-fade-in-up w-64 flex-shrink-0" style="animation-delay: 0.2s">
           <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-3">
             <i class="fas fa-check-circle text-green-500 text-xl"></i>
           </div>
-          <div class="text-2xl font-bold text-gray-800">
+          <div class="text-2xl font-bold text-gray-800 break-words">
             {{ collect($history)->where('score', '>=', 8)->count() }}
           </div>
-          <div class="text-sm text-gray-600">Layak Ajukan</div>
+          <div class="text-sm text-gray-600 break-words">Layak Ajukan</div>
         </div>
 
-  <div class="bg-white rounded-xl shadow-lg p-6 text-center animate-fade-in-up w-64 flex-shrink-0" style="animation-delay: 0.3s">
+        <div class="bg-white rounded-xl shadow-lg p-6 text-center animate-fade-in-up w-64 flex-shrink-0" style="animation-delay: 0.3s">
           <div class="w-12 h-12 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-3">
             <i class="fas fa-exclamation-triangle text-yellow-500 text-xl"></i>
           </div>
-          <div class="text-2xl font-bold text-gray-800">
+          <div class="text-2xl font-bold text-gray-800 break-words">
             {{ collect($history)->whereBetween('score', [6, 7.9])->count() }}
           </div>
-          <div class="text-sm text-gray-600">Perlu Perbaikan</div>
+          <div class="text-sm text-gray-600 break-words">Perlu Perbaikan</div>
         </div>
 
-  <div class="bg-white rounded-xl shadow-lg p-6 text-center animate-fade-in-up w-64 flex-shrink-0" style="animation-delay: 0.4s">
+        <div class="bg-white rounded-xl shadow-lg p-6 text-center animate-fade-in-up w-64 flex-shrink-0" style="animation-delay: 0.4s">
           <div class="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-3">
             <i class="fas fa-times-circle text-red-500 text-xl"></i>
           </div>
-          <div class="text-2xl font-bold text-gray-800">
+          <div class="text-2xl font-bold text-gray-800 break-words">
             {{ collect($history)->where('score', '<', 6)->count() }}
           </div>
-          <div class="text-sm text-gray-600">Tidak Layak</div>
+          <div class="text-sm text-gray-600 break-words">Tidak Layak</div>
         </div>
       </div>
 
@@ -338,15 +460,15 @@
       <div class="bg-white rounded-2xl shadow-2xl overflow-hidden">
         <div class="px-6 py-4 border-b border-gray-200">
           <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center">
-            <h2 class="text-xl font-bold text-gray-800 mb-2 sm:mb-0">Dokumen yang Telah Dianalisis</h2>
+            <h2 class="text-xl font-bold text-gray-800 mb-2 sm:mb-0 break-words">Dokumen yang Telah Dianalisis</h2>
             <div class="flex flex-wrap gap-2">
-              <button type="button" onclick="clearOldHistory()" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition-all flex items-center no-print">
+              <button type="button" onclick="clearOldHistory()" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition-all flex items-center no-print break-words">
                     <i class="fas fa-clock mr-2"></i>Hapus Lama
               </button>
-              <button onclick="exportHistory()" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition-all flex items-center no-print">
+              <button onclick="exportHistory()" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition-all flex items-center no-print break-words">
                 <i class="fas fa-download mr-2"></i>Export CSV
               </button>
-              <button type="button" onclick="clearHistory()" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition-all flex items-center no-print">
+              <button type="button" onclick="clearHistory()" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition-all flex items-center no-print break-words">
                 <i class="fas fa-trash mr-2"></i>Hapus Semua
               </button>
             </div>
@@ -369,26 +491,26 @@
                         </div>
                       </div>
                       <div class="flex-1 min-w-0">
-                        <h3 class="text-lg font-semibold text-gray-800 truncate" title="{{ $item['filename'] }}">
+                        <h3 class="text-lg font-semibold text-gray-800 filename-truncate" title="{{ $item['filename'] }}">
                           {{ $item['filename'] }}
                         </h3>
                         <div class="flex flex-wrap items-center gap-2 mt-2">
-                          <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                          <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 break-words">
                             <i class="fas fa-calendar mr-1"></i>
                             {{ \Illuminate\Support\Carbon::parse($item['date'])->format('d M Y H:i') }}
                           </span>
-                          <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                          <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800 break-words">
                             <i class="fas fa-clock mr-1"></i>
                             {{ \Illuminate\Support\Carbon::parse($item['date'])->diffForHumans() }}
                           </span>
                           @if(isset($item['document_type']) && $item['document_type'] !== 'Tidak Diketahui')
-                          <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
+                          <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800 break-words">
                             <i class="fas fa-file-alt mr-1"></i>
                             {{ $item['document_type'] }}
                           </span>
                           @endif
                           @if(!($item['file_exists'] ?? true))
-                          <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                          <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800 break-words">
                             <i class="fas fa-exclamation-triangle mr-1"></i>
                             File Tidak Ditemukan
                           </span>
@@ -398,34 +520,34 @@
                     </div>
                   </div>
                   
-                  <div class="flex items-center space-x-4">
+                  <div class="flex items-center space-x-4 flex-wrap gap-2">
                     <!-- Score Badge -->
                     <div class="score-badge px-4 py-2 rounded-full font-semibold text-center min-w-24
                         @if($item['score'] >= 8) bg-green-100 text-green-800 border border-green-200
                         @elseif($item['score'] >= 6) bg-yellow-100 text-yellow-800 border border-yellow-200
                         @else bg-red-100 text-red-800 border border-red-200 @endif">
-                      <div class="text-2xl font-bold">{{ number_format($item['score'], 1) }}</div>
-                      <div class="text-xs">/ 10</div>
+                      <div class="text-2xl font-bold break-words">{{ number_format($item['score'], 1) }}</div>
+                      <div class="text-xs break-words">/ 10</div>
                     </div>
 
                     <!-- Action Buttons -->
-                    <div class="flex space-x-2 no-print">
+                    <div class="flex space-x-2 no-print action-buttons">
                       @if($item['file_exists'] ?? true)
                       <a href="{{ route('results', ['filename' => $item['filename']]) }}" 
-                         class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition-all flex items-center group">
+                         class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition-all flex items-center group break-words">
                         <i class="fas fa-eye mr-2 group-hover:scale-110 transition-transform"></i>Lihat
                       </a>
                       <button onclick="downloadResults('{{ $item['filename'] }}')" 
-                         class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition-all flex items-center group">
+                         class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition-all flex items-center group break-words">
                         <i class="fas fa-download mr-2 group-hover:scale-110 transition-transform"></i>Download
                       </button>
                       @else
-                      <span class="bg-gray-400 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center cursor-not-allowed" title="File tidak tersedia">
+                      <span class="bg-gray-400 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center cursor-not-allowed break-words" title="File tidak tersedia">
                         <i class="fas fa-eye-slash mr-2"></i>File Hilang
                       </span>
                       @endif
                       <button onclick="deleteHistoryItem('{{ $item['filename'] }}')" 
-                         class="bg-red-500 hover:bg-red-600 text-white p-2 rounded-lg text-sm transition-all flex items-center group"
+                         class="bg-red-500 hover:bg-red-600 text-white p-2 rounded-lg text-sm transition-all flex items-center group break-words"
                          title="Hapus riwayat ini">
                         <i class="fas fa-trash group-hover:scale-110 transition-transform"></i>
                       </button>
@@ -436,8 +558,8 @@
                 <!-- Status Bar -->
                 <div class="mt-4">
                   <div class="flex justify-between text-sm text-gray-600 mb-1">
-                    <span>Status Kelayakan:</span>
-                    <span class="font-medium 
+                    <span class="break-words">Status Kelayakan:</span>
+                    <span class="font-medium break-words
                       @if($item['score'] >= 8) text-green-600
                       @elseif($item['score'] >= 6) text-yellow-600
                       @else text-red-600 @endif">
@@ -461,12 +583,12 @@
 
             <!-- Pagination Info -->
             <div class="mt-6 flex flex-col sm:flex-row justify-between items-center text-sm text-gray-600">
-              <div>
+              <div class="break-words">
                 Menampilkan <span class="font-semibold">{{ count($history) }}</span> dari <span class="font-semibold">{{ count($history) }}</span> hasil analisis
               </div>
               <div class="mt-2 sm:mt-0">
-                <span class="text-gray-500">Diurutkan berdasarkan: </span>
-                <span class="font-semibold">Tanggal Terbaru</span>
+                <span class="text-gray-500 break-words">Diurutkan berdasarkan: </span>
+                <span class="font-semibold break-words">Tanggal Terbaru</span>
               </div>
             </div>
 
@@ -476,11 +598,11 @@
               <div class="empty-state w-24 h-24 rounded-full flex items-center justify-center mx-auto mb-4">
                 <i class="fas fa-history text-white text-3xl"></i>
               </div>
-              <h3 class="text-xl font-semibold text-gray-800 mb-2">Belum Ada Riwayat Analisis</h3>
-              <p class="text-gray-600 mb-6 max-w-md mx-auto">
+              <h3 class="text-xl font-semibold text-gray-800 mb-2 break-words">Belum Ada Riwayat Analisis</h3>
+              <p class="text-gray-600 mb-6 max-w-md mx-auto break-words">
                 Anda belum menganalisis dokumen Tugas Akhir. Upload dokumen pertama Anda untuk memulai analisis format.
               </p>
-              <a href="{{ route('upload.form') }}" class="bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white font-semibold py-3 px-6 rounded-lg transition-all inline-flex items-center no-print">
+              <a href="{{ route('upload.form') }}" class="bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white font-semibold py-3 px-6 rounded-lg transition-all inline-flex items-center no-print break-words">
                 <i class="fas fa-upload mr-2"></i>Upload Dokumen Pertama
               </a>
             </div>
@@ -496,13 +618,13 @@
             <div class="flex-shrink-0">
               <i class="fas fa-lightbulb text-yellow-500 text-xl mt-1"></i>
             </div>
-            <div class="ml-3">
-              <h3 class="text-sm font-medium text-yellow-800">Tips Meningkatkan Skor</h3>
+            <div class="ml-3 min-w-0">
+              <h3 class="text-sm font-medium text-yellow-800 break-words">Tips Meningkatkan Skor</h3>
               <div class="text-sm text-yellow-700 mt-2 space-y-1">
-                <div class="flex items-center"><i class="fas fa-check mr-2 text-green-500"></i> Pastikan abstrak 200-300 kata (ID & EN)</div>
-                <div class="flex items-center"><i class="fas fa-check mr-2 text-green-500"></i> Gunakan font Times New Roman 12pt</div>
-                <div class="flex items-center"><i class="fas fa-check mr-2 text-green-500"></i> Atur margin sesuai standar ITS</div>
-                <div class="flex items-center"><i class="fas fa-check mr-2 text-green-500"></i> Tambahkan minimal 20 referensi</div>
+                <div class="flex items-center break-words"><i class="fas fa-check mr-2 text-green-500"></i> Pastikan abstrak 200-300 kata (ID & EN)</div>
+                <div class="flex items-center break-words"><i class="fas fa-check mr-2 text-green-500"></i> Gunakan font Times New Roman 12pt</div>
+                <div class="flex items-center break-words"><i class="fas fa-check mr-2 text-green-500"></i> Atur margin sesuai standar ITS</div>
+                <div class="flex items-center break-words"><i class="fas fa-check mr-2 text-green-500"></i> Tambahkan minimal 20 referensi</div>
               </div>
             </div>
           </div>
@@ -513,20 +635,20 @@
             <div class="flex-shrink-0">
               <i class="fas fa-chart-line text-blue-500 text-xl mt-1"></i>
             </div>
-            <div class="ml-3">
-              <h3 class="text-sm font-medium text-blue-800">Progress Analisis</h3>
+            <div class="ml-3 min-w-0">
+              <h3 class="text-sm font-medium text-blue-800 break-words">Progress Analisis</h3>
               <div class="text-sm text-blue-700 mt-2 space-y-1">
-                <div class="flex justify-between">
+                <div class="flex justify-between break-words">
                   <span>Rata-rata skor:</span>
-                  <span class="font-semibold">{{ number_format(collect($history)->avg('score') ?? 0, 1) }}/10</span>
+                  <span class="font-semibold break-words">{{ number_format(collect($history)->avg('score') ?? 0, 1) }}/10</span>
                 </div>
-                <div class="flex justify-between">
+                <div class="flex justify-between break-words">
                   <span>Dokumen terbaik:</span>
-                  <span class="font-semibold">{{ number_format(collect($history)->max('score') ?? 0, 1) }}/10</span>
+                  <span class="font-semibold break-words">{{ number_format(collect($history)->max('score') ?? 0, 1) }}/10</span>
                 </div>
-                <div class="flex justify-between">
+                <div class="flex justify-between break-words">
                   <span>Tren kualitas:</span>
-                  <span class="font-semibold 
+                  <span class="font-semibold break-words
                     @if((collect($history)->avg('score') ?? 0) >= 8) text-green-600
                     @elseif((collect($history)->avg('score') ?? 0) >= 6) text-yellow-600
                     @else text-red-600 @endif">
@@ -550,7 +672,7 @@
 
   <!-- Footer -->
   <footer class="bg-gray-800 text-white py-8 mt-12 no-print">
-    <div class="max-w-7xl mx-auto px-4">
+    <div class="max-w-7xl mx-auto px-4 safe-area">
       <div class="flex flex-col md:flex-row justify-between items-center">
         <div class="mb-6 md:mb-0 text-center md:text-left">
           <div class="flex items-center justify-center md:justify-start">
@@ -558,10 +680,10 @@
               <div class="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg flex items-center justify-center mr-3">
                 <i class="fas fa-graduation-cap text-white text-lg"></i>
               </div>
-              <span class="text-xl font-bold">FormatCheck ITS</span>
+              <span class="text-xl font-bold break-words">FormatCheck ITS</span>
             </a>
           </div>
-          <p class="text-gray-400 text-sm mt-2">Sistem Deteksi Kelengkapan Format Tugas Akhir</p>
+          <p class="text-gray-400 text-sm mt-2 break-words">Sistem Deteksi Kelengkapan Format Tugas Akhir</p>
         </div>
         
         <div class="flex space-x-6">
@@ -578,7 +700,7 @@
       </div>
       
       <div class="border-t border-gray-700 mt-6 pt-6 text-center">
-        <p class="text-gray-400 text-sm">
+        <p class="text-gray-400 text-sm break-words">
           © 2025 Sistem Deteksi Kelengkapan Format Tugas Akhir - ITS. All rights reserved.
         </p>
       </div>
@@ -637,7 +759,7 @@
                 <div class="${bgColor} text-white p-4 rounded-lg shadow-lg">
                     <div class="flex items-center">
                         <i class="fas fa-${type === 'success' ? 'check' : type === 'error' ? 'exclamation-triangle' : 'info'}-circle mr-2"></i>
-                        <span>${message}</span>
+                        <span class="break-words">${message}</span>
                         <button onclick="hideNotification()" class="ml-4">
                             <i class="fas fa-times"></i>
                         </button>
@@ -675,7 +797,7 @@
             loadingOverlay.innerHTML = `
                 <div class="bg-white rounded-lg p-6 shadow-lg text-center min-w-48">
                     <div class="spinner mb-4"></div>
-                    <p class="text-gray-700">${message}</p>
+                    <p class="text-gray-700 break-words">${message}</p>
                 </div>
             `;
             
@@ -1111,3 +1233,5 @@
         window.showNotification = showNotification;
         window.hideNotification = hideNotification;
     </script>
+</body>
+</html>
