@@ -22,7 +22,7 @@ client = OpenAI(
     api_key=OPENROUTER_API_KEY,
 )
 
-# ===== PROMPT ANALISIS FRONTEND (TANPA FORMAT TEKS & MARGIN) =====
+# PROMPT ANALISIS FRONTEND (TANPA FORMAT TEKS & MARGIN) 
 EVALUATION_FRONTEND_PROMPT = """
 Analisis dokumen dan berikan JSON output. Cari elemen:
 1. Abstrak (Indonesia & English) - hitung kata
