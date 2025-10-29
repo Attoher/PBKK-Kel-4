@@ -432,5 +432,5 @@ def main():
         fallback_result = create_fallback_result(pdf_content, format_margin_info, ref_count)
         print(json.dumps(fallback_result, ensure_ascii=False, indent=2))
 
-if _name_ == "_main_":
+if __name__ == "__main__":
     main()
