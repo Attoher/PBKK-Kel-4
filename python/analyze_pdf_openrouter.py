@@ -291,7 +291,7 @@ def extract_json_from_text(text):
     
     # Coba ekstrak dari markdown code blocks
     try:
-        json_match = re.search(r'(?:json)?\s*(\{.*\})\s*', text, re.DOTALL)
+        json_match = re.search(r'```(?:json)?\s*(\{.*\})\s*```', text, re.DOTALL)
         if json_match:
             return json.loads(json_match.group(1))
     except:
@@ -388,7 +388,7 @@ def main():
             response_text = result['response'].strip()
             
             # Bersihkan response seperti di OpenRouter
-            response_text = response_text.replace('json', '').replace('', '').strip()
+            response_text = response_text.replace('```json', '').replace('```', '').strip()
             response_json = json.loads(response_text)
             
             # Gabungkan dengan info format & margin
