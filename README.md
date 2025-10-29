@@ -77,6 +77,18 @@ Mahasiswa dapat mengunggah file PDF buku TA, lalu sistem akan memeriksa apakah f
 
 1. Buat branch baru untuk fitur/bugfix:
 
+## Python environment
+
+The app invokes local Python scripts under `python/` to perform PDF analysis. Ensure the Python executable used by the app has the required packages installed (see `python/requirements.txt`).
+
+Set the `PYTHON_EXECUTABLE` environment variable in your `.env` (or leave empty to use `python` from PATH). Example for Windows:
+
+```
+PYTHON_EXECUTABLE=C:\\Users\\lenovo\\AppData\\Local\\Programs\\Python\\Python37\\python.exe
+```
+
+If Python is not runnable, the middleware `check.python` will block analysis routes and return a helpful error.
+
    ```bash
    git checkout -b fitur-nama
    ```
