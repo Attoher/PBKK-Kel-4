@@ -65,7 +65,7 @@ def count_references(full_text):
         author_year = len(re.findall(r'[A-Z][a-z]+,\s+[A-Z]\.\s*\(\d{4}\)', ref_section))
         print(f"  - Author, A. (year): {author_year} kemunculan")
         
-        # Pattern 5: Hitung baris yang mengandung URL atau DOI (biasanya tiap referensi punya)
+        # Pattern 5: Hitung baris yang mengandung URL atau DOI 
         doi_count = len(re.findall(r'https?://|doi\.org', ref_section))
         print(f"  - URL/DOI: {doi_count} kemunculan")
         

@@ -24,7 +24,7 @@ def analyze_pdf_structure(pdf_path):
                         content['structure'].append({
                             'page': i + 1,
                             'type': section,
-                            'preview': text[:200]  # Preview 200 karakter pertama
+                            'preview': text[:200]  
                         })
             
             # Analisis referensi

@@ -699,7 +699,7 @@
         const mobileMenu = document.getElementById('mobileMenu');
         
         if (mobileMenuButton && mobileMenu) {
-            // Toggle mobile menu
+            // To tooggle mobile menu
             mobileMenuButton.addEventListener('click', function(e) {
                 e.stopPropagation();
                 mobileMenu.classList.toggle('hidden');

@@ -8,7 +8,7 @@ import requests
 from requests.exceptions import RequestException
 import PyPDF2
 
-# ===== CONFIG =====
+# CONFIG 
 models = [
     "gpt-oss:20b-cloud"
 ]
@@ -51,7 +51,7 @@ def detect_chapters(text):
     
     return found_chapters
 
-# ===== PROMPT FRONT-END =====
+# PROMPT FRONT-END 
 EVALUATION_FRONTEND_PROMPT = """
 TUGAS: Analisis dokumen Tugas Akhir dan hasilkan JSON untuk front-end ITS.
 
