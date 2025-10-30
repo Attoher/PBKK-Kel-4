@@ -19,11 +19,11 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 // Routes untuk upload
 Route::get('/upload', [UploadController::class, 'showUploadForm'])->name('upload.form');
-Route::post('/upload', [UploadController::class, 'processUpload'])->name('upload.process');
+Route::post('/upload', [UploadController::class, 'processUpload'])->name('upload.process')->middleware(\App\Http\Middleware\CheckPythonEnv::class);
 Route::get('/upload/test', [UploadController::class, 'testConnection'])->name('upload.test');
 
 // Routes untuk analisis dokumen
-Route::get('/analyze/{filename}', [DocumentAnalysisController::class, 'analyzeDocument'])->name('analyze.document');
+Route::get('/analyze/{filename}', [DocumentAnalysisController::class, 'analyzeDocument'])->name('analyze.document')->middleware(\App\Http\Middleware\CheckPythonEnv::class);
 Route::get('/results/{filename}', [DocumentAnalysisController::class, 'showResults'])->name('results');
 
 // Route untuk download hasil
@@ -36,4 +36,4 @@ Route::delete('/history/clear-old', [DocumentAnalysisController::class, 'clearOl
 Route::delete('/history/delete/{filename}', [DocumentAnalysisController::class, 'deleteHistoryItem'])->name('history.delete');
 
 Route::post('/upload/chunk', [UploadController::class, 'uploadChunk'])->name('upload.chunk');
-Route::post('/upload/merge', [UploadController::class, 'mergeChunks'])->name('upload.merge');
+Route::post('/upload/merge', [UploadController::class, 'mergeChunks'])->name('upload.merge')->middleware(\App\Http\Middleware\CheckPythonEnv::class);
