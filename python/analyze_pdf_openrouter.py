@@ -12,11 +12,7 @@ load_dotenv()
 
 # ===== CONFIG SENOPATI =====
 SENOPATI_API_URL = os.getenv("SENOPATI_BASE_URL", "https://senopati.its.ac.id/senopati-lokal-dev/generate")
-<<<<<<< HEAD
-SENOPATI_MODEL = os.getenv("SENOPATI_MODEL", "qwen2.5:14b")
-=======
 SENOPATI_MODEL = os.getenv("SENOPATI_MODEL", "dolphin-mixtral:latest")
->>>>>>> senopati_middleware
 SYSTEM_PROMPT = "Anda adalah asisten ahli format dokumen ITS. Hasilkan HANYA JSON valid tanpa penjelasan tambahan."
 
 # PROMPT ANALISIS FRONTEND
