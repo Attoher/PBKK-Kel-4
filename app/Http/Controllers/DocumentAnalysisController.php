@@ -168,10 +168,18 @@ class DocumentAnalysisController extends Controller
         Log::info("Menjalankan AI Analysis", [
             'script' => $pythonScript,
             'file_path' => $filePath,
-            'env_keys' => array_keys($env)
+            'env_keys' => array_keys($env),
+            'senopati_url' => $env['SENOPATI_BASE_URL'] ?? 'NOT SET',
+            'senopati_model' => $env['SENOPATI_MODEL'] ?? 'NOT SET',
+            'openrouter_url' => $env['OPENROUTER_BASE_URL'] ?? 'NOT SET'
         ]);
 
         $output = shell_exec($command . " 2>&1");
+        
+        Log::info("Python output received", [
+            'output_length' => strlen($output ?? ''),
+            'output_preview' => substr($output ?? '', 0, 500)
+        ]);
         
         if (!$output) {
             throw new \Exception("Python tidak menghasilkan output");
