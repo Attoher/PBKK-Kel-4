@@ -1011,4 +1011,41 @@ class DocumentAnalysisController extends Controller
             ], 500);
         }
     }
+
+    /**
+     * Debug: View Laravel logs
+     */
+    public function debugLogs()
+    {
+        $logFile = storage_path('logs/laravel.log');
+        
+        if (!file_exists($logFile)) {
+            return response()->json(['error' => 'Log file not found']);
+        }
+        
+        $lines = file($logFile);
+        $lastLines = array_slice($lines, -200); // 200 baris terakhir
+        
+        return response('<pre style="background: #1e1e1e; color: #d4d4d4; padding: 20px; font-size: 12px; overflow: auto;">' 
+            . htmlspecialchars(implode('', $lastLines)) 
+            . '</pre>')
+            ->header('Content-Type', 'text/html');
+    }
+
+    /**
+     * Debug: View environment variables
+     */
+    public function debugEnv()
+    {
+        return response()->json([
+            'APP_ENV' => env('APP_ENV'),
+            'APP_DEBUG' => env('APP_DEBUG'),
+            'APP_URL' => env('APP_URL'),
+            'SENOPATI_BASE_URL' => env('SENOPATI_BASE_URL', 'NOT SET'),
+            'SENOPATI_MODEL' => env('SENOPATI_MODEL', 'NOT SET'),
+            'OPENROUTER_BASE_URL' => env('OPENROUTER_BASE_URL', 'NOT SET'),
+            'PHP_VERSION' => PHP_VERSION,
+            'PYTHON_CHECK' => shell_exec('python --version 2>&1') ?: 'Python not found',
+        ], JSON_PRETTY_PRINT);
+    }
 }

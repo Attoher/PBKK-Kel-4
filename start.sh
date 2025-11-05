@@ -76,13 +76,9 @@ php artisan config:clear
 php artisan route:clear
 php artisan view:clear
 
-# Cache config for production
-echo "📦 Caching configuration..."
+# Cache config for production (skip route cache for flexibility)
+echo "� Caching configuration..."
 php artisan config:cache
-
-# Optimize for production
-echo "🚀 Optimizing application..."
-php artisan route:cache
 php artisan view:cache
 
 # Start server
