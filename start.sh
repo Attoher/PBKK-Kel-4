@@ -68,6 +68,10 @@ php artisan config:clear
 php artisan route:clear
 php artisan view:clear
 
+# Cache config for production
+echo "📦 Caching configuration..."
+php artisan config:cache
+
 # Start server
-echo "✅ Starting PHP server on port $PORT..."
-php artisan serve --host=0.0.0.0 --port=$PORT
+echo "✅ Starting PHP server on port ${PORT:-8080}..."
+php -S 0.0.0.0:${PORT:-8080} -t public public/index.php
