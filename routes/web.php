@@ -37,3 +37,32 @@ Route::delete('/history/delete/{filename}', [DocumentAnalysisController::class, 
 
 Route::post('/upload/chunk', [UploadController::class, 'uploadChunk'])->name('upload.chunk');
 Route::post('/upload/merge', [UploadController::class, 'mergeChunks'])->name('upload.merge')->middleware(\App\Http\Middleware\CheckPythonEnv::class);
+
+// DEBUG ROUTES - untuk cek logs dan environment di Railway
+Route::get('/debug/logs', function () {
+    $logFile = storage_path('logs/laravel.log');
+    
+    if (!file_exists($logFile)) {
+        return response()->json(['error' => 'Log file not found']);
+    }
+    
+    $lines = file($logFile);
+    $lastLines = array_slice($lines, -200); // 200 baris terakhir
+    
+    return response('<pre style="background: #1e1e1e; color: #d4d4d4; padding: 20px; font-size: 12px; overflow: auto;">' 
+        . htmlspecialchars(implode('', $lastLines)) 
+        . '</pre>')
+        ->header('Content-Type', 'text/html');
+});
+
+Route::get('/debug/env', function () {
+    return response()->json([
+        'APP_ENV' => env('APP_ENV'),
+        'APP_DEBUG' => env('APP_DEBUG'),
+        'SENOPATI_BASE_URL' => env('SENOPATI_BASE_URL', 'NOT SET'),
+        'SENOPATI_MODEL' => env('SENOPATI_MODEL', 'NOT SET'),
+        'OPENROUTER_BASE_URL' => env('OPENROUTER_BASE_URL', 'NOT SET'),
+        'PHP_VERSION' => PHP_VERSION,
+        'PYTHON_CHECK' => shell_exec('python --version 2>&1') ?: 'Python not found',
+    ], JSON_PRETTY_PRINT);
+});
