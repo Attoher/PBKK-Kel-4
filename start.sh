@@ -30,8 +30,9 @@ ASSET_URL=https://\${RAILWAY_PUBLIC_DOMAIN}
 APP_FORCE_HTTPS=true
 
 OPENROUTER_API_KEY=${OPENROUTER_API_KEY:-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}
-OPENROUTER_BASE_URL=${OPENROUTER_BASE_URL:-https://openrouter.ai/api/v1}
-OPENROUTER_MODEL=${OPENROUTER_MODEL:-meta-llama/llama-3.2-3b-instruct:free}
+# Senopati (local ITS) - preferred model/endpoint for on-prem usage
+SENOPATI_BASE_URL=${SENOPATI_BASE_URL:-https://senopati.its.ac.id/senopati-lokal-dev/generate}
+SENOPATI_MODEL=${SENOPATI_MODEL:-dolphin-mixtral:latest}
 EOF
     echo "✅ .env file created successfully"
 fi

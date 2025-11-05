@@ -13,7 +13,7 @@ services:
         generateValue: true
       - key: OPENROUTER_API_KEY
         sync: false
-      - key: OPENROUTER_BASE_URL
-        value: https://openrouter.ai/api/v1
-      - key: OPENROUTER_MODEL
-        value: meta-llama/llama-3.2-3b-instruct:free
+      - key: SENOPATI_BASE_URL
+        value: https://senopati.its.ac.id/senopati-lokal-dev/generate
+      - key: SENOPATI_MODEL
+        value: dolphin-mixtral:latest

@@ -186,9 +186,15 @@ class DocumentAnalysisController extends Controller
     private function getPythonEnvironment()
     {
         return [
+            // Keep OpenRouter vars for backward-compatibility if present
             'OPENROUTER_API_KEY' => env('OPENROUTER_API_KEY'),
             'OPENROUTER_BASE_URL' => env('OPENROUTER_BASE_URL', 'https://openrouter.ai/api/v1'),
             'OPENROUTER_MODEL' => env('OPENROUTER_MODEL', 'tngtech/deepseek-r1t2-chimera:free'),
+
+            // Senopati (preferred) - passed to the Python script which already reads SENOPATI_* vars
+            'SENOPATI_BASE_URL' => env('SENOPATI_BASE_URL', 'https://senopati.its.ac.id/senopati-lokal-dev/generate'),
+            'SENOPATI_MODEL' => env('SENOPATI_MODEL', 'dolphin-mixtral:latest'),
+
             'PYTHONIOENCODING' => 'utf-8',
             'PYTHONUNBUFFERED' => '1'
         ];
@@ -970,7 +976,11 @@ class DocumentAnalysisController extends Controller
                 'environment' => [
                     'openrouter_key' => !empty(env('OPENROUTER_API_KEY')),
                     'openrouter_url' => env('OPENROUTER_BASE_URL'),
-                    'openrouter_model' => env('OPENROUTER_MODEL')
+                    'openrouter_model' => env('OPENROUTER_MODEL'),
+
+                    // Senopati environment (preferred)
+                    'senopati_url' => env('SENOPATI_BASE_URL'),
+                    'senopati_model' => env('SENOPATI_MODEL')
                 ],
                 'files_count' => [
                     'results' => count(Storage::files(self::RESULTS_PATH)),
