@@ -226,12 +226,19 @@ class DocumentAnalysisController extends Controller
             // PowerShell command with proper escaping
             return 'powershell -Command "' . $envVars . 'python \\"' . $pythonScript . '\\" \\"' . $filePath . '\\""';
         } else {
+            // Linux/Railway: use virtual environment Python if available
+            $pythonBinary = 'python';
+            if (file_exists('/tmp/venv/bin/python')) {
+                $pythonBinary = '/tmp/venv/bin/python';
+                Log::info("Using virtual environment Python", ['python_path' => $pythonBinary]);
+            }
+            
             foreach ($env as $key => $value) {
                 if ($value) {
                     $envVars .= $key . '=' . escapeshellarg($value) . ' ';
                 }
             }
-            return $envVars . 'python "' . $pythonScript . '" "' . $filePath . '"';
+            return $envVars . $pythonBinary . ' "' . $pythonScript . '" "' . $filePath . '"';
         }
     }
 
