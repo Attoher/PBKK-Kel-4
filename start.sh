@@ -84,4 +84,4 @@ php artisan view:cache
 # Start server
 echo "✅ Starting PHP server on port ${PORT:-8080}..."
 echo "📍 Server will be available at http://0.0.0.0:${PORT:-8080}"
-php -S 0.0.0.0:${PORT:-8080} -t public
+php -S 0.0.0.0:${PORT:-8080} server.php
