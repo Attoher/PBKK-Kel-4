@@ -10,31 +10,39 @@ echo "📦 Activating Python virtual environment..."
 # Create .env file if Railway variables are not loaded
 if [ ! -f .env ] || [ -z "$APP_KEY" ]; then
     echo "📝 Creating .env file from Railway variables..."
+    
+    # Determine APP_URL from Railway environment
+    if [ -n "$RAILWAY_PUBLIC_DOMAIN" ]; then
+        APP_URL_VALUE="https://${RAILWAY_PUBLIC_DOMAIN}"
+    else
+        APP_URL_VALUE="http://localhost:${PORT:-8080}"
+    fi
+    
     cat > .env <<EOF
 APP_NAME="TA Format Checker ITS"
 APP_ENV=${APP_ENV:-production}
 APP_KEY=${APP_KEY:-base64:q36FLfYNrRgFaBXaPIgz02qRcyPISRIWjPR3ZxiStQI=}
-APP_DEBUG=${APP_DEBUG:-true}
-APP_URL=${RAILWAY_PUBLIC_DOMAIN:-https://pbkk-kel-4-production.up.railway.app}
+APP_DEBUG=${APP_DEBUG:-false}
+APP_URL=${APP_URL_VALUE}
 
 LOG_CHANNEL=stack
-LOG_LEVEL=${LOG_LEVEL:-debug}
+LOG_LEVEL=${LOG_LEVEL:-info}
 
 DB_CONNECTION=${DB_CONNECTION:-sqlite}
 
 SESSION_DRIVER=${SESSION_DRIVER:-database}
 CACHE_STORE=${CACHE_STORE:-database}
 
-# Force HTTPS for Railway proxy
-ASSET_URL=https://\${RAILWAY_PUBLIC_DOMAIN}
-APP_FORCE_HTTPS=true
-
-OPENROUTER_API_KEY=${OPENROUTER_API_KEY:-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}
-# Senopati (local ITS) - preferred model/endpoint for on-prem usage
+# Senopati (local ITS) - preferred model/endpoint
 SENOPATI_BASE_URL=${SENOPATI_BASE_URL:-https://senopati.its.ac.id/senopati-lokal-dev/generate}
 SENOPATI_MODEL=${SENOPATI_MODEL:-dolphin-mixtral:latest}
+
+# OpenRouter (backup)
+OPENROUTER_API_KEY=${OPENROUTER_API_KEY:-}
+OPENROUTER_BASE_URL=${OPENROUTER_BASE_URL:-https://openrouter.ai/api/v1}
+OPENROUTER_MODEL=${OPENROUTER_MODEL:-meta-llama/llama-3.2-3b-instruct:free}
 EOF
-    echo "✅ .env file created successfully"
+    echo "✅ .env file created with APP_URL=${APP_URL_VALUE}"
 fi
 
 # Test Python environment
@@ -72,6 +80,12 @@ php artisan view:clear
 echo "📦 Caching configuration..."
 php artisan config:cache
 
+# Optimize for production
+echo "🚀 Optimizing application..."
+php artisan route:cache
+php artisan view:cache
+
 # Start server
 echo "✅ Starting PHP server on port ${PORT:-8080}..."
-php -S 0.0.0.0:${PORT:-8080} -t public public/index.php
+echo "📍 Server will be available at http://0.0.0.0:${PORT:-8080}"
+php -S 0.0.0.0:${PORT:-8080} -t public
