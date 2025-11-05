@@ -217,6 +217,11 @@ INSTRUKSI: {EVALUATION_FRONTEND_PROMPT}
 def query_senopati(prompt, max_retries=3):
     """Query Senopati API dengan format yang benar"""
     
+    # Log untuk debugging (ditulis ke stderr agar tidak mengganggu JSON output)
+    import sys
+    print(f"DEBUG: Calling Senopati API at {SENOPATI_API_URL}", file=sys.stderr)
+    print(f"DEBUG: Using model {SENOPATI_MODEL}", file=sys.stderr)
+    
     payload = {
         "model": SENOPATI_MODEL,
         "prompt": prompt,
@@ -235,6 +240,7 @@ def query_senopati(prompt, max_retries=3):
     
     for attempt in range(max_retries):
         try:
+            print(f"DEBUG: Attempt {attempt + 1}/{max_retries}", file=sys.stderr)
             start_time = time.time()
             response = requests.post(
                 SENOPATI_API_URL,
@@ -243,7 +249,10 @@ def query_senopati(prompt, max_retries=3):
                 timeout=120
             )
             
+            print(f"DEBUG: Got response with status {response.status_code}", file=sys.stderr)
+            
             if response.status_code != 200:
+                print(f"DEBUG: Error response: {response.text[:500]}", file=sys.stderr)
                 response.raise_for_status()
             
             response_data = response.json()
@@ -259,8 +268,10 @@ def query_senopati(prompt, max_retries=3):
                 content = response_data["choices"][0].get("message", {}).get("content", "")
             
             if not content:
+                print(f"DEBUG: Empty content in response: {response_data}", file=sys.stderr)
                 raise Exception("API returned empty response content")
 
+            print(f"DEBUG: Successfully got response in {round(end_time - start_time, 2)}s", file=sys.stderr)
             return {
                 "success": True,
                 "response": content,
@@ -270,12 +281,15 @@ def query_senopati(prompt, max_retries=3):
             
         except requests.exceptions.RequestException as e:
             error_msg = str(e)
+            print(f"DEBUG: Request error on attempt {attempt + 1}: {error_msg}", file=sys.stderr)
             if attempt < max_retries - 1:
                 time.sleep(3)
                 continue
+            print(f"DEBUG: All retry attempts failed", file=sys.stderr)
             return {"success": False, "error": f"Senopati API Error: {error_msg}"}
         except Exception as e:
             error_msg = str(e)
+            print(f"DEBUG: Exception: {error_msg}", file=sys.stderr)
             return {"success": False, "error": f"Error: {error_msg}"}
 
 def extract_json_from_text(text):
