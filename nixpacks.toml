@@ -1,10 +1,10 @@
 [phases.setup]
-nixPkgs = ["php82", "php82Packages.composer", "python311", "python311Packages.pip", "python311Packages.requests", "python311Packages.pypdfium2"]
+nixPkgs = ["php82", "php82Packages.composer", "python311", "python311Packages.pip", "python311Packages.requests"]
 
 [phases.install]
 cmds = [
     "composer install --optimize-autoloader",
-    "pip install --user --no-cache-dir -r python/requirements.txt"
+    "pip install --user --no-cache-dir pypdfium2 PyPDF2 openai python-dotenv"
 ]
 
 [phases.build]
