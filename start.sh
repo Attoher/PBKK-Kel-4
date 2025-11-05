@@ -56,11 +56,11 @@ chmod -R 777 storage bootstrap/cache database
 
 # Create storage link
 echo "🔗 Creating storage link..."
-php artisan storage:link || echo "⚠️ Storage link already exists"
+php artisan storage:link 2>/dev/null || echo "⚠️ Storage link already exists"
 
-# Run migrations
+# Run migrations (ignore missing dev packages)
 echo "🗃️ Running database migrations..."
-php artisan migrate --force
+php artisan migrate --force 2>&1 | grep -v "PailServiceProvider" || true
 
 # Clear caches
 echo "🧹 Clearing caches..."
