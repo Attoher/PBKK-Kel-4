@@ -252,12 +252,27 @@ class DocumentAnalysisController extends Controller
             'total_length' => strlen($output)
         ]);
 
-        $results = json_decode($output, true);
+        // Filter DEBUG messages - ambil hanya baris JSON (yang mulai dari { atau [)
+        $lines = explode("\n", $output);
+        $jsonLines = [];
+        foreach ($lines as $line) {
+            $trimmed = trim($line);
+            if ($trimmed && !str_starts_with($trimmed, 'DEBUG:')) {
+                $jsonLines[] = $line;
+            }
+        }
+        $cleanOutput = implode("\n", $jsonLines);
+
+        Log::info("Cleaned output after filtering DEBUG", [
+            'preview' => Str::limit($cleanOutput, 500)
+        ]);
+
+        $results = json_decode($cleanOutput, true);
         
         if ($results === null) {
             Log::error("AI response bukan JSON valid", [
                 'json_error' => json_last_error_msg(),
-                'output_sample' => Str::limit($output, 200)
+                'output_sample' => Str::limit($cleanOutput, 200)
             ]);
             throw new \Exception("Output dari Python bukan JSON valid: " . json_last_error_msg());
         }
