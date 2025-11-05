@@ -1,10 +1,11 @@
 [phases.setup]
-nixPkgs = ["php82", "php82Packages.composer", "python311", "python311Packages.pip", "python311Packages.requests"]
+nixPkgs = ["php82", "php82Packages.composer", "python311", "python311Packages.pip"]
 
 [phases.install]
 cmds = [
     "composer install --optimize-autoloader",
-    "pip install --user --no-cache-dir pypdfium2 PyPDF2 openai python-dotenv"
+    "python -m venv /opt/venv",
+    ". /opt/venv/bin/activate && pip install --no-cache-dir pypdfium2 PyPDF2 openai python-dotenv requests"
 ]
 
 [phases.build]
@@ -12,7 +13,7 @@ cmds = [
     "mkdir -p storage/app/public storage/app/uploads storage/app/chunks storage/framework/cache storage/framework/sessions storage/framework/views storage/logs database",
     "touch database/database.sqlite",
     "chmod -R 777 storage bootstrap/cache database",
-    "python -c 'import requests; import pypdfium2; import PyPDF2; print(\"All packages OK\")' || echo 'Package check failed'"
+    ". /opt/venv/bin/activate && python -c 'import requests; import pypdfium2; import PyPDF2; print(\"✅ All packages OK\")'"
 ]
 
 [start]

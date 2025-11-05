@@ -3,12 +3,17 @@ set -e
 
 echo "🚀 Starting Laravel application with pypdfium2..."
 
+# Activate virtual environment
+echo "📦 Activating Python virtual environment..."
+if [ -d "/opt/venv" ]; then
+    . /opt/venv/bin/activate
+    echo "✅ Virtual environment activated"
+fi
+
 # Verify Python packages
 echo "🔍 Verifying Python packages..."
 python -c "import requests; import pypdfium2; import PyPDF2; print('✅ All Python packages available')" || {
     echo "❌ Python packages not found!"
-    echo "📦 Installing packages..."
-    pip install --user --no-cache-dir -r python/requirements.txt
 }
 
 # Create .env file if Railway variables are not loaded

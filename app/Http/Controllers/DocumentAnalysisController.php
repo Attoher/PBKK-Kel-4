@@ -226,8 +226,11 @@ class DocumentAnalysisController extends Controller
             // PowerShell command with proper escaping
             return 'powershell -Command "' . $envVars . 'python \\"' . $pythonScript . '\\" \\"' . $filePath . '\\""';
         } else {
-            // Linux/Railway: use system Python (packages installed globally)
-            $pythonBinary = 'python';
+            // Linux/Railway: use virtual environment Python
+            $pythonBinary = '/opt/venv/bin/python';
+            if (!file_exists($pythonBinary)) {
+                $pythonBinary = 'python';
+            }
             
             foreach ($env as $key => $value) {
                 if ($value) {
