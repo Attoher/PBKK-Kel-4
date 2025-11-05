@@ -1,12 +1,10 @@
 [phases.setup]
-nixPkgs = ["php82", "php82Packages.composer", "python311", "python311Packages.pip"]
+nixPkgs = ["php82", "php82Packages.composer", "python311", "python311Packages.pip", "python311Packages.requests", "python311Packages.pypdfium2"]
 
 [phases.install]
 cmds = [
     "composer install --optimize-autoloader",
-    "python -m venv /opt/venv",
-    "/opt/venv/bin/pip install --upgrade pip",
-    "/opt/venv/bin/pip install --no-cache-dir -r python/requirements.txt"
+    "pip install --user --no-cache-dir -r python/requirements.txt"
 ]
 
 [phases.build]
@@ -14,7 +12,7 @@ cmds = [
     "mkdir -p storage/app/public storage/app/uploads storage/app/chunks storage/framework/cache storage/framework/sessions storage/framework/views storage/logs database",
     "touch database/database.sqlite",
     "chmod -R 777 storage bootstrap/cache database",
-    "/opt/venv/bin/pip list"
+    "python -c 'import requests; import pypdfium2; import PyPDF2; print(\"All packages OK\")' || echo 'Package check failed'"
 ]
 
 [start]
