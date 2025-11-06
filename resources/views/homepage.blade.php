@@ -159,7 +159,7 @@
         margin: 0.5rem;
       }
       
-      .grid.gap-5.md\:gap-6.lg\:gap-7.md\:grid-cols-2 {
+      .grid.gap-5.xl\:gap-6.lg\:gap-7.xl\:grid-cols-2 {
         grid-template-columns: 1fr !important;
         gap: 1rem !important;
       }
@@ -247,20 +247,20 @@
   <!-- NAVBAR - Optimized -->
   <nav class="navbar shadow-lg border-b border-gray-200/50 sticky top-0 z-50 will-change-transform">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 safe-area">
-      <div class="flex justify-between h-16 md:h-20">
+      <div class="flex justify-between h-16 xl:h-20">
         <div class="flex items-center">
           <!-- Logo -->
           <div class="flex-shrink-0 flex items-center">
-            <div class="w-10 h-10 md:w-12 md:h-12 bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl flex items-center justify-center shadow-lg">
-              <i class="fas fa-graduation-cap text-white text-lg md:text-xl"></i>
+            <div class="w-10 h-10 xl:w-12 xl:h-12 bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl flex items-center justify-center shadow-lg">
+              <i class="fas fa-graduation-cap text-white text-lg xl:text-xl"></i>
             </div>
             <a href="{{ url('/') }}" class="flex items-center ml-3">
-              <span class="text-xl md:text-2xl font-bold text-gray-800 break-words">FormatCheck ITS</span>
+              <span class="text-xl xl:text-2xl font-bold text-gray-800 break-words">FormatCheck ITS</span>
             </a>
           </div>
           
           <!-- Navigation Links -->
-          <div class="hidden md:ml-8 md:flex md:space-x-6">
+          <div class="hidden xl:ml-8 xl:flex xl:space-x-6">
             <a href="#fitur" class="nav-link border-transparent text-gray-600 hover:text-gray-900 inline-flex items-center px-3 py-2 border-b-2 text-sm font-semibold transition-all duration-200 break-words">
               <i class="fas fa-rocket mr-2 text-blue-500"></i>
               Fitur
@@ -281,8 +281,8 @@
         </div>
 
         <!-- Right side -->
-        <div class="flex items-center space-x-3 md:space-x-6">
-          <div class="hidden md:flex items-center space-x-6">
+        <div class="flex items-center space-x-3 xl:space-x-6">
+          <div class="hidden xl:flex items-center space-x-6">
             @auth
               <form method="POST" action="{{ route('logout') }}">
                 @csrf
@@ -306,7 +306,7 @@
             </a>
           </div>
           <!-- Mobile menu button -->
-          <div class="md:hidden">
+          <div class="xl:hidden">
             <button id="mobileMenuButton" type="button" class="inline-flex items-center justify-center p-3 rounded-xl text-gray-600 hover:text-blue-600 hover:bg-gray-100 transition-all duration-200">
               <span class="sr-only">Open main menu</span>
               <i class="fas fa-bars text-xl"></i>
@@ -316,7 +316,7 @@
       </div>
     </div>
     <!-- Mobile menu - FIXED: Remove Upload TA highlight and show Login instead -->
-    <div id="mobileMenu" class="md:hidden hidden border-t border-gray-200 bg-white/95 backdrop-blur-lg">
+    <div id="mobileMenu" class="xl:hidden hidden border-t border-gray-200 bg-white/95 backdrop-blur-lg">
       <div class="pt-2 pb-4 space-y-1">
         <a href="#fitur" class="nav-link block pl-4 pr-4 py-3 border-l-4 border-transparent text-base font-medium text-gray-700 hover:text-blue-600 hover:border-blue-600 hover:bg-blue-50 transition-all duration-200 break-words">
           <i class="fas fa-rocket mr-2 text-blue-500"></i>Fitur</a>
@@ -355,7 +355,7 @@
   </nav>
 
   <!-- HERO - Optimized -->
-  <section class="py-16 md:py-24 lg:py-28 safe-area">
+  <section class="py-16 xl:py-24 lg:py-28 safe-area">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="grid items-center gap-12 lg:gap-16 xl:gap-20 lg:grid-cols-2">
         <div class="text-white mobile-text-center">
@@ -363,17 +363,17 @@
             <span class="inline-flex h-2 w-2 rounded-full bg-white animate-pulse"></span>
             Sesuai Pedoman Format ITS 2025
           </div>
-          <h1 class="text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-extrabold leading-tight md:leading-tight lg:leading-tight animate-fade-in-up text-balance" style="animation-delay: 0.1s">
+          <h1 class="text-3xl xl:text-4xl lg:text-5xl xl:text-6xl font-extrabold leading-tight xl:leading-tight lg:leading-tight animate-fade-in-up text-balance" style="animation-delay: 0.1s">
             Cek Format <span class="break-words">Tugas Akhir</span> Otomatis
           </h1>
-          <p class="mt-6 text-lg md:text-xl lg:text-2xl text-white/90 max-w-2xl animate-fade-in-up break-words" style="animation-delay: 0.2s">
+          <p class="mt-6 text-lg xl:text-xl lg:text-2xl text-white/90 max-w-2xl animate-fade-in-up break-words" style="animation-delay: 0.2s">
             Validasi struktur, tipografi, margin, abstrak, Bab 1, sitasi APA 7 — langsung dapatkan laporan & saran perbaikan berbasis AI.
           </p>
           <div class="mt-8 flex flex-wrap items-center gap-4 animate-fade-in-up mobile-stack" style="animation-delay: 0.3s">
             <a
               @auth href="{{ route('upload.form') }}" @endauth
               @guest href="{{ route('login.form') }}" @endguest
-              class="btn-hover inline-flex items-center gap-3 rounded-2xl bg-white px-6 md:px-8 py-4 text-base font-bold text-blue-700 shadow-2xl hover:bg-blue-50 hover:scale-105 break-words">
+              class="btn-hover inline-flex items-center gap-3 rounded-2xl bg-white px-6 xl:px-8 py-4 text-base font-bold text-blue-700 shadow-2xl hover:bg-blue-50 hover:scale-105 break-words">
               <i class="fas fa-upload text-lg"></i> 
               Unggah Dokumen Sekarang
             </a>
@@ -399,9 +399,9 @@
         </div>
         <div class="animate-fade-in-up" style="animation-delay: 0.5s">
           <div class="card-hover rounded-3xl bg-white/95 backdrop-blur-lg shadow-2xl border border-white/40 p-6 lg:p-8">
-            <div class="grid gap-5 md:gap-6 lg:gap-7 md:grid-cols-2">
+            <div class="grid gap-5 xl:gap-6 lg:gap-7 xl:grid-cols-2">
               <!-- Card 1 -->
-              <div class="rounded-2xl border border-gray-200/80 bg-gradient-to-br from-white to-gray-50 p-5 lg:p-6 shadow-sm hover:shadow-md transition-all duration-300">
+              <div class="rounded-2xl border border-gray-200/80 bg-gradient-to-br from-white to-gray-50 p-5 lg:p-6 shadow-sm hover:shadow-xl transition-all duration-300">
                 <div class="flex items-center gap-3 mb-4">
                   <div class="w-10 h-10 bg-emerald-100 rounded-xl flex items-center justify-center">
                     <i class="fas fa-check-circle text-emerald-600 text-lg"></i>
@@ -417,7 +417,7 @@
               </div>
               
               <!-- Card 2 -->
-              <div class="rounded-2xl border border-gray-200/80 bg-gradient-to-br from-white to-gray-50 p-5 lg:p-6 shadow-sm hover:shadow-md transition-all duration-300">
+              <div class="rounded-2xl border border-gray-200/80 bg-gradient-to-br from-white to-gray-50 p-5 lg:p-6 shadow-sm hover:shadow-xl transition-all duration-300">
                 <div class="flex items-center gap-3 mb-4">
                   <div class="w-10 h-10 bg-amber-100 rounded-xl flex items-center justify-center">
                     <i class="fas fa-exclamation-triangle text-amber-600 text-lg"></i>
@@ -433,7 +433,7 @@
               </div>
               
               <!-- Card 3 -->
-              <div class="rounded-2xl border border-gray-200/80 bg-gradient-to-br from-white to-gray-50 p-5 lg:p-6 shadow-sm hover:shadow-md transition-all duration-300">
+              <div class="rounded-2xl border border-gray-200/80 bg-gradient-to-br from-white to-gray-50 p-5 lg:p-6 shadow-sm hover:shadow-xl transition-all duration-300">
                 <div class="flex items-center gap-3 mb-4">
                   <div class="w-10 h-10 bg-emerald-100 rounded-xl flex items-center justify-center">
                     <i class="fas fa-file-lines text-emerald-600 text-lg"></i>
@@ -445,7 +445,7 @@
               </div>
               
               <!-- Card 4 -->
-              <div class="rounded-2xl border border-gray-200/80 bg-gradient-to-br from-white to-gray-50 p-5 lg:p-6 shadow-sm hover:shadow-md transition-all duration-300">
+              <div class="rounded-2xl border border-gray-200/80 bg-gradient-to-br from-white to-gray-50 p-5 lg:p-6 shadow-sm hover:shadow-xl transition-all duration-300">
                 <div class="flex items-center gap-3 mb-4">
                   <div class="w-10 h-10 bg-amber-100 rounded-xl flex items-center justify-center">
                     <i class="fas fa-quote-right text-amber-600 text-lg"></i>
@@ -471,17 +471,17 @@
           <i class="fas fa-rocket"></i>
           Fitur Unggulan
         </div>
-        <h2 class="text-3xl md:text-4xl lg:text-5xl font-extrabold text-gray-900 mb-6 text-balance">Pemeriksaan <span class="break-words">Menyeluruh</span></h2>
-        <p class="text-xl md:text-2xl text-gray-600 max-w-3xl mx-auto break-words">Setiap aspek format Tugas Akhir ITS diperiksa secara detail dan akurat</p>
+        <h2 class="text-3xl xl:text-4xl lg:text-5xl font-extrabold text-gray-900 mb-6 text-balance">Pemeriksaan <span class="break-words">Menyeluruh</span></h2>
+        <p class="text-xl xl:text-2xl text-gray-600 max-w-3xl mx-auto break-words">Setiap aspek format Tugas Akhir ITS diperiksa secara detail dan akurat</p>
       </div>
       <div class="grid gap-8 sm:gap-10 lg:gap-12 sm:grid-cols-2 lg:grid-cols-3">
         <!-- Feature 1 -->
-        <div class="card-hover rounded-3xl border border-gray-200 bg-white p-6 md:p-8 shadow-lg hover:border-blue-200/50 animate-fade-in-up">
+        <div class="card-hover rounded-3xl border border-gray-200 bg-white p-6 xl:p-8 shadow-lg hover:border-blue-200/50 animate-fade-in-up">
           <div class="flex items-center gap-4 mb-6">
-            <span class="inline-flex h-14 w-14 md:h-16 md:w-16 items-center justify-center rounded-2xl bg-blue-50 text-blue-600 shadow-sm">
-              <i class="fas fa-layer-group text-xl md:text-2xl"></i>
+            <span class="inline-flex h-14 w-14 xl:h-16 xl:w-16 items-center justify-center rounded-2xl bg-blue-50 text-blue-600 shadow-sm">
+              <i class="fas fa-layer-group text-xl xl:text-2xl"></i>
             </span>
-            <h3 class="text-lg md:text-xl font-bold text-gray-900 break-words">Struktur Dokumen</h3>
+            <h3 class="text-lg xl:text-xl font-bold text-gray-900 break-words">Struktur Dokumen</h3>
           </div>
           <p class="text-gray-600 leading-relaxed line-clamp-3 break-words">Deteksi otomatis Cover, Abstrak (ID & EN), Daftar Isi, dan Bab wajib sesuai tipe naskah Proposal atau Laporan.</p>
           <ul class="mt-4 space-y-2 text-sm text-gray-500">
@@ -492,12 +492,12 @@
         </div>
 
         <!-- Feature 2 -->
-        <div class="card-hover rounded-3xl border border-gray-200 bg-white p-6 md:p-8 shadow-lg hover:border-purple-200/50 animate-fade-in-up" style="animation-delay: 0.1s">
+        <div class="card-hover rounded-3xl border border-gray-200 bg-white p-6 xl:p-8 shadow-lg hover:border-purple-200/50 animate-fade-in-up" style="animation-delay: 0.1s">
           <div class="flex items-center gap-4 mb-6">
-            <span class="inline-flex h-14 w-14 md:h-16 md:w-16 items-center justify-center rounded-2xl bg-purple-50 text-purple-600 shadow-sm">
-              <i class="fas fa-text-height text-xl md:text-2xl"></i>
+            <span class="inline-flex h-14 w-14 xl:h-16 xl:w-16 items-center justify-center rounded-2xl bg-purple-50 text-purple-600 shadow-sm">
+              <i class="fas fa-text-height text-xl xl:text-2xl"></i>
             </span>
-            <h3 class="text-lg md:text-xl font-bold text-gray-900 break-words">Format Teks</h3>
+            <h3 class="text-lg xl:text-xl font-bold text-gray-900 break-words">Format Teks</h3>
           </div>
           <p class="text-gray-600 leading-relaxed line-clamp-3 break-words">Validasi Times New Roman 12pt, spasi 1.0, margin 3–2.5–3–2 cm, serta konsistensi heading dan paragraf.</p>
           <ul class="mt-4 space-y-2 text-sm text-gray-500">
@@ -508,12 +508,12 @@
         </div>
 
         <!-- Feature 3 -->
-        <div class="card-hover rounded-3xl border border-gray-200 bg-white p-6 md:p-8 shadow-lg hover:border-green-200/50 animate-fade-in-up" style="animation-delay: 0.2s">
+        <div class="card-hover rounded-3xl border border-gray-200 bg-white p-6 xl:p-8 shadow-lg hover:border-green-200/50 animate-fade-in-up" style="animation-delay: 0.2s">
           <div class="flex items-center gap-4 mb-6">
-            <span class="inline-flex h-14 w-14 md:h-16 md:w-16 items-center justify-center rounded-2xl bg-green-50 text-green-600 shadow-sm">
-              <i class="fas fa-file-lines text-xl md:text-2xl"></i>
+            <span class="inline-flex h-14 w-14 xl:h-16 xl:w-16 items-center justify-center rounded-2xl bg-green-50 text-green-600 shadow-sm">
+              <i class="fas fa-file-lines text-xl xl:text-2xl"></i>
             </span>
-            <h3 class="text-lg md:text-xl font-bold text-gray-900 break-words">Abstrak</h3>
+            <h3 class="text-lg xl:text-xl font-bold text-gray-900 break-words">Abstrak</h3>
           </div>
           <p class="text-gray-600 leading-relaxed line-clamp-3 break-words">Hitung 200–300 kata, deteksi bahasa otomatis, dan saran kebahasaan untuk abstrak Indonesia dan Inggris.</p>
           <ul class="mt-4 space-y-2 text-sm text-gray-500">
@@ -524,12 +524,12 @@
         </div>
 
         <!-- Feature 4 -->
-        <div class="card-hover rounded-3xl border border-gray-200 bg-white p-6 md:p-8 shadow-lg hover:border-orange-200/50 animate-fade-in-up" style="animation-delay: 0.3s">
+        <div class="card-hover rounded-3xl border border-gray-200 bg-white p-6 xl:p-8 shadow-lg hover:border-orange-200/50 animate-fade-in-up" style="animation-delay: 0.3s">
           <div class="flex items-center gap-4 mb-6">
-            <span class="inline-flex h-14 w-14 md:h-16 md:w-16 items-center justify-center rounded-2xl bg-orange-50 text-orange-600 shadow-sm">
-              <i class="fas fa-book-open text-xl md:text-2xl"></i>
+            <span class="inline-flex h-14 w-14 xl:h-16 xl:w-16 items-center justify-center rounded-2xl bg-orange-50 text-orange-600 shadow-sm">
+              <i class="fas fa-book-open text-xl xl:text-2xl"></i>
             </span>
-            <h3 class="text-lg md:text-xl font-bold text-gray-900 break-words">Bab 1 Pendahuluan</h3>
+            <h3 class="text-lg xl:text-xl font-bold text-gray-900 break-words">Bab 1 Pendahuluan</h3>
           </div>
           <p class="text-gray-600 leading-relaxed line-clamp-3 break-words">Verifikasi lengkap latar belakang, rumusan masalah, batasan, tujuan, dan manfaat penelitian.</p>
           <ul class="mt-4 space-y-2 text-sm text-gray-500">
@@ -540,12 +540,12 @@
         </div>
 
         <!-- Feature 5 -->
-        <div class="card-hover rounded-3xl border border-gray-200 bg-white p-6 md:p-8 shadow-lg hover:border-red-200/50 animate-fade-in-up" style="animation-delay: 0.4s">
+        <div class="card-hover rounded-3xl border border-gray-200 bg-white p-6 xl:p-8 shadow-lg hover:border-red-200/50 animate-fade-in-up" style="animation-delay: 0.4s">
           <div class="flex items-center gap-4 mb-6">
-            <span class="inline-flex h-14 w-14 md:h-16 md:w-16 items-center justify-center rounded-2xl bg-red-50 text-red-600 shadow-sm">
-              <i class="fas fa-quote-right text-xl md:text-2xl"></i>
+            <span class="inline-flex h-14 w-14 xl:h-16 xl:w-16 items-center justify-center rounded-2xl bg-red-50 text-red-600 shadow-sm">
+              <i class="fas fa-quote-right text-xl xl:text-2xl"></i>
             </span>
-            <h3 class="text-lg md:text-xl font-bold text-gray-900 break-words">Sitasi APA 7</h3>
+            <h3 class="text-lg xl:text-xl font-bold text-gray-900 break-words">Sitasi APA 7</h3>
           </div>
           <p class="text-gray-600 leading-relaxed line-clamp-3 break-words">Deteksi inkonsistensi kutipan & daftar pustaka, lengkap dengan saran perbaikan format APA Edisi 7.</p>
           <ul class="mt-4 space-y-2 text-sm text-gray-500">
@@ -556,12 +556,12 @@
         </div>
 
         <!-- Feature 6 -->
-        <div class="card-hover rounded-3xl border border-gray-200 bg-white p-6 md:p-8 shadow-lg hover:border-indigo-200/50 animate-fade-in-up" style="animation-delay: 0.5s">
+        <div class="card-hover rounded-3xl border border-gray-200 bg-white p-6 xl:p-8 shadow-lg hover:border-indigo-200/50 animate-fade-in-up" style="animation-delay: 0.5s">
           <div class="flex items-center gap-4 mb-6">
-            <span class="inline-flex h-14 w-14 md:h-16 md:w-16 items-center justify-center rounded-2xl bg-indigo-50 text-indigo-600 shadow-sm">
-              <i class="fas fa-id-card text-xl md:text-2xl"></i>
+            <span class="inline-flex h-14 w-14 xl:h-16 xl:w-16 items-center justify-center rounded-2xl bg-indigo-50 text-indigo-600 shadow-sm">
+              <i class="fas fa-id-card text-xl xl:text-2xl"></i>
             </span>
-            <h3 class="text-lg md:text-xl font-bold text-gray-900 break-words">Cover & Halaman Formal</h3>
+            <h3 class="text-lg xl:text-xl font-bold text-gray-900 break-words">Cover & Halaman Formal</h3>
           </div>
           <p class="text-gray-600 leading-relaxed line-clamp-3 break-words">Pemeriksaan skema biru ITS, font Trebuchet MS pada cover, dan kontras teks putih sesuai standar.</p>
           <ul class="mt-4 space-y-2 text-sm text-gray-500">
@@ -579,7 +579,7 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
       <div class="grid items-start gap-10 lg:grid-cols-2">
         <div class="text-white">
-          <h2 class="text-2xl md:text-3xl font-extrabold break-words">Cara Kerja</h2>
+          <h2 class="text-2xl xl:text-3xl font-extrabold break-words">Cara Kerja</h2>
           <ol class="mt-6 space-y-6">
             <li class="flex gap-4">
               <div class="h-9 w-9 flex-none rounded-full bg-white text-blue-700 grid place-items-center font-bold">1</div>
@@ -605,8 +605,8 @@
           </ol>
         </div>
         <div>
-          <div id="unggah" class="card-hover rounded-2xl border-2 border-dashed border-white/50 bg-white/90 backdrop-blur p-6 md:p-8 text-center shadow-xl">
-            <div class="mx-auto max-w-md">
+          <div id="unggah" class="card-hover rounded-2xl border-2 border-dashed border-white/50 bg-white/90 backdrop-blur p-6 xl:p-8 text-center shadow-xl">
+            <div class="mx-auto max-w-xl">
               <div class="mx-auto grid h-14 w-14 place-items-center rounded-xl bg-blue-50 text-blue-700">
                 <i class="fas fa-cloud-upload-alt text-xl"></i>
               </div>
@@ -633,10 +633,10 @@
   <section id="panduan" class="bg-white/95 backdrop-blur safe-area">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
       <div class="mx-auto max-w-3xl text-center">
-        <h2 class="text-2xl md:text-3xl font-extrabold text-gray-900 break-words">Ringkasan Aturan yang Dicek</h2>
+        <h2 class="text-2xl xl:text-3xl font-extrabold text-gray-900 break-words">Ringkasan Aturan yang Dicek</h2>
         <p class="mt-3 text-gray-600 break-words">Aspek yang divalidasi otomatis sesuai pedoman ITS.</p>
       </div>
-      <div class="mt-10 grid gap-6 md:grid-cols-2">
+      <div class="mt-10 grid gap-6 xl:grid-cols-2">
         <div class="card-hover rounded-2xl border border-gray-200 bg-white p-6">
           <h3 class="font-semibold text-gray-900 break-words">Struktur Dokumen</h3>
           <ul class="mt-3 list-disc pl-5 text-sm text-gray-700 space-y-1">
@@ -722,11 +722,11 @@
           <i class="fas fa-users"></i>
           Komunitas Aktif
         </div>
-        <h2 class="text-2xl md:text-3xl font-extrabold text-gray-900 break-words">Bergabung dengan 1,000+ Mahasiswa ITS</h2>
+        <h2 class="text-2xl xl:text-3xl font-extrabold text-gray-900 break-words">Bergabung dengan 1,000+ Mahasiswa ITS</h2>
         <p class="mt-3 text-gray-600 break-words">Raih kemudahan revisi format bersama komunitas yang saling mendukung.</p>
       </div>
       
-      <div class="mt-10 grid gap-6 md:grid-cols-3">
+      <div class="mt-10 grid gap-6 xl:grid-cols-3">
         <!-- Stat 1 -->
         <div class="card-hover rounded-2xl border border-gray-200 bg-white p-6 text-center shadow-sm">
           <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -779,7 +779,7 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 safe-area">
       <div class="grid items-center gap-8 lg:grid-cols-2">
         <div>
-          <h2 class="text-2xl md:text-3xl font-extrabold text-white break-words">Siap cek format Tugas Akhir Anda?</h2>
+          <h2 class="text-2xl xl:text-3xl font-extrabold text-white break-words">Siap cek format Tugas Akhir Anda?</h2>
           <p class="mt-2 text-white/80 break-words">Unggah naskah dan terima laporan lengkap.</p>
         </div>
         <div class="text-left lg:text-right">
@@ -794,9 +794,9 @@
   <!-- FOOTER - Diperbarui untuk konsistensi -->
   <footer class="bg-gray-800 text-white py-8 safe-area">
     <div class="max-w-7xl mx-auto px-4">
-      <div class="flex flex-col md:flex-row justify-between items-center">
-        <div class="mb-6 md:mb-0 text-center md:text-left">
-          <div class="flex items-center justify-center md:justify-start">
+      <div class="flex flex-col xl:flex-row justify-between items-center">
+        <div class="mb-6 xl:mb-0 text-center xl:text-left">
+          <div class="flex items-center justify-center xl:justify-start">
             <a href="{{ url('/') }}" class="flex items-center">
               <div class="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg flex items-center justify-center mr-3">
                 <i class="fas fa-graduation-cap text-white text-lg"></i>
