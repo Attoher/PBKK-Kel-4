@@ -185,7 +185,7 @@ def count_references(full_text):
 
 def create_full_prompt(pdf_content):
     """Buat prompt lengkap untuk analisis front-end"""
-    pdf_preview = pdf_content['full_text'][:15000]
+    pdf_preview = pdf_content['full_text'][:150000]
     
     chapter_status = detect_chapters(pdf_content['full_text'])
     
@@ -227,11 +227,8 @@ def query_senopati(prompt, max_retries=3):
         "prompt": prompt,
         "system": SYSTEM_PROMPT,
         "stream": False,
-        "options": {
-            "temperature": 0.1,
-            "top_p": 0.9,
-            "max_tokens": 2000
-        }
+        "temperature": 0.05,
+        "max_tokens": 0
     }
     
     headers = {

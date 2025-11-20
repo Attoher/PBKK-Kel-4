@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="api-base" content="{{ url('/') }}">
   <title>FormatCheck TA ITS — Cek Format Tugas Akhir Berbasis AI</title>
   <meta name="description" content="FormatCheck TA ITS membantu mahasiswa memeriksa kesesuaian format penulisan Tugas Akhir sesuai panduan ITS secara otomatis dengan AI." />
   <script src="https://cdn.tailwindcss.com"></script>

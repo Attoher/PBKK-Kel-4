@@ -227,7 +227,7 @@ class DocumentAnalysisController extends Controller
             return 'powershell -Command "' . $envVars . 'python \\"' . $pythonScript . '\\" \\"' . $filePath . '\\""';
         } else {
             // Linux/Railway: use virtual environment Python
-            $pythonBinary = '/opt/venv/bin/python';
+            $pythonBinary = '/home/user-c-4/PBKK-Kel-4/venv/bin/python';
             if (!file_exists($pythonBinary)) {
                 $pythonBinary = 'python';
             }

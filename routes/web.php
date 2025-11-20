@@ -34,7 +34,7 @@ Route::delete('/history/clear-old', [DocumentAnalysisController::class, 'clearOl
 Route::delete('/history/delete/{filename}', [DocumentAnalysisController::class, 'deleteHistoryItem'])->name('history.delete');
 
 Route::post('/upload/chunk', [UploadController::class, 'uploadChunk'])->name('upload.chunk');
-Route::post('/upload/merge', [UploadController::class, 'mergeChunks'])->name('upload.merge')->middleware(\App\Http\Middleware\CheckPythonEnv::class);
+Route::post('/upload/merge', [UploadController::class, 'mergeChunks'])->name('upload.merge');
 
 // DEBUG ROUTES - untuk cek logs dan environment di Railway
 Route::get('/debug/logs', [DocumentAnalysisController::class, 'debugLogs']);

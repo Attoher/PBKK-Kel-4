@@ -806,6 +806,7 @@
               'Content-Type': 'application/json',
               'X-CSRF-TOKEN': document.querySelector('input[name=_token]').value
             },
+	    credentials: 'same-origin',
             body: JSON.stringify({ uploadId, fileName: file.name })
           });
 
@@ -822,8 +823,9 @@
 
           // Jika sukses, redirect ke halaman hasil
           if (result.success && result.filename) {
-              console.log('Redirecting to:', `/results/${result.filename}`);
-              window.location.href = `/results/${result.filename}`;
+              const targetUrl = "{{ url('/results') }}/" + result.filename;
+              console.log('Redirecting to:', targetUrl);
+              window.location.href = targetUrl;
           } else {
               showNotification(result.message || 'Gagal menyelesaikan upload.');
           }
