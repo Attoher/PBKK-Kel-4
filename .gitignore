@@ -35,3 +35,7 @@ __pycache__/
 
 # Database (keep structure, ignore data)
 /database/database.sqlite
+
+# Large reference and documentation folders
+/Referensi/
+/pedoman/
