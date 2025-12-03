@@ -647,11 +647,39 @@
   </main>
 
   <!-- Footer -->
-  <footer class="bg-gray-800 text-white py-6 mt-8 print-hidden">
-    <div class="max-w-6xl mx-auto px-4 text-center safe-area">
-      <p class="text-gray-400 text-sm break-words">
-        © 2025 Sistem Deteksi Kelengkapan Format Tugas Akhir - ITS.
-      </p>
+  <footer class="bg-gray-800 text-white py-8 mt-12 no-print">
+    <div class="max-w-7xl mx-auto px-4 safe-area">
+      <div class="flex flex-col md:flex-row justify-between items-center">
+        <div class="mb-6 md:mb-0 text-center md:text-left">
+          <div class="flex items-center justify-center md:justify-start">
+            <a href="{{ url('/') }}" class="flex items-center">
+              <div class="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg flex items-center justify-center mr-3">
+                <i class="fas fa-graduation-cap text-white text-lg"></i>
+              </div>
+              <span class="text-xl font-bold break-words">TAkCekIn ITS</span>
+            </a>
+          </div>
+          <p class="text-gray-400 text-sm mt-2 break-words">Sistem Deteksi Kelengkapan Format Tugas Akhir</p>
+        </div>
+        
+        <div class="flex space-x-6">
+          <a href="{{ route('upload.form') }}" class="text-gray-300 hover:text-white transition transform hover:scale-110" title="Upload Baru">
+            <i class="fas fa-upload text-xl"></i>
+          </a>
+          <a href="{{ route('history') }}" class="text-gray-300 hover:text-white transition transform hover:scale-110" title="Riwayat">
+            <i class="fas fa-history text-xl"></i>
+          </a>
+          <a href="#" class="text-gray-300 hover:text-white transition transform hover:scale-110" title="Bantuan">
+            <i class="fas fa-question-circle text-xl"></i>
+          </a>
+        </div>
+      </div>
+      
+      <div class="border-t border-gray-700 mt-6 pt-6 text-center">
+        <p class="text-gray-400 text-sm break-words">
+          © 2025 Sistem Deteksi Kelengkapan Format Tugas Akhir - ITS. All rights reserved.
+        </p>
+      </div>
     </div>
   </footer>
 
