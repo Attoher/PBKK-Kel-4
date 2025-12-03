@@ -8,6 +8,8 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="{{ asset('css/pdf-its.css') }}">
   <link rel="stylesheet" href="css/pdf-its.css">
+  <link rel="stylesheet" href="{{ asset('css/dark-its.css') }}">
+  <link rel="stylesheet" href="css/dark-its.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 </head>
@@ -982,6 +984,119 @@
         });
       }
     });
+
+    // Dark Mode Toggle System
+    document.addEventListener('DOMContentLoaded', function() {
+      // Cek preferensi dark mode di localStorage
+      const isDarkMode = localStorage.getItem('darkMode') === 'true';
+      const darkModeToggle = document.getElementById('darkModeToggle');
+      const darkModeIcon = document.getElementById('darkModeIcon');
+      
+      // Fungsi untuk mengaktifkan dark mode
+      function enableDarkMode() {
+        document.documentElement.classList.add('dark-mode');
+        darkModeIcon.classList.remove('fa-moon');
+        darkModeIcon.classList.add('fa-sun');
+        localStorage.setItem('darkMode', 'true');
+        console.log('Dark mode enabled');
+      }
+      
+      // Fungsi untuk menonaktifkan dark mode
+      function disableDarkMode() {
+        document.documentElement.classList.remove('dark-mode');
+        darkModeIcon.classList.remove('fa-sun');
+        darkModeIcon.classList.add('fa-moon');
+        localStorage.setItem('darkMode', 'false');
+        console.log('Dark mode disabled');
+      }
+      
+      // Toggle dark mode
+      function toggleDarkMode() {
+        if (document.documentElement.classList.contains('dark-mode')) {
+          disableDarkMode();
+        } else {
+          enableDarkMode();
+        }
+      }
+      
+      // Inisialisasi dark mode berdasarkan preferensi yang disimpan
+      if (isDarkMode) {
+        enableDarkMode();
+      }
+      
+      // Event listener untuk tombol toggle
+      if (darkModeToggle) {
+        darkModeToggle.addEventListener('click', toggleDarkMode);
+      }
+      
+      // Optional: Tambahkan hotkey (Ctrl+Shift+D) untuk toggle dark mode
+      document.addEventListener('keydown', function(e) {
+        if (e.ctrlKey && e.shiftKey && e.key === 'D') {
+          e.preventDefault();
+          toggleDarkMode();
+          
+          // Tampilkan notifikasi
+          showDarkModeNotification();
+        }
+      });
+      
+      // Fungsi untuk menampilkan notifikasi dark mode
+      function showDarkModeNotification() {
+        const isDark = document.documentElement.classList.contains('dark-mode');
+        const notification = document.createElement('div');
+        notification.className = 'fixed top-4 right-4 z-50 px-4 py-3 rounded-lg shadow-lg flex items-center animate-fade-in-up';
+        notification.style.animationDuration = '0.3s';
+        
+        if (isDark) {
+          notification.innerHTML = `
+            <div class="bg-gray-800 text-white px-4 py-3 rounded-lg shadow-lg flex items-center">
+              <i class="fas fa-sun text-yellow-300 mr-2"></i>
+              <span>Dark Mode Aktif</span>
+            </div>
+          `;
+        } else {
+          notification.innerHTML = `
+            <div class="bg-white text-gray-800 px-4 py-3 rounded-lg shadow-lg flex items-center">
+              <i class="fas fa-moon text-blue-500 mr-2"></i>
+              <span>Light Mode Aktif</span>
+            </div>
+          `;
+        }
+        
+        document.body.appendChild(notification);
+        
+        // Hapus notifikasi setelah 3 detik
+        setTimeout(() => {
+          notification.style.opacity = '0';
+          notification.style.transform = 'translateY(-10px)';
+          notification.style.transition = 'all 0.3s ease';
+          
+          setTimeout(() => {
+            document.body.removeChild(notification);
+          }, 300);
+        }, 3000);
+      }
+      
+      // Fungsi untuk mendeteksi preferensi sistem
+      function detectSystemPreference() {
+        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+          // Jika user belum pernah menyetel preferensi, gunakan preferensi sistem
+          if (localStorage.getItem('darkMode') === null) {
+            enableDarkMode();
+          }
+        }
+      }
+      
+      // Deteksi preferensi sistem saat pertama kali load
+      detectSystemPreference();
+      
+      // Listen untuk perubahan preferensi sistem
+      window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', detectSystemPreference);
+    });
   </script>
+  <!-- Dark Mode Toggle Button -->
+  <button id="darkModeToggle" class="fixed bottom-6 right-6 z-50 w-12 h-12 rounded-full bg-white dark:bg-gray-800 shadow-lg hover:shadow-xl border border-gray-200 dark:border-gray-700 flex items-center justify-center transition-all duration-300 hover:scale-110 print-hidden">
+    <i id="darkModeIcon" class="fas fa-moon text-gray-700 dark:text-yellow-300 text-lg"></i>
+  </button>
 </body>
 </html>
