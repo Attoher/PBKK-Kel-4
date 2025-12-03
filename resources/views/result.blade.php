@@ -159,7 +159,6 @@
         <div class="mb-8 md:mb-10">
           <h2 class="text-xl font-bold text-gray-800 mb-4 break-words">Lokasi Konten pada PDF</h2>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
-            <!-- Lokasi Konten Terdeteksi -->
             <div class="bg-white rounded-xl border border-blue-200 p-4 md:p-5 shadow-sm">
               <h3 class="font-semibold text-gray-800 mb-3">Bagian Terdeteksi</h3>
               <div class="space-y-3">
@@ -226,6 +225,141 @@
                   </button>
                 @endif
               </div>
+            </div>
+
+            <!-- BAGIAN KANAN (NEW) - Informasi Tambahan -->
+            <div class="bg-gradient-to-br from-gray-50 to-blue-50 rounded-xl border border-blue-200 p-4 md:p-5 shadow-sm">
+              <h3 class="font-semibold text-gray-800 mb-3 flex items-center">
+                <i class="fas fa-info-circle text-blue-500 mr-2"></i> Panduan Navigasi PDF
+              </h3>
+              
+              <!-- Tips Navigasi -->
+              <div class="mb-4 p-3 bg-white rounded-lg border border-gray-200">
+                <h4 class="font-medium text-gray-800 mb-2 flex items-center">
+                  <i class="fas fa-lightbulb text-yellow-500 mr-2"></i> Tips Cepat:
+                </h4>
+                <ul class="text-sm text-gray-600 space-y-1 pl-1">
+                  <li class="flex items-start">
+                    <i class="fas fa-chevron-right text-xs text-blue-400 mt-1 mr-2"></i>
+                    Klik bagian untuk langsung menuju halaman
+                  </li>
+                  <li class="flex items-start">
+                    <i class="fas fa-chevron-right text-xs text-blue-400 mt-1 mr-2"></i>
+                    Gunakan tombol navigasi di panel PDF
+                  </li>
+                  <li class="flex items-start">
+                    <i class="fas fa-chevron-right text-xs text-blue-400 mt-1 mr-2"></i>
+                    Zoom in/out untuk melihat detail
+                  </li>
+                </ul>
+              </div>
+              
+              <!-- Statistik Dokumen -->
+              <div class="mb-4">
+                <h4 class="font-medium text-gray-800 mb-2">Statistik Dokumen:</h4>
+                <div class="grid grid-cols-2 gap-2">
+                  <div class="bg-white p-3 rounded-lg border border-gray-200">
+                    <div class="text-xs text-gray-500">Total Bagian</div>
+                    <div class="text-lg font-semibold text-gray-800">
+                      @php
+                        $totalSections = 0;
+                        if(isset($locations['abstrak']) && $locations['abstrak']) $totalSections++;
+                        if(isset($locations['bab']) && count($locations['bab']) > 0) $totalSections += count($locations['bab']);
+                        if(isset($locations['daftar_pustaka']) && $locations['daftar_pustaka']) $totalSections++;
+                      @endphp
+                      {{ $totalSections }}
+                    </div>
+                  </div>
+                  <div class="bg-white p-3 rounded-lg border border-gray-200">
+                    <div class="text-xs text-gray-500">Rentang Halaman</div>
+                    <div class="text-lg font-semibold text-gray-800">
+                      @php
+                        $pages = [];
+                        if(isset($locations['abstrak']) && $locations['abstrak']) $pages[] = $locations['abstrak']['page'];
+                        if(isset($locations['bab']) && is_array($locations['bab'])) {
+                          foreach($locations['bab'] as $b) $pages[] = $b['page'];
+                        }
+                        if(isset($locations['daftar_pustaka']) && $locations['daftar_pustaka']) $pages[] = $locations['daftar_pustaka']['page'];
+                        $minPage = !empty($pages) ? min($pages) : '?';
+                        $maxPage = !empty($pages) ? max($pages) : '?';
+                      @endphp
+                      {{ $minPage }}-{{ $maxPage }}
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- Kriteria Format -->
+              <div class="mb-4 p-3 bg-white rounded-lg border border-gray-200">
+                <h4 class="font-medium text-gray-800 mb-2 flex items-center">
+                  <i class="fas fa-check-circle text-green-500 mr-2"></i> Kriteria Format:
+                </h4>
+                <ul class="text-sm text-gray-600 space-y-2 pl-1">
+                  <li class="flex items-start">
+                    <div class="w-2 h-2 bg-blue-400 rounded-full mt-1 mr-2 flex-shrink-0"></div>
+                    <span>Abstrak dalam bahasa Indonesia & Inggris</span>
+                  </li>
+                  <li class="flex items-start">
+                    <div class="w-2 h-2 bg-blue-400 rounded-full mt-1 mr-2 flex-shrink-0"></div>
+                    <span>Struktur bab lengkap (I-V)</span>
+                  </li>
+                  <li class="flex items-start">
+                    <div class="w-2 h-2 bg-blue-400 rounded-full mt-1 mr-2 flex-shrink-0"></div>
+                    <span>Margin: atas 4cm, lainnya 3cm</span>
+                  </li>
+                  <li class="flex items-start">
+                    <div class="w-2 h-2 bg-blue-400 rounded-full mt-1 mr-2 flex-shrink-0"></div>
+                    <span>Font: Times New Roman 12pt</span>
+                  </li>
+                </ul>
+              </div>
+              
+              <!-- Statistik Deteksi -->
+              <div class="mb-4">
+                <h4 class="font-medium text-gray-800 mb-2">Statistik Deteksi:</h4>
+                <div class="space-y-3">
+                  @php
+                    $totalDetected = 0;
+                    $totalPossible = 7; // abstrak + 5 bab + daftar pustaka
+                    $detectionRate = 0;
+                    
+                    if(isset($locations['abstrak']) && $locations['abstrak']) $totalDetected++;
+                    if(isset($locations['bab']) && is_array($locations['bab'])) {
+                      $totalDetected += min(count($locations['bab']), 5); // Maks 5 bab
+                    }
+                    if(isset($locations['daftar_pustaka']) && $locations['daftar_pustaka']) $totalDetected++;
+                    
+                    if($totalPossible > 0) {
+                      $detectionRate = round(($totalDetected / $totalPossible) * 100);
+                    }
+                  @endphp
+                  
+                  <div class="flex items-center justify-between">
+                    <span class="text-sm text-gray-600">Tingkat Deteksi:</span>
+                    <span class="font-semibold {{ $detectionRate >= 80 ? 'text-green-600' : ($detectionRate >= 60 ? 'text-yellow-600' : 'text-red-600') }}">
+                      {{ $detectionRate }}%
+                    </span>
+                  </div>
+                  
+                  <div class="w-full bg-gray-200 rounded-full h-2.5">
+                    <div class="h-2.5 rounded-full {{ $detectionRate >= 80 ? 'bg-green-500' : ($detectionRate >= 60 ? 'bg-yellow-500' : 'bg-red-500') }}" 
+                        style="width: {{ $detectionRate }}%"></div>
+                  </div>
+                  
+                  <div class="text-xs text-gray-500 text-center">
+                    {{ $totalDetected }} dari {{ $totalPossible }} bagian terdeteksi
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Informasi Tambahan -->
+              <div class="p-3 bg-blue-50 rounded-lg border border-blue-100">
+                <h4 class="font-medium text-gray-800 mb-1 flex items-center text-sm">
+                  <i class="fas fa-info-circle text-blue-500 mr-2"></i> Informasi:
+                </h4>
+                <p class="text-xs text-gray-600">
+                  Sistem mendeteksi struktur berdasarkan pola teks dan heading di dokumen Anda. Pastikan format mengikuti pedoman resmi ITS.
+                </p>
+              </div>         
             </div>
           </div>
         </div>
