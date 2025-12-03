@@ -7,242 +7,12 @@
   <title>FormatCheck TA ITS — Cek Format Tugas Akhir Berbasis AI</title>
   <meta name="description" content="FormatCheck TA ITS membantu mahasiswa memeriksa kesesuaian format penulisan Tugas Akhir sesuai panduan ITS secara otomatis dengan AI." />
   <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="{{ asset('css/formatcheck-its.css') }}">
+  <link rel="stylesheet" href="css/formatcheck-its.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
-    
-    body {
-      font-family: 'Poppins', sans-serif;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      min-height: 100vh;
-    }
-
-    /* Navbar styles */
-    .navbar {
-      backdrop-filter: blur(10px);
-      background: rgba(255, 255, 255, 0.98);
-    }
-
-    /* Optimized animations */
-    .nav-link {
-      transition: all 0.2s ease-in-out;
-    }
-
-    .nav-link:hover {
-      color: #2563eb;
-      transform: translateY(-1px);
-    }
-
-    .card-hover {
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-
-    .card-hover:hover {
-      transform: translateY(-8px);
-      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
-    }
-
-    .btn-hover {
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-
-    .btn-hover:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.15);
-    }
-
-    /* Floating animation */
-    @keyframes float {
-      0%, 100% { transform: translateY(0px) rotate(0deg); }
-      50% { transform: translateY(-15px) rotate(2deg); }
-    }
-    
-    .floating {
-      animation: float 6s ease-in-out infinite;
-    }
-
-    /* Smooth scroll behavior */
-    html {
-      scroll-behavior: smooth;
-      scroll-padding-top: 80px;
-    }
-
-    /* Loading animation for cards */
-    @keyframes fadeInUp {
-      from {
-        opacity: 0;
-        transform: translateY(30px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    .animate-fade-in-up {
-      animation: fadeInUp 0.6s ease-out forwards;
-    }
-
-    /* Gradient text */
-    .gradient-text {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-
-    /* Custom scrollbar */
-    ::-webkit-scrollbar {
-      width: 8px;
-    }
-
-    ::-webkit-scrollbar-track {
-      background: #f1f5f9;
-    }
-
-    ::-webkit-scrollbar-thumb {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      border-radius: 10px;
-    }
-
-    ::-webkit-scrollbar-thumb:hover {
-      background: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%);
-    }
-
-    /* Responsive text fixes */
-    .text-overflow-fix {
-      overflow-wrap: break-word;
-      word-wrap: break-word;
-      hyphens: auto;
-    }
-
-    .break-words {
-      word-break: break-word;
-      overflow-wrap: break-word;
-    }
-
-    .text-balance {
-      text-wrap: balance;
-    }
-
-    /* Mobile optimizations */
-    @media (max-width: 768px) {
-      .mobile-padding {
-        padding-left: 1rem;
-        padding-right: 1rem;
-      }
-      
-      .mobile-text-center {
-        text-align: center;
-      }
-      
-      .mobile-stack {
-        flex-direction: column;
-      }
-
-      .text-4xl, 
-      .text-5xl, 
-      .text-6xl, 
-      .text-7xl {
-        font-size: 2rem !important;
-        line-height: 1.2 !important;
-      }
-      
-      .text-xl,
-      .text-2xl {
-        font-size: 1.125rem !important;
-      }
-      
-      .card-hover {
-        margin: 0.5rem;
-      }
-      
-      .grid.gap-5.xl\:gap-6.lg\:gap-7.xl\:grid-cols-2 {
-        grid-template-columns: 1fr !important;
-        gap: 1rem !important;
-      }
-      
-      /* Feature cards */
-      .rounded-3xl.border.border-gray-200.bg-white.p-8 {
-        padding: 1.5rem !important;
-      }
-      
-      /* Hero section */
-      .hero-buttons {
-        flex-direction: column;
-        gap: 0.75rem;
-      }
-      
-      .hero-buttons > * {
-        width: 100%;
-        justify-content: center;
-      }
-
-      .p-6 {
-        padding: 1rem !important;
-      }
-      
-      .p-8 {
-        padding: 1.5rem !important;
-      }
-    }
-
-    @media (max-width: 480px) {
-      .text-3xl {
-        font-size: 1.5rem !important;
-      }
-      
-      .text-2xl {
-        font-size: 1.25rem !important;
-      }
-      
-      .gap-8 {
-        gap: 1.5rem !important;
-      }
-      
-      .w-16.h-16 {
-        width: 3rem !important;
-        height: 3rem !important;
-      }
-      
-      .w-10.h-10 {
-        width: 2.5rem !important;
-        height: 2.5rem !important;
-      }
-    }
-
-    /* Performance optimizations */
-    .will-change-transform {
-      will-change: transform;
-    }
-
-    .no-horizontal-scroll {
-      max-width: 100%;
-      overflow-x: hidden;
-    }
-
-    .safe-area {
-      padding-left: env(safe-area-inset-left);
-      padding-right: env(safe-area-inset-right);
-    }
-
-    .line-clamp-2 {
-      display: -webkit-box;
-      -webkit-line-clamp: 2;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-    }
-
-    .line-clamp-3 {
-      display: -webkit-box;
-      -webkit-line-clamp: 3;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-    }
-  </style>
 </head>
 <body class="flex flex-col min-h-screen no-horizontal-scroll">
   <!-- NAVBAR - Optimized -->
@@ -464,115 +234,240 @@
     </div>
   </section>
 
-  <!-- FITUR - Optimized -->
-  <section id="fitur" class="bg-white/95 backdrop-blur-lg border-y border-white/40 py-20 lg:py-28 safe-area">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="mx-auto max-w-4xl text-center mb-16 lg:mb-20">
-        <div class="inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-blue-500 to-purple-500 px-4 py-2 text-sm text-white font-semibold mb-6 break-words">
-          <i class="fas fa-rocket"></i>
-          Fitur Unggulan
-        </div>
-        <h2 class="text-3xl xl:text-4xl lg:text-5xl font-extrabold text-gray-900 mb-6 text-balance">Pemeriksaan <span class="break-words">Menyeluruh</span></h2>
-        <p class="text-xl xl:text-2xl text-gray-600 max-w-3xl mx-auto break-words">Setiap aspek format Tugas Akhir ITS diperiksa secara detail dan akurat</p>
+  <!-- VIDEO DEMO + FITUR - Section terpadu -->
+  <section id="video-fitur" class="bg-gradient-to-br from-blue-50 to-purple-50 py-16 xl:py-20 safe-area">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <!-- Header Section -->
+          <div class="text-center mb-12 lg:mb-16">
+              <div class="inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-red-500 to-pink-500 px-4 py-2 text-sm text-white font-semibold mb-6 break-words animate-fade-in-up">
+                  <i class="fas fa-play-circle"></i> Demo & Tutorial
+              </div>
+              <h2 class="text-3xl xl:text-4xl lg:text-5xl font-extrabold text-gray-900 mb-6 text-balance">
+                  Lihat <span class="break-words">Cara Kerjanya</span> & <span class="break-words">Fitur Utama</span>
+              </h2>
+              <p class="text-xl xl:text-2xl text-gray-600 max-w-3xl mx-auto break-words">
+                  Tonton demo dan pelajari fitur lengkap pemeriksaan format Tugas Akhir ITS
+              </p>
+          </div>
+
+          <!-- Video dan Fitur Grid -->
+          <div class="grid lg:grid-cols-2 gap-8 lg:gap-12">
+              <!-- Kolom Kiri: Video dengan desain clean dan fungsional -->
+              <div class="animate-fade-in-up" style="animation-delay: 0.1s">
+                  <div class="card-hover rounded-3xl border border-gray-200 bg-white overflow-hidden shadow-2xl h-full">
+                      <!-- YouTube Embed - langsung terlihat dan bisa diputar -->
+                      <div class="relative">
+                          <div class="aspect-video">
+                              <iframe 
+                                  src="https://www.youtube.com/embed/YcqEDvqLne8?si=nbRDyek6LSyP5JWU" 
+                                  title="Demo FormatCheck TA ITS" 
+                                  frameborder="0" 
+                                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                                  referrerpolicy="strict-origin-when-cross-origin"
+                                  allowfullscreen
+                                  class="w-full h-full"
+                              ></iframe>
+                          </div>
+                      </div>
+                      
+                      <!-- Video Info -->
+                      <div class="p-6 lg:p-8">
+                          <div class="flex items-start justify-between mb-4">
+                              <div class="flex-1">
+                                  <div class="flex items-center gap-3 mb-2">
+                                      <div class="inline-flex items-center gap-1 px-3 py-1 bg-red-50 text-red-700 rounded-full text-xs font-medium">
+                                          <i class="fab fa-youtube text-red-600"></i>
+                                          YouTube
+                                      </div>
+                                      <span class="text-xs text-gray-500 flex items-center gap-1">
+                                          <i class="far fa-clock"></i> 3:45
+                                      </span>
+                                  </div>
+                                  <h3 class="text-lg lg:text-xl font-bold text-gray-900 mb-3 break-words">Demo Lengkap: FormatCheck TA ITS</h3>
+                                  <p class="text-gray-600 text-sm mb-4 break-words">
+                                      Pelajari cara menggunakan FormatCheck TA ITS untuk memeriksa format Tugas Akhir Anda secara lengkap dan akurat.
+                                  </p>
+                              </div>
+                          </div>
+                          
+                          <!-- Fitur yang dipelajari -->
+                          <div class="space-y-3 mb-6">
+                              <div class="flex items-start gap-3">
+                                  <div class="w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0 mt-0.5">
+                                      <i class="fas fa-upload text-blue-600 text-xs"></i>
+                                  </div>
+                                  <p class="text-sm text-gray-600 break-words">Cara mengunggah dokumen TA dengan benar</p>
+                              </div>
+                              <div class="flex items-start gap-3">
+                                  <div class="w-6 h-6 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0 mt-0.5">
+                                      <i class="fas fa-chart-bar text-green-600 text-xs"></i>
+                                  </div>
+                                  <p class="text-sm text-gray-600 break-words">Memahami laporan analisis yang dihasilkan</p>
+                              </div>
+                              <div class="flex items-start gap-3">
+                                  <div class="w-6 h-6 rounded-full bg-purple-100 flex items-center justify-center flex-shrink-0 mt-0.5">
+                                      <i class="fas fa-file-alt text-purple-600 text-xs"></i>
+                                  </div>
+                                  <p class="text-sm text-gray-600 break-words">Interpretasi saran perbaikan untuk revisi</p>
+                              </div>
+                          </div>
+                          
+                          <!-- Tombol aksi -->
+                          <div class="flex flex-col sm:flex-row gap-3">
+                              <a href="https://youtu.be/YcqEDvqLne8?si=nbRDyek6LSyP5JWU" 
+                                target="_blank"
+                                class="inline-flex items-center justify-center gap-2 px-5 py-3 bg-gradient-to-r from-red-600 to-pink-600 text-white rounded-xl text-sm font-semibold hover:shadow-lg transition-all duration-200 btn-hover break-words">
+                                  <i class="fab fa-youtube"></i>
+                                  Tonton di YouTube
+                              </a>
+                              <button onclick="document.querySelector('iframe').contentWindow.postMessage('{"event":"command","func":"playVideo","args":""}', '*');" 
+                                      class="inline-flex items-center justify-center gap-2 px-5 py-3 border-2 border-gray-300 text-gray-700 rounded-xl text-sm font-semibold hover:bg-gray-50 transition-all duration-200 break-words">
+                                  <i class="fas fa-play"></i>
+                                  Putar Video
+                              </button>
+                          </div>
+                      </div>
+                  </div>
+                  
+                  <!-- Catatan kecil -->
+                  <div class="mt-4 text-center text-sm text-gray-500 break-words">
+                      Video dapat diputar langsung di halaman ini
+                  </div>
+              </div>
+
+              <!-- Kolom Kanan: Fitur dalam grid 2 kolom -->
+              <div>
+                  <!-- Grid Fitur 2 kolom -->
+                  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <!-- Feature 1 -->
+                      <div class="card-hover rounded-2xl border border-gray-200 bg-white p-6 shadow-lg hover:border-blue-200/50 animate-fade-in-up">
+                          <div class="flex items-center gap-4 mb-4">
+                              <span class="inline-flex h-12 w-12 items-center justify-center rounded-xl bg-blue-50 text-blue-600 shadow-sm">
+                                  <i class="fas fa-layer-group text-lg"></i>
+                              </span>
+                              <h4 class="text-base font-bold text-gray-900 break-words">Struktur Dokumen</h4>
+                          </div>
+                          <p class="text-gray-600 text-sm leading-relaxed line-clamp-2 break-words mb-3">Deteksi otomatis Cover, Abstrak (ID & EN), Daftar Isi, dan Bab wajib.</p>
+                          <div class="flex flex-wrap gap-2">
+                              <span class="inline-flex items-center gap-1 px-2 py-1 bg-blue-50 text-blue-700 rounded-full text-xs">
+                                  <i class="fas fa-check text-xs"></i> Cover
+                              </span>
+                              <span class="inline-flex items-center gap-1 px-2 py-1 bg-blue-50 text-blue-700 rounded-full text-xs">
+                                  <i class="fas fa-check text-xs"></i> Abstrak
+                              </span>
+                          </div>
+                      </div>
+
+                      <!-- Feature 2 -->
+                      <div class="card-hover rounded-2xl border border-gray-200 bg-white p-6 shadow-lg hover:border-purple-200/50 animate-fade-in-up" style="animation-delay: 0.1s">
+                          <div class="flex items-center gap-4 mb-4">
+                              <span class="inline-flex h-12 w-12 items-center justify-center rounded-xl bg-purple-50 text-purple-600 shadow-sm">
+                                  <i class="fas fa-text-height text-lg"></i>
+                              </span>
+                              <h4 class="text-base font-bold text-gray-900 break-words">Format Teks</h4>
+                          </div>
+                          <p class="text-gray-600 text-sm leading-relaxed line-clamp-2 break-words mb-3">Validasi font, ukuran, spasi, dan margin sesuai pedoman.</p>
+                          <div class="flex flex-wrap gap-2">
+                              <span class="inline-flex items-center gap-1 px-2 py-1 bg-purple-50 text-purple-700 rounded-full text-xs">
+                                  TNR 12pt
+                              </span>
+                              <span class="inline-flex items-center gap-1 px-2 py-1 bg-purple-50 text-purple-700 rounded-full text-xs">
+                                  Spasi 1.0
+                              </span>
+                          </div>
+                      </div>
+
+                      <!-- Feature 3 -->
+                      <div class="card-hover rounded-2xl border border-gray-200 bg-white p-6 shadow-lg hover:border-green-200/50 animate-fade-in-up" style="animation-delay: 0.2s">
+                          <div class="flex items-center gap-4 mb-4">
+                              <span class="inline-flex h-12 w-12 items-center justify-center rounded-xl bg-green-50 text-green-600 shadow-sm">
+                                  <i class="fas fa-file-lines text-lg"></i>
+                              </span>
+                              <h4 class="text-base font-bold text-gray-900 break-words">Abstrak</h4>
+                          </div>
+                          <p class="text-gray-600 text-sm leading-relaxed line-clamp-2 break-words mb-3">Analisis jumlah kata dan kualitas abstrak Indonesia & Inggris.</p>
+                          <div class="flex flex-wrap gap-2">
+                              <span class="inline-flex items-center gap-1 px-2 py-1 bg-green-50 text-green-700 rounded-full text-xs">
+                                  200-300 kata
+                              </span>
+                              <span class="inline-flex items-center gap-1 px-2 py-1 bg-green-50 text-green-700 rounded-full text-xs">
+                                  2 Bahasa
+                              </span>
+                          </div>
+                      </div>
+
+                      <!-- Feature 4 -->
+                      <div class="card-hover rounded-2xl border border-gray-200 bg-white p-6 shadow-lg hover:border-orange-200/50 animate-fade-in-up" style="animation-delay: 0.3s">
+                          <div class="flex items-center gap-4 mb-4">
+                              <span class="inline-flex h-12 w-12 items-center justify-center rounded-xl bg-orange-50 text-orange-600 shadow-sm">
+                                  <i class="fas fa-book-open text-lg"></i>
+                              </span>
+                              <h4 class="text-base font-bold text-gray-900 break-words">Bab 1</h4>
+                          </div>
+                          <p class="text-gray-600 text-sm leading-relaxed line-clamp-2 break-words mb-3">Verifikasi kelengkapan pendahuluan dan struktur bab pertama.</p>
+                          <div class="flex flex-wrap gap-2">
+                              <span class="inline-flex items-center gap-1 px-2 py-1 bg-orange-50 text-orange-700 rounded-full text-xs">
+                                  Latar Belakang
+                              </span>
+                              <span class="inline-flex items-center gap-1 px-2 py-1 bg-orange-50 text-orange-700 rounded-full text-xs">
+                                  Rumusan
+                              </span>
+                          </div>
+                      </div>
+
+                      <!-- Feature 5 -->
+                      <div class="card-hover rounded-2xl border border-gray-200 bg-white p-6 shadow-lg hover:border-red-200/50 animate-fade-in-up" style="animation-delay: 0.4s">
+                          <div class="flex items-center gap-4 mb-4">
+                              <span class="inline-flex h-12 w-12 items-center justify-center rounded-xl bg-red-50 text-red-600 shadow-sm">
+                                  <i class="fas fa-quote-right text-lg"></i>
+                              </span>
+                              <h4 class="text-base font-bold text-gray-900 break-words">Sitasi APA 7</h4>
+                          </div>
+                          <p class="text-gray-600 text-sm leading-relaxed line-clamp-2 break-words mb-3">Pemeriksaan konsistensi kutipan dan daftar pustaka.</p>
+                          <div class="flex flex-wrap gap-2">
+                              <span class="inline-flex items-center gap-1 px-2 py-1 bg-red-50 text-red-700 rounded-full text-xs">
+                                  APA 7
+                              </span>
+                              <span class="inline-flex items-center gap-1 px-2 py-1 bg-red-50 text-red-700 rounded-full text-xs">
+                                  Konsistensi
+                              </span>
+                          </div>
+                      </div>
+
+                      <!-- Feature 6 -->
+                      <div class="card-hover rounded-2xl border border-gray-200 bg-white p-6 shadow-lg hover:border-indigo-200/50 animate-fade-in-up" style="animation-delay: 0.5s">
+                          <div class="flex items-center gap-4 mb-4">
+                              <span class="inline-flex h-12 w-12 items-center justify-center rounded-xl bg-indigo-50 text-indigo-600 shadow-sm">
+                                  <i class="fas fa-id-card text-lg"></i>
+                              </span>
+                              <h4 class="text-base font-bold text-gray-900 break-words">Cover Formal</h4>
+                          </div>
+                          <p class="text-gray-600 text-sm leading-relaxed line-clamp-2 break-words mb-3">Pemeriksaan standar cover ITS, font, dan tata letak.</p>
+                          <div class="flex flex-wrap gap-2">
+                              <span class="inline-flex items-center gap-1 px-2 py-1 bg-indigo-50 text-indigo-700 rounded-full text-xs">
+                                  Biru ITS
+                              </span>
+                              <span class="inline-flex items-center gap-1 px-2 py-1 bg-indigo-50 text-indigo-700 rounded-full text-xs">
+                                  Trebuchet MS
+                              </span>
+                          </div>
+                      </div>
+                  </div>
+
+                  <!-- Tombol Aksi -->
+                  <div class="mt-8 text-center">
+                      <a @auth href="{{ route('upload.form') }}" @endauth @guest href="{{ route('login.form') }}" @endguest 
+                        class="btn-hover inline-flex items-center gap-3 rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 px-6 py-3 text-sm font-semibold text-white shadow-lg hover:shadow-xl break-words">
+                          <i class="fas fa-rocket"></i>
+                          Jelajahi Semua Fitur
+                      </a>
+                      <p class="mt-3 text-xs text-gray-500 break-words">
+                          6 fitur utama untuk pemeriksaan format yang komprehensif
+                      </p>
+                  </div>
+              </div>
+          </div>
       </div>
-      <div class="grid gap-8 sm:gap-10 lg:gap-12 sm:grid-cols-2 lg:grid-cols-3">
-        <!-- Feature 1 -->
-        <div class="card-hover rounded-3xl border border-gray-200 bg-white p-6 xl:p-8 shadow-lg hover:border-blue-200/50 animate-fade-in-up">
-          <div class="flex items-center gap-4 mb-6">
-            <span class="inline-flex h-14 w-14 xl:h-16 xl:w-16 items-center justify-center rounded-2xl bg-blue-50 text-blue-600 shadow-sm">
-              <i class="fas fa-layer-group text-xl xl:text-2xl"></i>
-            </span>
-            <h3 class="text-lg xl:text-xl font-bold text-gray-900 break-words">Struktur Dokumen</h3>
-          </div>
-          <p class="text-gray-600 leading-relaxed line-clamp-3 break-words">Deteksi otomatis Cover, Abstrak (ID & EN), Daftar Isi, dan Bab wajib sesuai tipe naskah Proposal atau Laporan.</p>
-          <ul class="mt-4 space-y-2 text-sm text-gray-500">
-            <li class="flex items-center gap-2 break-words"><i class="fas fa-check text-blue-500 text-xs"></i> Cover & Halaman Judul</li>
-            <li class="flex items-center gap-2 break-words"><i class="fas fa-check text-blue-500 text-xs"></i> Abstrak Bahasa Indonesia</li>
-            <li class="flex items-center gap-2 break-words"><i class="fas fa-check text-blue-500 text-xs"></i> Abstrak Bahasa Inggris</li>
-          </ul>
-        </div>
-
-        <!-- Feature 2 -->
-        <div class="card-hover rounded-3xl border border-gray-200 bg-white p-6 xl:p-8 shadow-lg hover:border-purple-200/50 animate-fade-in-up" style="animation-delay: 0.1s">
-          <div class="flex items-center gap-4 mb-6">
-            <span class="inline-flex h-14 w-14 xl:h-16 xl:w-16 items-center justify-center rounded-2xl bg-purple-50 text-purple-600 shadow-sm">
-              <i class="fas fa-text-height text-xl xl:text-2xl"></i>
-            </span>
-            <h3 class="text-lg xl:text-xl font-bold text-gray-900 break-words">Format Teks</h3>
-          </div>
-          <p class="text-gray-600 leading-relaxed line-clamp-3 break-words">Validasi Times New Roman 12pt, spasi 1.0, margin 3–2.5–3–2 cm, serta konsistensi heading dan paragraf.</p>
-          <ul class="mt-4 space-y-2 text-sm text-gray-500">
-            <li class="flex items-center gap-2 break-words"><i class="fas fa-check text-purple-500 text-xs"></i> Font & Ukuran</li>
-            <li class="flex items-center gap-2 break-words"><i class="fas fa-check text-purple-500 text-xs"></i> Spasi & Margin</li>
-            <li class="flex items-center gap-2 break-words"><i class="fas fa-check text-purple-500 text-xs"></i> Konsistensi Heading</li>
-          </ul>
-        </div>
-
-        <!-- Feature 3 -->
-        <div class="card-hover rounded-3xl border border-gray-200 bg-white p-6 xl:p-8 shadow-lg hover:border-green-200/50 animate-fade-in-up" style="animation-delay: 0.2s">
-          <div class="flex items-center gap-4 mb-6">
-            <span class="inline-flex h-14 w-14 xl:h-16 xl:w-16 items-center justify-center rounded-2xl bg-green-50 text-green-600 shadow-sm">
-              <i class="fas fa-file-lines text-xl xl:text-2xl"></i>
-            </span>
-            <h3 class="text-lg xl:text-xl font-bold text-gray-900 break-words">Abstrak</h3>
-          </div>
-          <p class="text-gray-600 leading-relaxed line-clamp-3 break-words">Hitung 200–300 kata, deteksi bahasa otomatis, dan saran kebahasaan untuk abstrak Indonesia dan Inggris.</p>
-          <ul class="mt-4 space-y-2 text-sm text-gray-500">
-            <li class="flex items-center gap-2 break-words"><i class="fas fa-check text-green-500 text-xs"></i> Jumlah Kata</li>
-            <li class="flex items-center gap-2 break-words"><i class="fas fa-check text-green-500 text-xs"></i> Deteksi Bahasa</li>
-            <li class="flex items-center gap-2 break-words"><i class="fas fa-check text-green-500 text-xs"></i> Saran Kebahasaan</li>
-          </ul>
-        </div>
-
-        <!-- Feature 4 -->
-        <div class="card-hover rounded-3xl border border-gray-200 bg-white p-6 xl:p-8 shadow-lg hover:border-orange-200/50 animate-fade-in-up" style="animation-delay: 0.3s">
-          <div class="flex items-center gap-4 mb-6">
-            <span class="inline-flex h-14 w-14 xl:h-16 xl:w-16 items-center justify-center rounded-2xl bg-orange-50 text-orange-600 shadow-sm">
-              <i class="fas fa-book-open text-xl xl:text-2xl"></i>
-            </span>
-            <h3 class="text-lg xl:text-xl font-bold text-gray-900 break-words">Bab 1 Pendahuluan</h3>
-          </div>
-          <p class="text-gray-600 leading-relaxed line-clamp-3 break-words">Verifikasi lengkap latar belakang, rumusan masalah, batasan, tujuan, dan manfaat penelitian.</p>
-          <ul class="mt-4 space-y-2 text-sm text-gray-500">
-            <li class="flex items-center gap-2 break-words"><i class="fas fa-check text-orange-500 text-xs"></i> Latar Belakang</li>
-            <li class="flex items-center gap-2 break-words"><i class="fas fa-check text-orange-500 text-xs"></i> Rumusan Masalah</li>
-            <li class="flex items-center gap-2 break-words"><i class="fas fa-check text-orange-500 text-xs"></i> Batasan & Tujuan</li>
-          </ul>
-        </div>
-
-        <!-- Feature 5 -->
-        <div class="card-hover rounded-3xl border border-gray-200 bg-white p-6 xl:p-8 shadow-lg hover:border-red-200/50 animate-fade-in-up" style="animation-delay: 0.4s">
-          <div class="flex items-center gap-4 mb-6">
-            <span class="inline-flex h-14 w-14 xl:h-16 xl:w-16 items-center justify-center rounded-2xl bg-red-50 text-red-600 shadow-sm">
-              <i class="fas fa-quote-right text-xl xl:text-2xl"></i>
-            </span>
-            <h3 class="text-lg xl:text-xl font-bold text-gray-900 break-words">Sitasi APA 7</h3>
-          </div>
-          <p class="text-gray-600 leading-relaxed line-clamp-3 break-words">Deteksi inkonsistensi kutipan & daftar pustaka, lengkap dengan saran perbaikan format APA Edisi 7.</p>
-          <ul class="mt-4 space-y-2 text-sm text-gray-500">
-            <li class="flex items-center gap-2 break-words"><i class="fas fa-check text-red-500 text-xs"></i> Format Kutipan</li>
-            <li class="flex items-center gap-2 break-words"><i class="fas fa-check text-red-500 text-xs"></i> Daftar Pustaka</li>
-            <li class="flex items-center gap-2 break-words"><i class="fas fa-check text-red-500 text-xs"></i> Konsistensi Referensi</li>
-          </ul>
-        </div>
-
-        <!-- Feature 6 -->
-        <div class="card-hover rounded-3xl border border-gray-200 bg-white p-6 xl:p-8 shadow-lg hover:border-indigo-200/50 animate-fade-in-up" style="animation-delay: 0.5s">
-          <div class="flex items-center gap-4 mb-6">
-            <span class="inline-flex h-14 w-14 xl:h-16 xl:w-16 items-center justify-center rounded-2xl bg-indigo-50 text-indigo-600 shadow-sm">
-              <i class="fas fa-id-card text-xl xl:text-2xl"></i>
-            </span>
-            <h3 class="text-lg xl:text-xl font-bold text-gray-900 break-words">Cover & Halaman Formal</h3>
-          </div>
-          <p class="text-gray-600 leading-relaxed line-clamp-3 break-words">Pemeriksaan skema biru ITS, font Trebuchet MS pada cover, dan kontras teks putih sesuai standar.</p>
-          <ul class="mt-4 space-y-2 text-sm text-gray-500">
-            <li class="flex items-center gap-2 break-words"><i class="fas fa-check text-indigo-500 text-xs"></i> Warna & Layout</li>
-            <li class="flex items-center gap-2 break-words"><i class="fas fa-check text-indigo-500 text-xs"></i> Font Standar</li>
-            <li class="flex items-center gap-2 break-words"><i class="fas fa-check text-indigo-500 text-xs"></i> Kontras Teks</li>
-          </ul>
-        </div>
-      </div>
-    </div>
   </section>
 
   <!-- CARA KERJA -->

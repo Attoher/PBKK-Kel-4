@@ -6,194 +6,10 @@
   <meta name="csrf-token" content="{{ csrf_token() }}">
   <title>Upload TA - Deteksi Format ITS</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="{{ asset('css/pdf-its.css') }}">
+  <link rel="stylesheet" href="css/pdf-its.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
-    
-    body {
-      font-family: 'Poppins', sans-serif;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      min-height: 100vh;
-    }
-    
-    .file-upload-container {
-      transition: all 0.3s ease;
-    }
-    
-    .file-upload-container.drag-over {
-      transform: scale(1.02);
-      border-color: #667eea;
-      background-color: #f0f4ff;
-    }
-    
-    .progress-bar {
-      transition: width 0.5s ease-in-out;
-    }
-    
-    .requirement-item {
-      transition: all 0.3s ease;
-    }
-    
-    .requirement-item:hover {
-      transform: translateX(5px);
-    }
-    
-    /* Animasi untuk notifikasi */
-    @keyframes slideIn {
-      from { transform: translateX(100%); opacity: 0; }
-      to { transform: translateX(0); opacity: 1; }
-    }
-    
-    @keyframes slideOut {
-      from { transform: translateX(0); opacity: 1; }
-      to { transform: translateX(100%); opacity: 0; }
-    }
-    
-    .notification {
-      animation: slideIn 0.3s ease-out;
-    }
-    
-    .notification.hide {
-      animation: slideOut 0.3s ease-in;
-    }
-
-    /* Navbar styles */
-    .navbar {
-      backdrop-filter: blur(10px);
-      background: rgba(255, 255, 255, 0.95);
-    }
-
-    /* Custom scrollbar */
-    .custom-scrollbar::-webkit-scrollbar {
-      width: 6px;
-    }
-    
-    .custom-scrollbar::-webkit-scrollbar-track {
-      background: #f1f1f1;
-      border-radius: 10px;
-    }
-    
-    .custom-scrollbar::-webkit-scrollbar-thumb {
-      background: #c1c1c1;
-      border-radius: 10px;
-    }
-    
-    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-      background: #a8a8a8;
-    }
-
-    /* Responsive text fixes */
-    .text-overflow-fix {
-      overflow-wrap: break-word;
-      word-wrap: break-word;
-      hyphens: auto;
-    }
-
-    .break-words {
-      word-break: break-word;
-      overflow-wrap: break-word;
-    }
-
-    .file-name-truncate {
-      max-width: 200px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    /* Mobile optimizations */
-    @media (max-width: 768px) {
-      .file-upload-container {
-        padding: 1.5rem !important;
-        margin: 0 0.5rem;
-      }
-      
-      .text-3xl {
-        font-size: 1.5rem !important;
-      }
-      
-      .md\:flex {
-        flex-direction: column;
-      }
-      
-      .md\:w-1\/2 {
-        width: 100% !important;
-      }
-      
-      .border-r.border-gray-200 {
-        border-right: none !important;
-        border-bottom: 1px solid #e5e7eb;
-      }
-      
-      /* Requirements list */
-      .requirement-item {
-        padding: 0.75rem !important;
-      }
-      
-      .requirement-item h3 {
-        font-size: 0.875rem !important;
-      }
-      
-      .requirement-item p {
-        font-size: 0.75rem !important;
-      }
-      
-      .p-8 {
-        padding: 1.5rem !important;
-      }
-      
-      .p-6 {
-        padding: 1rem !important;
-      }
-      
-      .grid.grid-cols-2 {
-        grid-template-columns: 1fr !important;
-        gap: 0.75rem !important;
-      }
-    }
-
-    @media (max-width: 480px) {
-      .file-name-truncate {
-        max-width: 150px;
-      }
-      
-      .text-2xl {
-        font-size: 1.25rem !important;
-      }
-      
-      .grid.gap-4 {
-        gap: 0.5rem !important;
-      }
-      
-      .max-h-100 {
-        max-height: 200px;
-      }
-    }
-
-    .no-horizontal-scroll {
-      max-width: 100%;
-      overflow-x: hidden;
-    }
-
-    .safe-area {
-      padding-left: env(safe-area-inset-left);
-      padding-right: env(safe-area-inset-right);
-    }
-
-    .line-clamp-2 {
-      display: -webkit-box;
-      -webkit-line-clamp: 2;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-    }
-
-    .line-clamp-3 {
-      display: -webkit-box;
-      -webkit-line-clamp: 3;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-    }
-  </style>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 </head>
 <body class="flex flex-col min-h-screen no-horizontal-scroll">
   <!-- Navbar (desktop + mobile toggle) -->
@@ -450,103 +266,207 @@
           @endif
         </div>
         
-        <!-- Requirements Section -->
-        <div class="md:w-1/2 bg-gray-50 p-6 md:p-8">
-          <h2 class="text-xl font-bold text-gray-800 mb-4 break-words">Kelengkapan Format ITS</h2>
-          <p class="text-gray-600 mb-6 break-words">Sistem memeriksa dokumen berdasarkan panduan format ITS:</p>
-          
-          <div class="space-y-4 mb-6">
-            <div class="requirement-item flex items-start p-3 rounded-lg hover:bg-white transition">
-              <div class="flex-shrink-0 w-8 h-8 bg-green-100 rounded-full flex items-center justify-center mr-3 mt-1">
-                <i class="fas fa-file-alt text-green-500 text-sm"></i>
+        <!-- Right Panel - Tab Section -->
+        <div class="md:w-1/2">
+          <!-- Tab Navigation -->
+          <div class="flex border-b border-gray-200 bg-gray-50">
+            <button class="tab-button flex-1 active" data-tab="requirements">
+              <i class="fas fa-clipboard-check mr-2"></i>
+              <span class="hidden md:inline">Kelengkapan</span>
+              <span class="md:hidden">Format</span>
+            </button>
+            <button class="tab-button flex-1" data-tab="pdf-preview">
+              <i class="fas fa-file-pdf mr-2"></i>
+              <span class="hidden md:inline">Panduan PDF</span>
+              <span class="md:hidden">PDF</span>
+            </button>
+          </div>
+
+          <!-- Tab Contents -->
+          <div class="p-6 md:p-8">
+            <!-- Requirements Tab Content -->
+            <div id="requirements" class="tab-content active">
+              <h2 class="text-xl font-bold text-gray-800 mb-4 break-words">Kelengkapan Format ITS</h2>
+              <p class="text-gray-600 mb-6 break-words">Sistem memeriksa dokumen berdasarkan panduan format ITS:</p>
+              
+              <div class="space-y-4 mb-6">
+                <div class="requirement-item flex items-start p-3 rounded-lg hover:bg-white transition">
+                  <div class="flex-shrink-0 w-8 h-8 bg-green-100 rounded-full flex items-center justify-center mr-3 mt-1">
+                    <i class="fas fa-file-alt text-green-500 text-sm"></i>
+                  </div>
+                  <div class="flex-1 min-w-0">
+                    <h3 class="font-medium text-gray-800 break-words">Struktur Dokumen</h3>
+                    <p class="text-sm text-gray-600 mt-1 line-clamp-2 break-words">Cover, Abstrak (ID+EN), Daftar Isi, Bab 1-3 (Proposal) / Bab 1-5 (Laporan)</p>
+                  </div>
+                </div>
+                
+                <div class="requirement-item flex items-start p-3 rounded-lg hover:bg-white transition">
+                  <div class="flex-shrink-0 w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center mr-3 mt-1">
+                    <i class="fas fa-font text-blue-500 text-sm"></i>
+                  </div>
+                  <div class="flex-1 min-w-0">
+                    <h3 class="font-medium text-gray-800 break-words">Format Teks</h3>
+                    <p class="text-sm text-gray-600 mt-1 line-clamp-2 break-words">Times New Roman 12pt, spasi 1, margin 3-2.5-3-2cm</p>
+                  </div>
+                </div>
+                
+                <div class="requirement-item flex items-start p-3 rounded-lg hover:bg-white transition">
+                  <div class="flex-shrink-0 w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center mr-3 mt-1">
+                    <i class="fas fa-book text-purple-500 text-sm"></i>
+                  </div>
+                  <div class="flex-1 min-w-0">
+                    <h3 class="font-medium text-gray-800 break-words">Abstrak</h3>
+                    <p class="text-sm text-gray-600 mt-1 line-clamp-2 break-words">200-300 kata, Bahasa Indonesia & Inggris</p>
+                  </div>
+                </div>
+                
+                <div class="requirement-item flex items-start p-3 rounded-lg hover:bg-white transition">
+                  <div class="flex-shrink-0 w-8 h-8 bg-yellow-100 rounded-full flex items-center justify-center mr-3 mt-1">
+                    <i class="fas fa-list-ol text-yellow-500 text-sm"></i>
+                  </div>
+                  <div class="flex-1 min-w-0">
+                    <h3 class="font-medium text-gray-800 break-words">Bab 1 Pendahuluan</h3>
+                    <p class="text-sm text-gray-600 mt-1 line-clamp-2 break-words">Latar belakang, rumusan masalah, batasan, tujuan, manfaat</p>
+                  </div>
+                </div>
+                
+                <div class="requirement-item flex items-start p-3 rounded-lg hover:bg-white transition">
+                  <div class="flex-shrink-0 w-8 h-8 bg-red-100 rounded-full flex items-center justify-center mr-3 mt-1">
+                    <i class="fas fa-graduation-cap text-red-500 text-sm"></i>
+                  </div>
+                  <div class="flex-1 min-w-0">
+                    <h3 class="font-medium text-gray-800 break-words">Daftar Pustaka</h3>
+                    <p class="text-sm text-gray-600 mt-1 line-clamp-2 break-words">Format APA Edisi ke-7, sitasi konsisten</p>
+                  </div>
+                </div>
+
+                <div class="requirement-item flex items-start p-3 rounded-lg hover:bg-white transition">
+                  <div class="flex-shrink-0 w-8 h-8 bg-indigo-100 rounded-full flex items-center justify-center mr-3 mt-1">
+                    <i class="fas fa-palette text-indigo-500 text-sm"></i>
+                  </div>
+                  <div class="flex-1 min-w-0">
+                    <h3 class="font-medium text-gray-800 break-words">Cover & Halaman Judul</h3>
+                    <p class="text-sm text-gray-600 mt-1 line-clamp-2 break-words">Background biru ITS, font Trebuchet MS, teks putih</p>
+                  </div>
+                </div>
               </div>
-              <div class="flex-1 min-w-0">
-                <h3 class="font-medium text-gray-800 break-words">Struktur Dokumen</h3>
-                <p class="text-sm text-gray-600 mt-1 line-clamp-2 break-words">Cover, Abstrak (ID+EN), Daftar Isi, Bab 1-3 (Proposal) / Bab 1-5 (Laporan)</p>
+              
+              <!-- Tips Section -->
+              <div class="p-4 bg-blue-50 rounded-lg border border-blue-200 mb-6">
+                <div class="flex">
+                  <div class="flex-shrink-0">
+                    <i class="fas fa-info-circle text-blue-500 text-lg mt-0.5"></i>
+                  </div>
+                  <div class="ml-3 min-w-0">
+                    <h3 class="text-sm font-medium text-blue-800 break-words">Panduan Format ITS</h3>
+                    <p class="text-sm text-blue-600 mt-1 break-words">Pastikan dokumen mengikuti Buku Panduan Format Tugas Akhir ITS. Cover menggunakan Trebuchet MS dengan background biru ITS.</p>
+                  </div>
+                </div>
               </div>
-            </div>
-            
-            <div class="requirement-item flex items-start p-3 rounded-lg hover:bg-white transition">
-              <div class="flex-shrink-0 w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center mr-3 mt-1">
-                <i class="fas fa-font text-blue-500 text-sm"></i>
-              </div>
-              <div class="flex-1 min-w-0">
-                <h3 class="font-medium text-gray-800 break-words">Format Teks</h3>
-                <p class="text-sm text-gray-600 mt-1 line-clamp-2 break-words">Times New Roman 12pt, spasi 1, margin 3-2.5-3-2cm</p>
-              </div>
-            </div>
-            
-            <div class="requirement-item flex items-start p-3 rounded-lg hover:bg-white transition">
-              <div class="flex-shrink-0 w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center mr-3 mt-1">
-                <i class="fas fa-book text-purple-500 text-sm"></i>
-              </div>
-              <div class="flex-1 min-w-0">
-                <h3 class="font-medium text-gray-800 break-words">Abstrak</h3>
-                <p class="text-sm text-gray-600 mt-1 line-clamp-2 break-words">200-300 kata, Bahasa Indonesia & Inggris</p>
-              </div>
-            </div>
-            
-            <div class="requirement-item flex items-start p-3 rounded-lg hover:bg-white transition">
-              <div class="flex-shrink-0 w-8 h-8 bg-yellow-100 rounded-full flex items-center justify-center mr-3 mt-1">
-                <i class="fas fa-list-ol text-yellow-500 text-sm"></i>
-              </div>
-              <div class="flex-1 min-w-0">
-                <h3 class="font-medium text-gray-800 break-words">Bab 1 Pendahuluan</h3>
-                <p class="text-sm text-gray-600 mt-1 line-clamp-2 break-words">Latar belakang, rumusan masalah, batasan, tujuan, manfaat</p>
-              </div>
-            </div>
-            
-            <div class="requirement-item flex items-start p-3 rounded-lg hover:bg-white transition">
-              <div class="flex-shrink-0 w-8 h-8 bg-red-100 rounded-full flex items-center justify-center mr-3 mt-1">
-                <i class="fas fa-graduation-cap text-red-500 text-sm"></i>
-              </div>
-              <div class="flex-1 min-w-0">
-                <h3 class="font-medium text-gray-800 break-words">Daftar Pustaka</h3>
-                <p class="text-sm text-gray-600 mt-1 line-clamp-2 break-words">Format APA Edisi ke-7, sitasi konsisten</p>
+
+              <!-- Quick Stats -->
+              <div class="grid grid-cols-2 gap-4 text-center">
+                <div class="bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
+                  <div class="text-2xl font-bold text-blue-600 break-words">5</div>
+                  <div class="text-sm text-gray-600 mt-1 break-words">Bab Wajib</div>
+                </div>
+                <div class="bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
+                  <div class="text-2xl font-bold text-green-600 break-words">200-300</div>
+                  <div class="text-sm text-gray-600 mt-1 break-words">Kata Abstrak</div>
+                </div>
+                <div class="bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
+                  <div class="text-2xl font-bold text-purple-600 break-words">A4</div>
+                  <div class="text-sm text-gray-600 mt-1 break-words">Ukuran Kertas</div>
+                </div>
+                <div class="bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
+                  <div class="text-2xl font-bold text-orange-600 break-words">APA 7</div>
+                  <div class="text-sm text-gray-600 mt-1 break-words">Format Pustaka</div>
+                </div>
               </div>
             </div>
 
-            <div class="requirement-item flex items-start p-3 rounded-lg hover:bg-white transition">
-              <div class="flex-shrink-0 w-8 h-8 bg-indigo-100 rounded-full flex items-center justify-center mr-3 mt-1">
-                <i class="fas fa-palette text-indigo-500 text-sm"></i>
+            <!-- PDF Preview Tab Content -->
+            <div id="pdf-preview" class="tab-content">
+              <h2 class="text-xl font-bold text-gray-800 mb-4 break-words">Panduan Format Tugas Akhir ITS</h2>
+              <p class="text-gray-600 mb-6 break-words">Preview dokumen panduan format resmi ITS untuk referensi:</p>
+              
+              <!-- PDF Info -->
+              <div class="pdf-info">
+                <div class="flex items-center justify-between mb-2">
+                  <div class="flex items-center">
+                    <i class="fas fa-file-pdf text-red-500 text-xl mr-3"></i>
+                    <div>
+                      <h3 class="font-medium text-gray-800 break-words">Pedoman Penyusunan Laporan Tugas Akhir</h3>
+                      <p class="text-sm text-gray-600 break-words">Institut Teknologi Sepuluh Nopember</p>
+                    </div>
+                  </div>
+                  <a href="https://www.its.ac.id/pendidikan/wp-content/uploads/sites/112/2022/03/280-SK-Rektor-ttg-Pedoman-Penyusunan-Laporan-Tugas-Akhir-Sarjana-Sarjana-Terapan.pdf" 
+                     target="_blank" 
+                     class="px-3 py-1 bg-red-500 text-white rounded-lg hover:bg-red-600 transition text-sm font-medium flex items-center">
+                    <i class="fas fa-external-link-alt mr-2"></i> Buka PDF
+                  </a>
+                </div>
+                <div class="text-xs text-gray-500 mt-2">
+                  <span class="inline-block mr-4"><i class="fas fa-file mr-1"></i> 280-SK-Rektor</span>
+                  <span class="inline-block"><i class="fas fa-calendar mr-1"></i> Tahun 2022</span>
+                </div>
               </div>
-              <div class="flex-1 min-w-0">
-                <h3 class="font-medium text-gray-800 break-words">Cover & Halaman Judul</h3>
-                <p class="text-sm text-gray-600 mt-1 line-clamp-2 break-words">Background biru ITS, font Trebuchet MS, teks putih</p>
-              </div>
-            </div>
-          </div>
-          
-          <!-- Tips Section -->
-          <div class="p-4 bg-blue-50 rounded-lg border border-blue-200 mb-6">
-            <div class="flex">
-              <div class="flex-shrink-0">
-                <i class="fas fa-info-circle text-blue-500 text-lg mt-0.5"></i>
-              </div>
-              <div class="ml-3 min-w-0">
-                <h3 class="text-sm font-medium text-blue-800 break-words">Panduan Format ITS</h3>
-                <p class="text-sm text-blue-600 mt-1 break-words">Pastikan dokumen mengikuti Buku Panduan Format Tugas Akhir ITS. Cover menggunakan Trebuchet MS dengan background biru ITS.</p>
-              </div>
-            </div>
-          </div>
 
-          <!-- Quick Stats -->
-          <div class="grid grid-cols-2 gap-4 text-center">
-            <div class="bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
-              <div class="text-2xl font-bold text-blue-600 break-words">5</div>
-              <div class="text-sm text-gray-600 mt-1 break-words">Bab Wajib</div>
-            </div>
-            <div class="bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
-              <div class="text-2xl font-bold text-green-600 break-words">200-300</div>
-              <div class="text-sm text-gray-600 mt-1 break-words">Kata Abstrak</div>
-            </div>
-            <div class="bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
-              <div class="text-2xl font-bold text-purple-600 break-words">A4</div>
-              <div class="text-sm text-gray-600 mt-1 break-words">Ukuran Kertas</div>
-            </div>
-            <div class="bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
-              <div class="text-2xl font-bold text-orange-600 break-words">APA 7</div>
-              <div class="text-sm text-gray-600 mt-1 break-words">Format Pustaka</div>
+              <!-- PDF Preview Container -->
+              <div id="pdf-preview-container" class="custom-scrollbar">
+                <div id="pdf-viewer" class="text-center p-4">
+                  <div class="flex items-center justify-center h-64">
+                    <div class="text-center">
+                      <div class="w-20 h-20 bg-gray-200 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-file-pdf text-red-500 text-3xl"></i>
+                      </div>
+                      <p class="text-gray-600 mb-2">Memuat panduan PDF...</p>
+                      <p class="text-sm text-gray-500">Panduan format resmi ITS akan ditampilkan di sini</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- PDF Controls -->
+              <div class="pdf-controls flex flex-wrap items-center justify-between gap-2">
+                <div class="flex items-center space-x-2">
+                  <button id="prev-page" class="px-3 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300 transition flex items-center">
+                    <i class="fas fa-chevron-left mr-2"></i> Sebelumnya
+                  </button>
+                  <span class="text-sm text-gray-600">
+                    Halaman: <span id="page-num">1</span> / <span id="page-count">-</span>
+                  </span>
+                  <button id="next-page" class="px-3 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300 transition flex items-center">
+                    Selanjutnya <i class="fas fa-chevron-right ml-2"></i>
+                  </button>
+                </div>
+                <div class="flex items-center space-x-2">
+                  <button id="zoom-in" class="p-2 bg-blue-100 text-blue-600 rounded hover:bg-blue-200 transition">
+                    <i class="fas fa-search-plus"></i>
+                  </button>
+                  <button id="zoom-out" class="p-2 bg-blue-100 text-blue-600 rounded hover:bg-blue-200 transition">
+                    <i class="fas fa-search-minus"></i>
+                  </button>
+                  <button id="reset-zoom" class="px-3 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition text-sm">
+                    Reset Zoom
+                  </button>
+                </div>
+              </div>
+              
+              <!-- PDF Key Points -->
+              <div class="mt-6 p-4 bg-yellow-50 rounded-lg border border-yellow-200">
+                <h3 class="font-medium text-yellow-800 mb-2 flex items-center">
+                  <i class="fas fa-lightbulb mr-2"></i> Poin Penting dari Panduan:
+                </h3>
+                <ul class="list-disc list-inside text-sm text-yellow-700 space-y-1">
+                  <li>Format cover menggunakan warna biru ITS (#003366)</li>
+                  <li>Font Trebuchet MS untuk judul, Times New Roman untuk isi</li>
+                  <li>Margin: 3cm (kiri), 2.5cm (atas), 3cm (kanan), 2cm (bawah)</li>
+                  <li>Abstrak maksimal 300 kata dalam bahasa Indonesia dan Inggris</li>
+                  <li>Penomoran halaman menggunakan angka Romawi kecil untuk halaman awal</li>
+                </ul>
+              </div>              
+
             </div>
           </div>
         </div>
@@ -593,6 +513,7 @@
 
   <script>
     document.addEventListener('DOMContentLoaded', function() {
+      // ========== Variabel Utama ==========
       const fileInput = document.getElementById('file');
       const dropArea = document.getElementById('dropArea');
       const filePreview = document.getElementById('file-preview');
@@ -611,7 +532,163 @@
       const successNotification = document.getElementById('success-notification');
       const successMessage = document.getElementById('success-message');
       
-      // Drag and drop functionality
+      // ========== PDF Preview Variables ==========
+      let pdfDoc = null;
+      let pageNum = 1;
+      let pageRendering = false;
+      let pageNumPending = null;
+      let scale = 1.0;
+
+      const pdfUrl = "./pdf/panduan-tugas-akhir.pdf";
+
+
+            
+      // ========== Tab Functionality ==========
+      const tabButtons = document.querySelectorAll('.tab-button');
+      const tabContents = document.querySelectorAll('.tab-content');
+      
+      tabButtons.forEach(button => {
+        button.addEventListener('click', () => {
+          const tabId = button.getAttribute('data-tab');
+          
+          // Update active button
+          tabButtons.forEach(btn => btn.classList.remove('active'));
+          button.classList.add('active');
+          
+          // Update active content
+          tabContents.forEach(content => {
+            content.classList.remove('active');
+            if (content.id === tabId) {
+              content.classList.add('active');
+              
+              // Load PDF jika tab PDF dipilih
+              if (tabId === 'pdf-preview' && !pdfDoc) {
+                loadPDF();
+              }
+            }
+          });
+        });
+      });
+      
+      // ========== PDF Functions ==========
+      function loadPDF() {
+        // Set PDF.js worker
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+        
+        // Load the PDF
+        const loadingTask = pdfjsLib.getDocument(pdfUrl);
+        
+        // Show loading state
+        document.getElementById('pdf-viewer').innerHTML = `
+          <div class="flex items-center justify-center h-64">
+            <div class="text-center">
+              <div class="w-16 h-16 border-4 border-blue-200 border-t-blue-500 rounded-full animate-spin mx-auto mb-4"></div>
+              <p class="text-gray-600">Memuat panduan PDF...</p>
+            </div>
+          </div>
+        `;
+        
+        loadingTask.promise.then(pdf => {
+          pdfDoc = pdf;
+          document.getElementById('page-count').textContent = pdf.numPages;
+          
+          // Render the first page
+          renderPage(pageNum);
+        }).catch(error => {
+          console.error('Error loading PDF:', error);
+          document.getElementById('pdf-viewer').innerHTML = `
+            <div class="flex items-center justify-center h-64">
+              <div class="text-center">
+                <div class="w-20 h-20 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <i class="fas fa-exclamation-triangle text-red-500 text-3xl"></i>
+                </div>
+                <p class="text-gray-600 mb-2">Gagal memuat PDF</p>
+                <p class="text-sm text-gray-500">File panduan tidak ditemukan di: ${pdfUrl}</p>
+                <div class="mt-4 p-3 bg-gray-100 rounded text-sm">
+                  <p class="font-semibold mb-1">Pastikan:</p>
+                  <p>1. File PDF ada di lokasi: ${pdfUrl}</p>
+                  <p>2. Nama file sesuai: panduan-tugas-akhir.pdf</p>
+                </div>
+              </div>
+            </div>
+          `;
+        });
+      }
+      
+      function renderPage(num) {
+        pageRendering = true;
+        
+        pdfDoc.getPage(num).then(page => {
+          const viewer = document.getElementById('pdf-viewer');
+          const canvas = document.createElement('canvas');
+          const ctx = canvas.getContext('2d');
+          
+          // Set canvas dimensions
+          const viewport = page.getViewport({ scale: scale });
+          canvas.height = viewport.height;
+          canvas.width = viewport.width;
+          canvas.className = 'pdf-page-canvas mx-auto';
+          
+          // Render PDF page
+          const renderContext = {
+            canvasContext: ctx,
+            viewport: viewport
+          };
+          
+          const renderTask = page.render(renderContext);
+          
+          renderTask.promise.then(() => {
+            viewer.innerHTML = '';
+            viewer.appendChild(canvas);
+            document.getElementById('page-num').textContent = num;
+            pageRendering = false;
+            
+            if (pageNumPending !== null) {
+              renderPage(pageNumPending);
+              pageNumPending = null;
+            }
+          });
+        });
+      }
+      
+      function queueRenderPage(num) {
+        if (pageRendering) {
+          pageNumPending = num;
+        } else {
+          renderPage(num);
+        }
+      }
+      
+      // ========== PDF Event Listeners ==========
+      document.getElementById('prev-page').addEventListener('click', () => {
+        if (pageNum <= 1 || !pdfDoc) return;
+        pageNum--;
+        queueRenderPage(pageNum);
+      });
+      
+      document.getElementById('next-page').addEventListener('click', () => {
+        if (!pdfDoc || pageNum >= pdfDoc.numPages) return;
+        pageNum++;
+        queueRenderPage(pageNum);
+      });
+      
+      document.getElementById('zoom-in').addEventListener('click', () => {
+        scale += 0.2;
+        queueRenderPage(pageNum);
+      });
+      
+      document.getElementById('zoom-out').addEventListener('click', () => {
+        if (scale <= 0.5) return;
+        scale -= 0.2;
+        queueRenderPage(pageNum);
+      });
+      
+      document.getElementById('reset-zoom').addEventListener('click', () => {
+        scale = 1.0;
+        queueRenderPage(pageNum);
+      });
+      
+      // ========== Drag and Drop Functionality ==========
       ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
         dropArea.addEventListener(eventName, preventDefaults, false);
       });
@@ -709,8 +786,7 @@
         return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
       }
       
-      // Form submission with progress simulation
-      // Form submission with chunked upload
+      // ========== Form Submission with Chunked Upload ==========
       uploadForm.addEventListener('submit', async function(e) {
         e.preventDefault();
 
@@ -806,7 +882,7 @@
               'Content-Type': 'application/json',
               'X-CSRF-TOKEN': document.querySelector('input[name=_token]').value
             },
-	    credentials: 'same-origin',
+            credentials: 'same-origin',
             body: JSON.stringify({ uploadId, fileName: file.name })
           });
 
@@ -839,9 +915,8 @@
           submitLoading.classList.add('hidden');
         }
       });
-
       
-      // Notification functions
+      // ========== Notification Functions ==========
       window.showNotification = function(message) {
         notificationMessage.textContent = message;
         notification.classList.remove('hidden');
@@ -890,7 +965,7 @@
         }, 5000);
       @endif
       
-      // Mobile menu toggle (integrated)
+      // ========== Mobile Menu Toggle ==========
       const mobileBtn = document.getElementById('mobileMenuButton');
       const mobileMenu = document.getElementById('mobileMenu');
       if (mobileBtn && mobileMenu) {

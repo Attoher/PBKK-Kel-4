@@ -5,199 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Hasil Analisis - FormatCheck ITS</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js"></script>
+  <link rel="stylesheet" href="{{ asset('css/formatcheck-its.css') }}">
+  <link rel="stylesheet" href="css/formatcheck-its.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
-    
-    body {
-      font-family: 'Poppins', sans-serif;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      min-height: 100vh;
-    }
-    
-    .score-circle {
-      transition: all 0.5s ease;
-    }
-    
-    .result-card {
-      transition: transform 0.3s ease;
-    }
-    
-    .result-card:hover {
-      transform: translateY(-5px);
-    }
-    
-    .circle-bg {
-      fill: none;
-      stroke: #eee;
-      stroke-width: 3.8;
-    }
-    
-    .circle {
-      fill: none;
-      stroke-width: 3.8;
-      stroke-linecap: round;
-      transform: rotate(-90deg);
-      transform-origin: 50% 50%;
-      transition: stroke-dasharray 1s ease-in-out;
-    }
-
-    .print-hidden {
-      display: block;
-    }
-
-    .navbar {
-      backdrop-filter: blur(10px);
-      background: rgba(255, 255, 255, 0.95);
-    }
-
-    @media print {
-      .print-hidden {
-        display: none !important;
-      }
-      
-      body {
-        background: white !important;
-      }
-      
-      .bg-gradient-to-r {
-        background: #0067ac !important;
-      }
-    }
-
-    /* Responsive text fixes */
-    .text-overflow-fix {
-      overflow-wrap: break-word;
-      word-wrap: break-word;
-      hyphens: auto;
-    }
-
-    .break-words {
-      word-break: break-word;
-      overflow-wrap: break-word;
-    }
-
-    .filename-truncate {
-      max-width: 100%;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    /* Mobile optimizations */
-    @media (max-width: 768px) {
-      .result-card {
-        margin: 0.5rem 0;
-        padding: 1rem !important;
-      }
-      
-      .text-3xl {
-        font-size: 1.5rem !important;
-      }
-      
-      .text-2xl {
-        font-size: 1.25rem !important;
-      }
-      
-      .flex-col.md\:flex-row {
-        flex-direction: column !important;
-        align-items: flex-start !important;
-      }
-      
-      .score-circle {
-        transform: scale(0.8);
-        margin: 0 auto;
-      }
-      
-      .p-8 {
-        padding: 1.5rem !important;
-      }
-      
-      .p-6 {
-        padding: 1rem !important;
-      }
-      
-      .grid.grid-cols-1.md\:grid-cols-2 {
-        grid-template-columns: 1fr !important;
-        gap: 0.75rem !important;
-      }
-      
-      /* Ensure text doesn't overflow in cards */
-      .result-card h3,
-      .result-card p {
-        word-break: break-word;
-        overflow-wrap: break-word;
-      }
-    }
-
-    @media (max-width: 640px) {
-      .flex.justify-between {
-        flex-direction: column;
-        gap: 0.5rem;
-      }
-      
-      .flex.justify-between > * {
-        width: 100%;
-        text-align: left;
-      }
-      
-      .flex.flex-col.sm\:flex-row {
-        flex-direction: column !important;
-        gap: 0.75rem;
-      }
-      
-      .flex.flex-col.sm\:flex-row > * {
-        width: 100%;
-      }
-      
-      .filename-truncate {
-        max-width: 200px;
-      }
-    }
-
-    @media (max-width: 480px) {
-      .text-xl {
-        font-size: 1.125rem !important;
-      }
-      
-      .text-lg {
-        font-size: 1rem !important;
-      }
-      
-      .w-24.h-24 {
-        width: 4rem !important;
-        height: 4rem !important;
-      }
-      
-      .grid.grid-cols-1.md\:grid-cols-2.gap-4 {
-        gap: 0.5rem !important;
-      }
-    }
-
-    .no-horizontal-scroll {
-      max-width: 100%;
-      overflow-x: hidden;
-    }
-
-    .safe-area {
-      padding-left: env(safe-area-inset-left);
-      padding-right: env(safe-area-inset-right);
-    }
-
-    .line-clamp-2 {
-      display: -webkit-box;
-      -webkit-line-clamp: 2;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-    }
-
-    .line-clamp-3 {
-      display: -webkit-box;
-      -webkit-line-clamp: 3;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-    }
-  </style>
 </head>
 <body class="flex flex-col min-h-screen no-horizontal-scroll">
   <!-- Navbar (desktop + mobile toggle) -->
@@ -217,15 +29,15 @@
 
           <!-- Navigation Links (desktop) -->
           <div class="hidden md:ml-8 md:flex md:space-x-6">
-            <a href="{{ route('upload.form') }}" class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium break-words">
+            <a href="{{ route('upload.form') }}" class="nav-link border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium break-words">
               <i class="fas fa-upload mr-2 text-blue-500"></i>
               Upload TA
             </a>
-            <a href="{{ route('history') }}" class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium break-words">
+            <a href="{{ route('history') }}" class="nav-link border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium break-words">
               <i class="fas fa-history mr-2 text-purple-500"></i>
               Riwayat
             </a>
-            <a href="{{ route('results', ['filename' => $filename ?? '']) }}" class="border-b-2 border-blue-500 text-gray-900 inline-flex items-center px-1 pt-1 text-sm font-medium break-words">
+            <a href="{{ route('results', ['filename' => $filename ?? '']) }}" class="nav-link border-b-2 border-blue-500 text-gray-900 inline-flex items-center px-1 pt-1 text-sm font-medium break-words">
               <i class="fas fa-chart-bar mr-2 text-orange-500"></i>
               Hasil Analisis
             </a>
@@ -266,9 +78,11 @@
     <div id="mobileMenu" class="md:hidden hidden border-t border-gray-200 bg-white/95 backdrop-blur-lg">
       <div class="pt-2 pb-4 space-y-1">
         <a href="{{ route('upload.form') }}" class="nav-link block pl-4 pr-4 py-3 border-l-4 border-transparent text-base font-medium text-gray-700 hover:text-blue-600 hover:border-blue-600 hover:bg-blue-50 transition-all duration-200 break-words">
-          <i class="fas fa-upload mr-3 text-blue-500"></i>Upload TA</a>
+          <i class="fas fa-upload mr-3 text-blue-500"></i>Upload TA
+        </a>
         <a href="{{ route('history') }}" class="nav-link block pl-4 pr-4 py-3 border-l-4 border-transparent text-base font-medium text-gray-700 hover:text-blue-600 hover:border-blue-600 hover:bg-blue-50 transition-all duration-200 break-words">
-          <i class="fas fa-history mr-3 text-purple-500"></i>Riwayat</a>
+          <i class="fas fa-history mr-3 text-purple-500"></i>Riwayat
+        </a>
 
         <div class="border-t border-gray-200 pt-2 mt-2">
           @auth
@@ -298,7 +112,7 @@
     <div class="bg-white rounded-2xl shadow-2xl overflow-hidden w-full max-w-6xl">
       <!-- Header -->
       <div class="bg-gradient-to-r from-blue-600 to-purple-600 p-6 text-white text-center">
-        <h1 class="text-2xl md:text-3xl font-bold mb-2 break-words">Hasil Analisis Format Tugas Akhir ITS</h1>
+        <h1 class="text-2xl md:text-3xl font-bold mb-2 break-words text-balance">Hasil Analisis Format Tugas Akhir ITS</h1>
         <p class="text-blue-100 break-words">Dokumen: <span class="font-medium filename-truncate">{{ $filename ?? 'Nama File' }}</span></p>
         <p class="text-blue-100 text-sm mt-1 break-words">Dianalisis pada: {{ date('d F Y H:i') }}</p>
       </div>
@@ -306,7 +120,7 @@
       <div class="p-6 md:p-8">
         @if(isset($results) && is_array($results))
         <!-- Score Summary -->
-        <div class="flex flex-col md:flex-row items-center justify-between mb-8 md:mb-10 p-6 bg-blue-50 rounded-xl border border-blue-200">
+        <div class="card-hover flex flex-col md:flex-row items-center justify-between mb-8 md:mb-10 p-6 bg-blue-50 rounded-xl border border-blue-200">
           <div class="flex items-center mb-4 md:mb-0">
             <div class="relative w-20 h-20 md:w-24 md:h-24 mr-4">
               <svg class="w-full h-full" viewBox="0 0 36 36">
@@ -322,7 +136,7 @@
               </svg>
             </div>
             <div class="min-w-0">
-              <h2 class="text-xl md:text-2xl font-bold text-gray-800 break-words">Skor Kelengkapan Format ITS</h2>
+              <h2 class="text-xl md:text-2xl font-bold text-gray-800 break-words text-balance">Skor Kelengkapan Format ITS</h2>
               <p class="text-gray-600 break-words">Dokumen Anda memenuhi {{ $results['percentage'] ?? 0 }}% persyaratan format ITS</p>
               <p class="text-sm text-gray-500 break-words">{{ $results['document_info']['jenis_dokumen'] ?? 'Tipe Dokumen' }}</p>
             </div>
@@ -351,7 +165,7 @@
                 @if(isset($locations['abstrak']) && $locations['abstrak'])
                   <button 
                     onclick="navigateToPDFPage({{ $locations['abstrak']['page'] }})" 
-                    class="w-full text-left p-3 bg-blue-50 rounded-lg border border-blue-100 hover:bg-blue-100 hover:border-blue-200 transition cursor-pointer group">
+                    class="w-full text-left p-3 bg-blue-50 rounded-lg border border-blue-100 hover:bg-blue-100 hover:border-blue-200 transition cursor-pointer group requirement-item">
                     <div class="flex items-center justify-between">
                       <div class="flex items-center flex-1 min-w-0">
                         <i class="fas fa-file-alt text-blue-500 mr-2 flex-shrink-0"></i>
@@ -376,7 +190,7 @@
                       @foreach($locations['bab'] as $b)
                         <button 
                           onclick="navigateToPDFPage({{ $b['page'] }})"
-                          class="w-full text-left p-2 bg-white rounded hover:bg-purple-100 transition cursor-pointer group border border-transparent hover:border-purple-200">
+                          class="w-full text-left p-2 bg-white rounded hover:bg-purple-100 transition cursor-pointer group border border-transparent hover:border-purple-200 requirement-item">
                           <div class="flex items-center justify-between">
                             <div class="flex items-center flex-1 min-w-0">
                               <span class="font-medium text-gray-700">{{ $b['label'] }}</span>
@@ -396,7 +210,7 @@
                 @if(isset($locations['daftar_pustaka']) && $locations['daftar_pustaka'])
                   <button 
                     onclick="navigateToPDFPage({{ $locations['daftar_pustaka']['page'] }})"
-                    class="w-full text-left p-3 bg-green-50 rounded-lg border border-green-100 hover:bg-green-100 hover:border-green-200 transition cursor-pointer group">
+                    class="w-full text-left p-3 bg-green-50 rounded-lg border border-green-100 hover:bg-green-100 hover:border-green-200 transition cursor-pointer group requirement-item">
                     <div class="flex items-center justify-between">
                       <div class="flex items-center flex-1 min-w-0">
                         <i class="fas fa-list text-green-500 mr-2 flex-shrink-0"></i>
@@ -411,86 +225,97 @@
                   </button>
                 @endif
               </div>
-              
             </div>
           </div>
         </div>
 
         <!-- PDF Preview Section -->
         <div class="bg-white rounded-2xl shadow-lg p-6 border border-gray-200 mb-8">
-          <div class="flex items-center justify-between mb-4">
+          <div class="flex flex-col md:flex-row md:items-center justify-between mb-4 gap-3">
             <h3 class="text-lg font-bold text-gray-800">
               <i class="fas fa-file-pdf text-red-500 mr-2"></i>
               Preview Dokumen PDF
             </h3>
-            <a href="{{ route('serve.pdf', ['filename' => $filename]) }}" target="_blank" 
-               class="text-sm text-blue-600 hover:text-blue-700 font-medium">
-              <i class="fas fa-external-link-alt mr-1"></i>
-              Buka di Tab Baru
-            </a>
+            
+            <!-- PDF Controls -->
+            <div class="flex flex-wrap items-center gap-3">
+              <!-- Page Navigation -->
+              <div class="flex items-center space-x-2">
+                <button id="prev-page" class="px-3 py-1 bg-gray-100 hover:bg-gray-200 rounded text-gray-700 disabled:opacity-50" disabled>
+                  <i class="fas fa-chevron-left"></i>
+                </button>
+                <span class="text-sm font-medium">
+                  Halaman: <span id="current-page">1</span> / <span id="total-pages">1</span>
+                </span>
+                <button id="next-page" class="px-3 py-1 bg-gray-100 hover:bg-gray-200 rounded text-gray-700 disabled:opacity-50" disabled>
+                  <i class="fas fa-chevron-right"></i>
+                </button>
+              </div>
+              
+              <!-- Zoom Controls -->
+              <div class="flex items-center space-x-2">
+                <button id="zoom-out" class="px-3 py-1 bg-gray-100 hover:bg-gray-200 rounded text-gray-700">
+                  <i class="fas fa-search-minus"></i>
+                </button>
+                <span id="zoom-level" class="text-sm font-medium">100%</span>
+                <button id="zoom-in" class="px-3 py-1 bg-gray-100 hover:bg-gray-200 rounded text-gray-700">
+                  <i class="fas fa-search-plus"></i>
+                </button>
+              </div>
+              
+              <!-- Full PDF Link -->
+              <a href="{{ route('serve.pdf', ['filename' => $filename]) }}" target="_blank" 
+                class="text-sm text-blue-600 hover:text-blue-700 font-medium px-3 py-1 bg-blue-50 rounded">
+                <i class="fas fa-external-link-alt mr-1"></i> Buka PDF
+              </a>
+            </div>
           </div>
           
-          <!-- PDF Viewer Container -->
+          <!-- PDF.js Viewer Container -->
           <div id="pdf-container" class="border border-gray-300 rounded-lg overflow-hidden bg-gray-100 relative" style="height: 600px;">
-            <!-- Loading indicator -->
-            <div id="pdf-loading" class="absolute inset-0 flex items-center justify-center bg-gray-50 z-10">
+            
+            <!-- Loading Indicator -->
+            <div id="pdf-loading" class="absolute inset-0 flex flex-col items-center justify-center bg-gray-50 z-20">
               <div class="text-center">
-                <i class="fas fa-spinner fa-spin text-4xl text-blue-500 mb-3"></i>
-                <p class="text-gray-600">Memuat PDF...</p>
+                <i class="fas fa-spinner fa-spin text-4xl text-blue-500 mb-4"></i>
+                <p class="text-gray-600 font-medium">Memuat dokumen PDF...</p>
+                <p class="text-sm text-gray-500 mt-2">Harap tunggu sebentar</p>
               </div>
             </div>
             
-            <!-- Object tag for better PDF support -->
-            <object 
-              id="pdf-viewer-object"
-              data="{{ route('serve.pdf', ['filename' => $filename]) }}#view=FitH&toolbar=1&navpanes=1" 
-              type="application/pdf"
-              class="w-full h-full">
-              
-              <!-- Fallback: Iframe for browsers that don't support object -->
-              <iframe 
-                id="pdf-viewer" 
-                src="{{ route('serve.pdf', ['filename' => $filename]) }}#view=FitH" 
-                class="w-full h-full"
-                type="application/pdf"
-                frameborder="0"
-                allow="fullscreen"
-                onload="handlePDFLoad()">
-                
-                <!-- Final fallback: Link -->
-                <div class="flex items-center justify-center h-full p-8">
-                  <div class="text-center max-w-md">
-                    <i class="fas fa-file-pdf text-5xl text-red-500 mb-4"></i>
-                    <p class="text-gray-600 mb-4">Preview PDF tidak tersedia di browser Anda.</p>
-                    <a href="{{ route('serve.pdf', ['filename' => $filename]) }}" target="_blank" 
-                       class="inline-flex items-center px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition">
-                      <i class="fas fa-external-link-alt mr-2"></i>
-                      Buka PDF di Tab Baru
-                    </a>
-                  </div>
-                </div>
-              </iframe>
-            </object>
-            
-            <!-- Error fallback (shown if PDF fails to load) -->
-            <div id="pdf-error" class="hidden absolute inset-0 flex items-center justify-center bg-gray-50 p-8 z-20">
-              <div class="text-center max-w-md">
-                <i class="fas fa-exclamation-triangle text-5xl text-yellow-500 mb-4"></i>
-                <h4 class="text-lg font-semibold text-gray-800 mb-2">Preview PDF Tidak Tersedia</h4>
-                <p class="text-gray-600 mb-4">Browser Anda mungkin tidak mendukung preview PDF langsung atau file sedang dimuat.</p>
-                <a href="{{ route('serve.pdf', ['filename' => $filename]) }}" target="_blank" 
-                   class="inline-flex items-center px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition">
-                  <i class="fas fa-external-link-alt mr-2"></i>
-                  Buka PDF di Tab Baru
-                </a>
-              </div>
+            <!-- PDF Viewer -->
+            <div id="pdf-viewer-container" class="w-full h-full overflow-auto">
+              <canvas id="pdf-canvas" class="mx-auto block shadow-lg"></canvas>
             </div>
+          </div>
+          
+          <!-- Quick Navigation Buttons -->
+          <div class="mt-4 flex flex-wrap gap-2">
+            @if(isset($locations['abstrak']) && $locations['abstrak'])
+              <button onclick="goToPage({{ $locations['abstrak']['page'] }})" class="px-4 py-2 bg-blue-100 hover:bg-blue-200 text-blue-700 rounded-lg text-sm font-medium transition btn-hover">
+                <i class="fas fa-file-alt mr-1"></i> Abstrak (Hal. {{ $locations['abstrak']['page'] }})
+              </button>
+            @endif
+            
+            @if(isset($locations['bab']) && is_array($locations['bab']))
+              @foreach($locations['bab'] as $bab)
+                <button onclick="goToPage({{ $bab['page'] }})" class="px-4 py-2 bg-purple-100 hover:bg-purple-200 text-purple-700 rounded-lg text-sm font-medium transition btn-hover">
+                  <i class="fas fa-book mr-1"></i> {{ $bab['label'] }} (Hal. {{ $bab['page'] }})
+                </button>
+              @endforeach
+            @endif
+            
+            @if(isset($locations['daftar_pustaka']) && $locations['daftar_pustaka'])
+              <button onclick="goToPage({{ $locations['daftar_pustaka']['page'] }})" class="px-4 py-2 bg-green-100 hover:bg-green-200 text-green-700 rounded-lg text-sm font-medium transition btn-hover">
+                <i class="fas fa-list mr-1"></i> Daftar Pustaka (Hal. {{ $locations['daftar_pustaka']['page'] }})
+              </button>
+            @endif
           </div>
           
           <!-- PDF Navigation Helper -->
           <div class="mt-3 text-sm text-gray-600 bg-blue-50 p-3 rounded-lg">
             <i class="fas fa-info-circle text-blue-500 mr-2"></i>
-            <span class="font-medium">Tip:</span> Klik pada bagian Abstrak, Bab, atau Daftar Pustaka di atas untuk langsung menuju halaman tersebut di PDF.
+            <span class="font-medium">Tip:</span> Klik tombol di atas untuk langsung menuju halaman tersebut di PDF.
           </div>
         </div>
         @endif
@@ -636,7 +461,7 @@
               </div>
             </div>
             <div class="bg-gray-100 rounded-full h-2.5 mb-2">
-              <div class="h-2.5 rounded-full 
+              <div class="progress-bar h-2.5 rounded-full 
                   @if($chaptersColor === 'success') bg-green-500
                   @elseif($chaptersColor === 'warning') bg-yellow-500
                   @else bg-red-500 @endif" 
@@ -798,7 +623,7 @@
           </div>
           <h3 class="text-xl font-semibold text-gray-800 mb-2 break-words">Data Hasil Tidak Tersedia</h3>
           <p class="text-gray-600 mb-4 break-words">Tidak dapat memuat hasil analisis.</p>
-          <a href="{{ route('upload.form') }}" class="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg transition-all break-words">
+          <a href="{{ route('upload.form') }}" class="btn-hover bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg transition-all break-words">
             <i class="fas fa-upload mr-2"></i> Upload Ulang
           </a>
         </div>
@@ -806,13 +631,13 @@
 
         <!-- Action Buttons -->
         <div class="flex flex-col sm:flex-row gap-4 print-hidden">
-          <a href="{{ route('upload.form') }}" class="flex-1 bg-blue-500 hover:bg-blue-600 text-white text-center font-semibold py-3 px-4 rounded-lg transition-all break-words">
+          <a href="{{ route('upload.form') }}" class="flex-1 btn-hover bg-blue-500 hover:bg-blue-600 text-white text-center font-semibold py-3 px-4 rounded-lg transition-all break-words">
             <i class="fas fa-upload mr-2"></i> Analisis File Lain
           </a>
-          <button onclick="saveResults()" class="flex-1 bg-white border border-gray-300 hover:bg-gray-100 text-gray-800 font-semibold py-3 px-4 rounded-lg transition-all break-words">
+          <button onclick="saveResults()" class="flex-1 btn-hover bg-white border border-gray-300 hover:bg-gray-100 text-gray-800 font-semibold py-3 px-4 rounded-lg transition-all break-words">
             <i class="fas fa-download mr-2"></i> Simpan Hasil
           </button>
-          <button onclick="window.print()" class="flex-1 bg-purple-500 hover:bg-purple-600 text-white font-semibold py-3 px-4 rounded-lg transition-all break-words">
+          <button onclick="window.print()" class="flex-1 btn-hover bg-purple-500 hover:bg-purple-600 text-white font-semibold py-3 px-4 rounded-lg transition-all break-words">
             <i class="fas fa-print mr-2"></i> Cetak Laporan
           </button>
         </div>
@@ -830,158 +655,266 @@
   </footer>
 
   <script>
-    // Handle PDF load success
-    function handlePDFLoad() {
-        console.log('PDF loaded successfully');
-        const loadingEl = document.getElementById('pdf-loading');
-        if (loadingEl) {
-            loadingEl.style.display = 'none';
-        }
-    }
+  // PDF.js variables
+  let pdfDoc = null;
+  let currentPage = 1;
+  let scale = 1.0;
+  const SCALE_STEP = 0.1;
+  let canvas, ctx;
 
-    // Handle PDF load error
-    function handlePDFError() {
-        console.error('PDF failed to load');
-        const loadingEl = document.getElementById('pdf-loading');
-        const errorEl = document.getElementById('pdf-error');
-        if (loadingEl) loadingEl.style.display = 'none';
-        if (errorEl) errorEl.classList.remove('hidden');
-    }
+  // Initialize PDF.js
+  document.addEventListener('DOMContentLoaded', function() {
+      canvas = document.getElementById('pdf-canvas');
+      ctx = canvas.getContext('2d');
+      
+      // Load PDF
+      loadPDF('{{ route('serve.pdf', ['filename' => $filename]) }}');
+      
+      // Event listeners for buttons
+      document.getElementById('prev-page').addEventListener('click', onPrevPage);
+      document.getElementById('next-page').addEventListener('click', onNextPage);
+      document.getElementById('zoom-in').addEventListener('click', zoomIn);
+      document.getElementById('zoom-out').addEventListener('click', zoomOut);
+  });
 
-    // Hide loading after timeout (fallback)
-    setTimeout(() => {
-        const loadingEl = document.getElementById('pdf-loading');
-        if (loadingEl && loadingEl.style.display !== 'none') {
-            loadingEl.style.display = 'none';
-        }
-    }, 5000);
+  // Load PDF with PDF.js
+  function loadPDF(url) {
+      console.log('Loading PDF from:', url);
+      
+      // Show loading indicator
+      const loadingEl = document.getElementById('pdf-loading');
+      if (loadingEl) loadingEl.style.display = 'flex';
+      
+      // Hide error if shown
+      const errorEl = document.getElementById('pdf-error');
+      if (errorEl) errorEl.classList.add('hidden');
+      
+      // Disable navigation buttons
+      document.getElementById('prev-page').disabled = true;
+      document.getElementById('next-page').disabled = true;
+      
+      // Configure PDF.js
+      pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+      
+      const loadingTask = pdfjsLib.getDocument(url);
+      
+      loadingTask.promise.then(function(pdf) {
+          pdfDoc = pdf;
+          
+          // Update total pages
+          document.getElementById('total-pages').textContent = pdf.numPages;
+          
+          // Enable navigation buttons
+          document.getElementById('prev-page').disabled = false;
+          document.getElementById('next-page').disabled = false;
+          
+          // Hide loading
+          if (loadingEl) loadingEl.style.display = 'none';
+          
+          // Render first page
+          renderPage(currentPage);
+          
+          console.log('PDF loaded successfully, total pages:', pdf.numPages);
+      }).catch(function(error) {
+          console.error('Error loading PDF:', error);
+          
+          // Hide loading, show error
+          if (loadingEl) loadingEl.style.display = 'none';
+          if (errorEl) errorEl.classList.remove('hidden');
+      });
+  }
 
-    // Fungsi untuk navigasi ke halaman PDF tertentu
-    function navigateToPDFPage(pageNumber) {
-        const pdfObject = document.getElementById('pdf-viewer-object');
-        const pdfViewer = document.getElementById('pdf-viewer');
-        const pdfContainer = document.getElementById('pdf-container');
-        
-        if (pdfContainer) {
-            // Scroll ke PDF viewer dengan smooth animation
-            pdfContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            
-            // Wait for scroll to complete
-            setTimeout(function() {
-                // Try object tag first
-                if (pdfObject) {
-                    const currentData = pdfObject.data || pdfObject.getAttribute('data');
-                    if (currentData) {
-                        const baseUrl = currentData.split('#')[0];
-                        const newUrl = baseUrl + '#page=' + pageNumber + '&view=FitH&toolbar=1&navpanes=1';
-                        pdfObject.data = newUrl;
-                    }
-                }
-                
-                // Also update iframe as fallback
-                if (pdfViewer) {
-                    const currentSrc = pdfViewer.src || pdfViewer.getAttribute('src');
-                    if (currentSrc) {
-                        const baseUrl = currentSrc.split('#')[0];
-                        const newUrl = baseUrl + '#page=' + pageNumber + '&view=FitH';
-                        pdfViewer.src = newUrl;
-                    }
-                }
-                
-                // Visual feedback - highlight effect
-                if (pdfContainer) {
-                    pdfContainer.style.transition = 'box-shadow 0.3s ease';
-                    pdfContainer.style.boxShadow = '0 0 25px rgba(59, 130, 246, 0.6)';
-                    
-                    setTimeout(function() {
-                        pdfContainer.style.boxShadow = '';
-                    }, 1200);
-                }
-            }, 500);
-        }
-    }
+  // Render a specific page
+  function renderPage(pageNum) {
+      if (!pdfDoc) return;
+      
+      // Update current page
+      currentPage = pageNum;
+      document.getElementById('current-page').textContent = currentPage;
+      
+      // Get page
+      pdfDoc.getPage(pageNum).then(function(page) {
+          // Calculate viewport
+          const viewport = page.getViewport({ scale: scale });
+          
+          // Set canvas dimensions
+          canvas.height = viewport.height;
+          canvas.width = viewport.width;
+          
+          // Adjust container height if needed
+          const container = document.getElementById('pdf-viewer-container');
+          if (container) {
+              container.scrollTop = 0;
+          }
+          
+          // Render PDF page to canvas
+          const renderContext = {
+              canvasContext: ctx,
+              viewport: viewport
+          };
+          
+          page.render(renderContext).promise.then(function() {
+              console.log('Page rendered:', pageNum);
+              
+              // Update navigation buttons state
+              document.getElementById('prev-page').disabled = currentPage <= 1;
+              document.getElementById('next-page').disabled = currentPage >= pdfDoc.numPages;
+              
+              // Update zoom level display
+              document.getElementById('zoom-level').textContent = Math.round(scale * 100) + '%';
+          });
+      }).catch(function(error) {
+          console.error('Error rendering page:', error);
+      });
+  }
 
-    // Fungsi untuk menyimpan hasil
-    function saveResults() {
-        const button = event.target;
-        const originalText = button.innerHTML;
-        
-        button.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Menyimpan...';
-        button.disabled = true;
-        
-        // Data dari PHP / Blade
-        const resultsData = {
-            filename: "{{ $filename ?? 'Nama File' }}",
-            analysisDate: new Date().toLocaleString('id-ID'),
-            score: {{ $results['score'] ?? 0 }},
-            percentage: {{ $results['percentage'] ?? 0 }},
-            status: "{{ $results['status'] ?? 'TIDAK DIKETAHUI' }}",
-            details: @json($results['details'] ?? []),
-            document_info: @json($results['document_info'] ?? [])
-        };
+  // Navigate to previous page
+  function onPrevPage() {
+      if (currentPage <= 1) return;
+      goToPage(currentPage - 1);
+  }
 
-        const blob = new Blob([JSON.stringify(resultsData, null, 2)], { type: 'application/json' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = 'hasil-analisis-{{ $filename ?? "dokumen" }}-' + new Date().getTime() + '.json';
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-        
-        button.innerHTML = '<i class="fas fa-check mr-2"></i> Tersimpan!';
-        setTimeout(() => {
-            button.innerHTML = originalText;
-            button.disabled = false;
-        }, 2000);
-    }
+  // Navigate to next page
+  function onNextPage() {
+      if (!pdfDoc || currentPage >= pdfDoc.numPages) return;
+      goToPage(currentPage + 1);
+  }
 
-    // Mobile menu functionality
-    document.addEventListener('DOMContentLoaded', function() {
-        const mobileMenuButton = document.getElementById('mobileMenuButton');
-        const mobileMenu = document.getElementById('mobileMenu');
-        
-        if (mobileMenuButton && mobileMenu) {
-            // To tooggle mobile menu
-            mobileMenuButton.addEventListener('click', function(e) {
-                e.stopPropagation();
-                mobileMenu.classList.toggle('hidden');
-            });
+  // Zoom in
+  function zoomIn() {
+      scale += SCALE_STEP;
+      renderPage(currentPage);
+  }
 
-            // Close mobile menu when clicking outside
-            document.addEventListener('click', function(e) {
-                if (!mobileMenu.contains(e.target) && !mobileMenuButton.contains(e.target)) {
-                    mobileMenu.classList.add('hidden');
-                }
-            });
+  // Zoom out
+  function zoomOut() {
+      if (scale > 0.2) {
+          scale -= SCALE_STEP;
+          renderPage(currentPage);
+      }
+  }
 
-            // Close mobile menu when clicking on a link
-            const mobileMenuLinks = mobileMenu.querySelectorAll('a');
-            mobileMenuLinks.forEach(link => {
-                link.addEventListener('click', function() {
-                    mobileMenu.classList.add('hidden');
-                });
-            });
-        }
+  // Navigate to specific page (this is called by the buttons)
+  function goToPage(pageNumber) {
+      if (!pdfDoc) return;
+      
+      // Validate page number
+      const validPage = Math.max(1, Math.min(pageNumber, pdfDoc.numPages));
+      
+      // Scroll PDF container into view
+      const pdfContainer = document.getElementById('pdf-container');
+      if (pdfContainer) {
+          pdfContainer.scrollIntoView({ 
+              behavior: 'smooth', 
+              block: 'center' 
+          });
+          
+          // Highlight effect
+          pdfContainer.style.transition = 'box-shadow 0.3s ease';
+          pdfContainer.style.boxShadow = '0 0 0 3px rgba(59, 130, 246, 0.3)';
+          
+          setTimeout(() => {
+              pdfContainer.style.boxShadow = '';
+          }, 1000);
+      }
+      
+      // Render the page
+      renderPage(validPage);
+  }
 
-        // Prevent mobile menu from closing when clicking inside it
-        if (mobileMenu) {
-            mobileMenu.addEventListener('click', function(e) {
-                e.stopPropagation();
-            });
-        }
-    });
+  // Retry loading PDF
+  function retryLoadPDF() {
+      const errorEl = document.getElementById('pdf-error');
+      if (errorEl) errorEl.classList.add('hidden');
+      
+      loadPDF('{{ route('serve.pdf', ['filename' => $filename]) }}');
+  }
 
-    // Handle window resize - close mobile menu on desktop
-    window.addEventListener('resize', function() {
-        const mobileMenu = document.getElementById('mobileMenu');
-        if (window.innerWidth >= 768 && mobileMenu) {
-            mobileMenu.classList.add('hidden');
-        }
-    });
+  // Fungsi untuk navigasi ke halaman PDF tertentu (compatibility with existing buttons)
+  function navigateToPDFPage(pageNumber) {
+      // This is for compatibility with existing onclick handlers
+      goToPage(pageNumber);
+  }
 
-    // No additional JavaScript needed for PDF preview
+  // Fungsi untuk menyimpan hasil
+  function saveResults() {
+      const button = event.target.closest('button') || event.target;
+      const originalText = button.innerHTML;
+      
+      button.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Menyimpan...';
+      button.disabled = true;
+      
+      // Data dari PHP / Blade
+      const resultsData = {
+          filename: "{{ $filename ?? 'Nama File' }}",
+          analysisDate: new Date().toLocaleString('id-ID'),
+          score: {{ $results['score'] ?? 0 }},
+          percentage: {{ $results['percentage'] ?? 0 }},
+          status: "{{ $results['status'] ?? 'TIDAK DIKETAHUI' }}",
+          details: @json($results['details'] ?? []),
+          document_info: @json($results['document_info'] ?? [])
+      };
+
+      const blob = new Blob([JSON.stringify(resultsData, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'hasil-analisis-{{ $filename ?? "dokumen" }}-' + new Date().getTime() + '.json';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      
+      button.innerHTML = '<i class="fas fa-check mr-2"></i> Tersimpan!';
+      setTimeout(() => {
+          button.innerHTML = originalText;
+          button.disabled = false;
+      }, 2000);
+  }
+
+  // Mobile menu functionality
+  document.addEventListener('DOMContentLoaded', function() {
+      const mobileMenuButton = document.getElementById('mobileMenuButton');
+      const mobileMenu = document.getElementById('mobileMenu');
+      
+      if (mobileMenuButton && mobileMenu) {
+          // To tooggle mobile menu
+          mobileMenuButton.addEventListener('click', function(e) {
+              e.stopPropagation();
+              mobileMenu.classList.toggle('hidden');
+          });
+
+          // Close mobile menu when clicking outside
+          document.addEventListener('click', function(e) {
+              if (!mobileMenu.contains(e.target) && !mobileMenuButton.contains(e.target)) {
+                  mobileMenu.classList.add('hidden');
+              }
+          });
+
+          // Close mobile menu when clicking on a link
+          const mobileMenuLinks = mobileMenu.querySelectorAll('a');
+          mobileMenuLinks.forEach(link => {
+              link.addEventListener('click', function() {
+                  mobileMenu.classList.add('hidden');
+              });
+          });
+      }
+
+      // Prevent mobile menu from closing when clicking inside it
+      if (mobileMenu) {
+          mobileMenu.addEventListener('click', function(e) {
+              e.stopPropagation();
+          });
+      }
+  });
+
+  // Handle window resize - close mobile menu on desktop
+  window.addEventListener('resize', function() {
+      const mobileMenu = document.getElementById('mobileMenu');
+      if (window.innerWidth >= 768 && mobileMenu) {
+          mobileMenu.classList.add('hidden');
+      }
+  });
   </script>
 </body>
 </html>
