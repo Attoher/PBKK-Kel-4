@@ -239,7 +239,7 @@
           <div class="inline-flex items-center gap-2 rounded-full bg-white/10 backdrop-blur-sm px-4 py-2 text-sm border border-white/20 mb-6 animate-fade-in-up break-words shine-effect">
             <span class="inline-flex h-2 w-2 rounded-full bg-white animate-pulse floating-element"></span>
             Sesuai Pedoman Format ITS 2025
-          </div>
+          </div> <br>
           
           <!-- Sequential Typing Animation Title -->
           <div class="mb-6">
