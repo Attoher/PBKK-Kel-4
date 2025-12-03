@@ -99,9 +99,9 @@ def hapus_file_tidak_dipakai():
         if f.lower().endswith(".pdf") and f not in FILES_YANG_DIPAKAI:
             try:
                 os.remove(os.path.join(PDF_FOLDER, f))
-                #(f"[DELETE] {f}")
+                print(f"[DELETE] {f}")
             except:
-                pass
+                print(f"[GAGAL HAPUS] {f}")
 
 
 # ---------------------------------------
@@ -135,10 +135,6 @@ def analyze_pdf_text(pdf_text, prompt_raw):
 # ---------------------------------------
 def generate_final_report(hasil_json_array, total_halaman, format_margin_info):
     prompt = f"""
-
-Anda harus menghasilkan OUTPUT berupa JSON VALID 100%.
-Tidak boleh ada teks lain, tidak boleh ada catatan, tidak boleh ada koma di akhir elemen.
-Tidak boleh ada '...' atau placeholder lainnya.
 Ubah JSON berikut menjadi format laporan akhir penilaian dokumen dan berikan rekomendasi secara keseluruhan:
 
 {json.dumps(hasil_json_array, indent=2, ensure_ascii=False)}
@@ -178,22 +174,22 @@ OUTPUT HANYA JSON. TANPA TEKS LAIN.
 # ---------------------------------------
 def main():
     if len(sys.argv) < 2:
-        ##print("ERROR: Harus memberikan nama file PDF!\nContoh: python ai.py TA.pdf")
+        print("ERROR: Harus memberikan nama file PDF!\nContoh: python ai.py TA.pdf")
         return
 
     input_pdf = sys.argv[1]
 
     if not os.path.exists(input_pdf):
-        #print(f"ERROR: File {input_pdf} tidak ditemukan!")
+        print(f"ERROR: File {input_pdf} tidak ditemukan!")
         return
     
-    #print("[SPLIT] Memulai proses split PDF...")
+    print("[SPLIT] Memulai proses split PDF...")
     split_pdf_robust(input_pdf)
-    #print("[SPLIT] Selesai.\n")
+    print("[SPLIT] Selesai.\n")
 
-    #print("[CLEAN] Menghapus file tidak dipakai...")
+    print("[CLEAN] Menghapus file tidak dipakai...")
     hapus_file_tidak_dipakai()
-    #print("[CLEAN] Selesai.\n")
+    print("[CLEAN] Selesai.\n")
 
     prompts = [
         "Cover: - Teks Judul Dokumen: PROPOSAL TUGAS/PROYEK AKHIR - Judul TA: Huruf kapital semua, singkatan baku saja. - Logo ITS. - Nama Mahasiswa: Huruf kapital, lengkap. - NRP. - Program Studi, Departemen, Fakultas: Lengkap. - Institusi: INSTITUT TEKNOLOGI SEPULUH NOPEMBER - Kota: Surabaya - Tahun Pembuatan. format respone/output HANYA output JSON, tanpa teks lain.: \"Cover & Halaman Formal\": {\"status\": \" ✓ / ✗ \", \"notes\": \"...\"}",
@@ -220,32 +216,32 @@ def main():
     for i, filename in enumerate(pdf_files):
         pdf_path = os.path.join(PDF_FOLDER, filename)
 
-        #print(f"[READ] {pdf_path}")
+        print(f"[READ] {pdf_path}")
         pdf_text = read_pdf_text(pdf_path)
 
         prompt_raw = prompts[i] if i < len(prompts) else prompts[-1]
 
-        #print(f"[SEND] {filename}")
+        print(f"[SEND] {filename}")
         response = analyze_pdf_text(pdf_text, prompt_raw)
 
         hasil.append(response)
 
-    #print("\n=== SEMUA ANALISIS SELESAI ===")
+    print("\n=== SEMUA ANALISIS SELESAI ===")
 
     # Generate final report (TIDAK DISIMPAN)
     total_halaman = hitung_total_halaman(input_pdf)
 
-    #print("[FINAL] Menghasilkan laporan akhir…")
+    print("[FINAL] Menghasilkan laporan akhir…")
     final_report = generate_final_report(hasil,total_halaman, extract_pdf_format_and_margin(input_pdf))
 
     # Hapus folder split
-    if os.path.exists(PDF_FOLDER):
-        #print(f"[CLEANUP] Menghapus folder {PDF_FOLDER} ...")
-        shutil.rmtree(PDF_FOLDER)
-        #print("[CLEANUP] Folder dihapus!")
+    # if os.path.exists(PDF_FOLDER):
+    #     print(f"[CLEANUP] Menghapus folder {PDF_FOLDER} ...")
+    #     shutil.rmtree(PDF_FOLDER)
+    #     print("[CLEANUP] Folder dihapus!")
 
-    # === RETURN / #print SEPERTI KODE KE-2 ===
-    #print("\n=== FINAL REPORT ===\n")
+    # === RETURN / PRINT SEPERTI KODE KE-2 ===
+    print("\n=== FINAL REPORT ===\n")
     print(final_report)
 
     return final_report
