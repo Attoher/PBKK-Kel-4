@@ -7,10 +7,8 @@
   <title>FormatCheck TA ITS — Cek Format Tugas Akhir Berbasis AI</title>
   <meta name="description" content="FormatCheck TA ITS membantu mahasiswa memeriksa kesesuaian format penulisan Tugas Akhir sesuai panduan ITS secara otomatis dengan AI." />
   <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="{{ asset('css/formatcheck-its.css') }}">
-  <link rel="stylesheet" href="css/formatcheck-its.css">
-  <link rel="stylesheet" href="{{ asset('css/dark-its.css') }}">
-  <link rel="stylesheet" href="css/dark-its.css">
+<link rel="stylesheet" href="{{ asset('css/formatcheck-its.css') }}">
+<link rel="stylesheet" href="{{ asset('css/dark-its.css') }}">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>

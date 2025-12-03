@@ -1023,3 +1023,19 @@ body {
     display: none !important;
   }
 }
+
+/* formatcheck-its.css - Tambahkan di dalam :root */
+:root {
+  --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  --blue-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  --green-gradient: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  --red-gradient: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+  --yellow-gradient: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+  
+  /* Tambahkan variabel untuk dark mode */
+  --dark-bg: #0f172a;
+  --dark-card: #1e293b;
+  --dark-text: #f1f5f9;
+  --dark-border: #334155;
+  --dark-gradient: linear-gradient(135deg, #1e3a8a 0%, #3730a3 100%);
+}
