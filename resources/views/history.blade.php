@@ -138,7 +138,7 @@
                     <div id="modalDetails" class="text-xs text-gray-400 mt-2 text-left bg-gray-50 p-2 rounded max-h-32 overflow-y-auto hidden break-words"></div>
                 </div>
                 <div class="flex justify-center space-x-4 mt-4 flex-wrap gap-2">
-                    <button id="confirmCancel" class="px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400 transition font-medium break-words">
+                    <button id="confirmCancel" class="px-4 py-2 bg-yellow-300 text-gray-700 rounded-md hover:bg-yellow-500 transition font-medium break-words">
                         Batal
                     </button>
                     <button id="confirmOk" class="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition font-medium break-words">
