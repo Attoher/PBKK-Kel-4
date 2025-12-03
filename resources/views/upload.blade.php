@@ -436,8 +436,8 @@
                   <button id="prev-page" class="px-3 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300 transition flex items-center">
                     <i class="fas fa-chevron-left mr-2"></i> Sebelumnya
                   </button>
-                  <span class="halaman-text text-sm text-black">
-                    <b>Halaman: <span id="page-num">1</span> / <span id="page-count">-</span> </b> 
+                  <span class="text-sm text-gray-600">
+                    Halaman: <span id="page-num">1</span> / <span id="page-count">-</span>
                   </span>
                   <button id="next-page" class="px-3 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300 transition flex items-center">
                     Selanjutnya <i class="fas fa-chevron-right ml-2"></i>
