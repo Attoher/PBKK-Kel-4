@@ -442,17 +442,6 @@
                     Selanjutnya <i class="fas fa-chevron-right ml-2"></i>
                   </button>
                 </div>
-                <div class="flex items-center space-x-2">
-                  <button id="zoom-in" class="p-2 bg-blue-100 text-blue-600 rounded hover:bg-blue-200 transition">
-                    <i class="fas fa-search-plus"></i>
-                  </button>
-                  <button id="zoom-out" class="p-2 bg-blue-100 text-blue-600 rounded hover:bg-blue-200 transition">
-                    <i class="fas fa-search-minus"></i>
-                  </button>
-                  <button id="reset-zoom" class="px-3 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition text-sm">
-                    Reset Zoom
-                  </button>
-                </div>
               </div>
               
               <!-- PDF Key Points -->
