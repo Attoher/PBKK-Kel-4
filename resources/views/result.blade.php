@@ -338,6 +338,163 @@
           </div>
         </div>
 
+        <!-- Lokasi Konten dalam PDF -->
+        @php $locations = $results['locations'] ?? []; @endphp
+        @if(!empty($locations))
+        <div class="mb-8 md:mb-10">
+          <h2 class="text-xl font-bold text-gray-800 mb-4 break-words">Lokasi Konten pada PDF</h2>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+            <!-- Lokasi Konten Terdeteksi -->
+            <div class="bg-white rounded-xl border border-blue-200 p-4 md:p-5 shadow-sm">
+              <h3 class="font-semibold text-gray-800 mb-3">Bagian Terdeteksi</h3>
+              <div class="space-y-3">
+                @if(isset($locations['abstrak']) && $locations['abstrak'])
+                  <button 
+                    onclick="navigateToPDFPage({{ $locations['abstrak']['page'] }})" 
+                    class="w-full text-left p-3 bg-blue-50 rounded-lg border border-blue-100 hover:bg-blue-100 hover:border-blue-200 transition cursor-pointer group">
+                    <div class="flex items-center justify-between">
+                      <div class="flex items-center flex-1 min-w-0">
+                        <i class="fas fa-file-alt text-blue-500 mr-2 flex-shrink-0"></i>
+                        <span class="font-medium text-gray-800">Abstrak</span>
+                        <span class="ml-2 text-sm text-gray-500">Hal. {{ $locations['abstrak']['page'] }}</span>
+                      </div>
+                      <i class="fas fa-chevron-right text-blue-400 opacity-0 group-hover:opacity-100 transition ml-2 flex-shrink-0"></i>
+                    </div>
+                    @if(!empty($locations['abstrak']['snippet']))
+                      <p class="mt-2 text-sm text-gray-600 line-clamp-2">{{ $locations['abstrak']['snippet'] }}</p>
+                    @endif
+                  </button>
+                @endif
+
+                @if(isset($locations['bab']) && is_array($locations['bab']) && count($locations['bab']) > 0)
+                  <div class="p-3 bg-purple-50 rounded-lg border border-purple-100">
+                    <div class="font-medium text-gray-800 mb-2 flex items-center">
+                      <i class="fas fa-book text-purple-500 mr-2"></i>
+                      Struktur Bab
+                    </div>
+                    <div class="space-y-2">
+                      @foreach($locations['bab'] as $b)
+                        <button 
+                          onclick="navigateToPDFPage({{ $b['page'] }})"
+                          class="w-full text-left p-2 bg-white rounded hover:bg-purple-100 transition cursor-pointer group border border-transparent hover:border-purple-200">
+                          <div class="flex items-center justify-between">
+                            <div class="flex items-center flex-1 min-w-0">
+                              <span class="font-medium text-gray-700">{{ $b['label'] }}</span>
+                              <span class="ml-2 text-sm text-gray-500">Hal. {{ $b['page'] }}</span>
+                            </div>
+                            <i class="fas fa-chevron-right text-purple-400 opacity-0 group-hover:opacity-100 transition text-sm ml-2 flex-shrink-0"></i>
+                          </div>
+                          @if(!empty($b['title']))
+                            <p class="text-sm text-gray-600 line-clamp-2 mt-1">{{ $b['title'] }}</p>
+                          @endif
+                        </button>
+                      @endforeach
+                    </div>
+                  </div>
+                @endif
+
+                @if(isset($locations['daftar_pustaka']) && $locations['daftar_pustaka'])
+                  <button 
+                    onclick="navigateToPDFPage({{ $locations['daftar_pustaka']['page'] }})"
+                    class="w-full text-left p-3 bg-green-50 rounded-lg border border-green-100 hover:bg-green-100 hover:border-green-200 transition cursor-pointer group">
+                    <div class="flex items-center justify-between">
+                      <div class="flex items-center flex-1 min-w-0">
+                        <i class="fas fa-list text-green-500 mr-2 flex-shrink-0"></i>
+                        <span class="font-medium text-gray-800">Daftar Pustaka</span>
+                        <span class="ml-2 text-sm text-gray-500">Hal. {{ $locations['daftar_pustaka']['page'] }}</span>
+                      </div>
+                      <i class="fas fa-chevron-right text-green-400 opacity-0 group-hover:opacity-100 transition ml-2 flex-shrink-0"></i>
+                    </div>
+                    @if(!empty($locations['daftar_pustaka']['snippet']))
+                      <p class="mt-2 text-sm text-gray-600 line-clamp-2">{{ $locations['daftar_pustaka']['snippet'] }}</p>
+                    @endif
+                  </button>
+                @endif
+              </div>
+              
+            </div>
+          </div>
+        </div>
+
+        <!-- PDF Preview Section -->
+        <div class="bg-white rounded-2xl shadow-lg p-6 border border-gray-200 mb-8">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="text-lg font-bold text-gray-800">
+              <i class="fas fa-file-pdf text-red-500 mr-2"></i>
+              Preview Dokumen PDF
+            </h3>
+            <a href="{{ route('serve.pdf', ['filename' => $filename]) }}" target="_blank" 
+               class="text-sm text-blue-600 hover:text-blue-700 font-medium">
+              <i class="fas fa-external-link-alt mr-1"></i>
+              Buka di Tab Baru
+            </a>
+          </div>
+          
+          <!-- PDF Viewer Container -->
+          <div id="pdf-container" class="border border-gray-300 rounded-lg overflow-hidden bg-gray-100 relative" style="height: 600px;">
+            <!-- Loading indicator -->
+            <div id="pdf-loading" class="absolute inset-0 flex items-center justify-center bg-gray-50 z-10">
+              <div class="text-center">
+                <i class="fas fa-spinner fa-spin text-4xl text-blue-500 mb-3"></i>
+                <p class="text-gray-600">Memuat PDF...</p>
+              </div>
+            </div>
+            
+            <!-- Object tag for better PDF support -->
+            <object 
+              id="pdf-viewer-object"
+              data="{{ route('serve.pdf', ['filename' => $filename]) }}#view=FitH&toolbar=1&navpanes=1" 
+              type="application/pdf"
+              class="w-full h-full">
+              
+              <!-- Fallback: Iframe for browsers that don't support object -->
+              <iframe 
+                id="pdf-viewer" 
+                src="{{ route('serve.pdf', ['filename' => $filename]) }}#view=FitH" 
+                class="w-full h-full"
+                type="application/pdf"
+                frameborder="0"
+                allow="fullscreen"
+                onload="handlePDFLoad()">
+                
+                <!-- Final fallback: Link -->
+                <div class="flex items-center justify-center h-full p-8">
+                  <div class="text-center max-w-md">
+                    <i class="fas fa-file-pdf text-5xl text-red-500 mb-4"></i>
+                    <p class="text-gray-600 mb-4">Preview PDF tidak tersedia di browser Anda.</p>
+                    <a href="{{ route('serve.pdf', ['filename' => $filename]) }}" target="_blank" 
+                       class="inline-flex items-center px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition">
+                      <i class="fas fa-external-link-alt mr-2"></i>
+                      Buka PDF di Tab Baru
+                    </a>
+                  </div>
+                </div>
+              </iframe>
+            </object>
+            
+            <!-- Error fallback (shown if PDF fails to load) -->
+            <div id="pdf-error" class="hidden absolute inset-0 flex items-center justify-center bg-gray-50 p-8 z-20">
+              <div class="text-center max-w-md">
+                <i class="fas fa-exclamation-triangle text-5xl text-yellow-500 mb-4"></i>
+                <h4 class="text-lg font-semibold text-gray-800 mb-2">Preview PDF Tidak Tersedia</h4>
+                <p class="text-gray-600 mb-4">Browser Anda mungkin tidak mendukung preview PDF langsung atau file sedang dimuat.</p>
+                <a href="{{ route('serve.pdf', ['filename' => $filename]) }}" target="_blank" 
+                   class="inline-flex items-center px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition">
+                  <i class="fas fa-external-link-alt mr-2"></i>
+                  Buka PDF di Tab Baru
+                </a>
+              </div>
+            </div>
+          </div>
+          
+          <!-- PDF Navigation Helper -->
+          <div class="mt-3 text-sm text-gray-600 bg-blue-50 p-3 rounded-lg">
+            <i class="fas fa-info-circle text-blue-500 mr-2"></i>
+            <span class="font-medium">Tip:</span> Klik pada bagian Abstrak, Bab, atau Daftar Pustaka di atas untuk langsung menuju halaman tersebut di PDF.
+          </div>
+        </div>
+        @endif
+
         <!-- Detail Analysis -->
         <h2 class="text-xl font-bold text-gray-800 mb-6 break-words">Detail Analisis Format ITS</h2>
 
@@ -499,15 +656,31 @@
             $references = $results['details']['Daftar Pustaka'] ?? [];
             $refCount = $references['references_count'] ?? '';
             $refCountStr = is_array($refCount) ? '' : trim((string) $refCount);
+            $refNotes = $references['notes'] ?? '';
             
             // Extract angka dari string seperti "≥21"
             preg_match('/(\d+)/', $refCountStr, $matches);
             $refNumber = isset($matches[1]) ? intval($matches[1]) : 0;
 
-            // Status: success (hijau centang) jika >= 20 referensi (standar TA)
-            // warning (kuning) jika 1-19 referensi
-            // danger (merah silang) jika 0 atau tidak terdeteksi
-            if ($refNumber >= 20) {
+            // Cek apakah daftar pustaka terdeteksi dari locations atau notes
+            $hasDaftarPustaka = false;
+            if (isset($results['locations']['daftar_pustaka']) && $results['locations']['daftar_pustaka']) {
+                $hasDaftarPustaka = true;
+            }
+            
+            // Jika notes mengandung "Tidak dievaluasi" atau "Terdeteksi" berarti ada daftar pustaka
+            if (stripos($refNotes, 'Tidak dievaluasi') !== false || 
+                stripos($refNotes, 'Terdeteksi') !== false ||
+                stripos($refNotes, 'ditemukan') !== false) {
+                $hasDaftarPustaka = true;
+            }
+
+            // Status berdasarkan deteksi dan jumlah referensi
+            if ($hasDaftarPustaka && $refNumber >= 20) {
+                $refStatus = 'success';
+                $refIcon = 'fa-check-circle';
+            } elseif ($hasDaftarPustaka) {
+                // Daftar pustaka terdeteksi tapi jumlah tidak dihitung atau < 20
                 $refStatus = 'success';
                 $refIcon = 'fa-check-circle';
             } elseif ($refNumber > 0) {
@@ -657,6 +830,77 @@
   </footer>
 
   <script>
+    // Handle PDF load success
+    function handlePDFLoad() {
+        console.log('PDF loaded successfully');
+        const loadingEl = document.getElementById('pdf-loading');
+        if (loadingEl) {
+            loadingEl.style.display = 'none';
+        }
+    }
+
+    // Handle PDF load error
+    function handlePDFError() {
+        console.error('PDF failed to load');
+        const loadingEl = document.getElementById('pdf-loading');
+        const errorEl = document.getElementById('pdf-error');
+        if (loadingEl) loadingEl.style.display = 'none';
+        if (errorEl) errorEl.classList.remove('hidden');
+    }
+
+    // Hide loading after timeout (fallback)
+    setTimeout(() => {
+        const loadingEl = document.getElementById('pdf-loading');
+        if (loadingEl && loadingEl.style.display !== 'none') {
+            loadingEl.style.display = 'none';
+        }
+    }, 5000);
+
+    // Fungsi untuk navigasi ke halaman PDF tertentu
+    function navigateToPDFPage(pageNumber) {
+        const pdfObject = document.getElementById('pdf-viewer-object');
+        const pdfViewer = document.getElementById('pdf-viewer');
+        const pdfContainer = document.getElementById('pdf-container');
+        
+        if (pdfContainer) {
+            // Scroll ke PDF viewer dengan smooth animation
+            pdfContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            
+            // Wait for scroll to complete
+            setTimeout(function() {
+                // Try object tag first
+                if (pdfObject) {
+                    const currentData = pdfObject.data || pdfObject.getAttribute('data');
+                    if (currentData) {
+                        const baseUrl = currentData.split('#')[0];
+                        const newUrl = baseUrl + '#page=' + pageNumber + '&view=FitH&toolbar=1&navpanes=1';
+                        pdfObject.data = newUrl;
+                    }
+                }
+                
+                // Also update iframe as fallback
+                if (pdfViewer) {
+                    const currentSrc = pdfViewer.src || pdfViewer.getAttribute('src');
+                    if (currentSrc) {
+                        const baseUrl = currentSrc.split('#')[0];
+                        const newUrl = baseUrl + '#page=' + pageNumber + '&view=FitH';
+                        pdfViewer.src = newUrl;
+                    }
+                }
+                
+                // Visual feedback - highlight effect
+                if (pdfContainer) {
+                    pdfContainer.style.transition = 'box-shadow 0.3s ease';
+                    pdfContainer.style.boxShadow = '0 0 25px rgba(59, 130, 246, 0.6)';
+                    
+                    setTimeout(function() {
+                        pdfContainer.style.boxShadow = '';
+                    }, 1200);
+                }
+            }, 500);
+        }
+    }
+
     // Fungsi untuk menyimpan hasil
     function saveResults() {
         const button = event.target;
@@ -736,6 +980,8 @@
             mobileMenu.classList.add('hidden');
         }
     });
+
+    // No additional JavaScript needed for PDF preview
   </script>
 </body>
 </html>

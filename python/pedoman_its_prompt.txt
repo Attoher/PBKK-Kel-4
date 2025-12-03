@@ -1,0 +1,130 @@
+# PEDOMAN PENYUSUNAN LAPORAN TUGAS AKHIR ITS
+# Berdasarkan SK Rektor No. 280/IT2/T/HK.00.01/2022
+
+## ATURAN FORMAT DOKUMEN:
+
+### 1. FORMAT KERTAS DAN MARGIN:
+- Kertas: HVS 80 gram ukuran A4 (210mm x 297mm)
+- Margin Atas: 3.0 cm
+- Margin Bawah: 2.5 cm
+- Margin Kiri: 3.0 cm
+- Margin Kanan: 2.0 cm
+- Jarak Spasi: 1.5 (satu setengah)
+- Font: Times New Roman, Normal, ukuran 12pt (judul bisa 14pt)
+- Kata asing yang tidak diterjemahkan: ITALIC
+
+### 2. STRUKTUR WAJIB TUGAS AKHIR:
+
+#### BAGIAN AWAL (Halaman romawi kecil: i, ii, iii, ...):
+1. Halaman Sampul Depan
+2. Halaman Judul (bahasa Indonesia DAN bahasa Inggris)
+3. Halaman Pengesahan (tanda tangan pembimbing dan penguji)
+4. Halaman Pernyataan Orisinalitas
+5. ABSTRAK (bahasa Indonesia, 200-300 kata, max 1 halaman)
+6. ABSTRACT (bahasa Inggris, 200-300 kata, max 1 halaman)
+7. Kata Pengantar
+8. Daftar Isi
+9. Daftar Gambar (jika ada gambar)
+10. Daftar Tabel (jika ada tabel)
+
+#### BAGIAN ISI (Halaman angka arab: 1, 2, 3, ...):
+**BAB 1: PENDAHULUAN** (WAJIB)
+- 1.1 Latar Belakang
+- 1.2 Rumusan Masalah
+- 1.3 Batasan Masalah/Ruang Lingkup
+- 1.4 Tujuan
+- 1.5 Manfaat
+
+**BAB 2: TINJAUAN PUSTAKA** (WAJIB)
+- 2.1 Hasil Penelitian/Perancangan Terdahulu
+- 2.2 Teori/Konsep Dasar (landasan teori)
+
+**BAB 3: METODOLOGI** (WAJIB)
+- 3.1 Metode yang digunakan
+- 3.2 Bahan dan peralatan
+- 3.3 Tahapan penelitian (bisa dalam flowchart)
+- 3.4 Teknik pengumpulan dan analisis data
+
+**BAB 4: HASIL DAN PEMBAHASAN** (WAJIB)
+- Analisis hasil penelitian/perancangan
+- Pembahasan dan interpretasi data
+- Perbandingan dengan penelitian terdahulu
+
+**BAB 5: KESIMPULAN DAN SARAN** (WAJIB)
+- 5.1 Kesimpulan (menjawab rumusan masalah dan tujuan)
+- 5.2 Saran (untuk penelitian/pengembangan lanjutan)
+
+#### BAGIAN AKHIR:
+**DAFTAR PUSTAKA** (WAJIB)
+- Minimal 20 referensi untuk Tugas Akhir Sarjana
+- Format: APA Style atau IEEE Style (konsisten)
+- Rujukan dari jurnal ilmiah, buku, conference paper
+- Hindari rujukan dari blog/website tidak kredibel
+- Urut alfabetis berdasarkan nama pengarang
+
+**LAMPIRAN** (jika diperlukan)
+- Kode program, data mentah, dokumentasi tambahan
+
+### 3. KRITERIA VALIDASI DOKUMEN TA/SKRIPSI ITS:
+
+✓ Minimal 15-20 halaman untuk Proposal TA
+✓ Minimal 40-60 halaman untuk Laporan TA lengkap (tergantung prodi)
+✓ HARUS ada: Abstrak Indonesia + Inggris
+✓ HARUS ada: Bab 1 (Pendahuluan) sampai Bab 5 (Kesimpulan)
+✓ HARUS ada: Daftar Pustaka dengan minimal 20 referensi
+✓ HARUS ada: Halaman Pengesahan
+✓ Format margin dan font HARUS sesuai pedoman
+✓ Spasi 1.5 untuk isi, spasi 1 untuk abstrak dan daftar pustaka
+
+### 4. ABSTRAK - ATURAN KHUSUS:
+- Panjang: 200-300 kata
+- Maksimal: 1 halaman
+- Berisi: Latar belakang singkat, tujuan, metode, hasil utama, kesimpulan
+- TIDAK boleh ada: Sitasi/kutipan, daftar pustaka, singkatan tanpa penjelasan
+- Kata kunci: 3-5 kata kunci yang relevan
+- Ditulis dalam paragraf tunggal (tidak ada sub-bagian)
+
+### 5. DAFTAR PUSTAKA - ATURAN KHUSUS:
+- Minimal 20 referensi untuk TA Sarjana
+- Format: APA Style (American Psychological Association) atau IEEE Style
+- Urutan: Alfabetis berdasarkan nama pengarang/penulis pertama
+- Sumber: Prioritas jurnal ilmiah > buku > conference paper > laporan resmi
+- Hindari: Wikipedia, blog pribadi, website tidak kredibel
+- Tahun publikasi: Prioritaskan sumber 5-10 tahun terakhir
+
+Contoh format APA:
+Nama, A. B., & Nama, C. D. (Tahun). Judul artikel. Nama Jurnal, Volume(Issue), halaman. DOI atau URL
+
+Contoh format IEEE:
+[1] A. B. Nama dan C. D. Nama, "Judul artikel," Nama Jurnal, vol. X, no. Y, pp. Z-ZZ, Bulan Tahun.
+
+### 6. PENOMORAN HALAMAN:
+- Bagian Awal: romawi kecil (i, ii, iii, iv, ...)
+- Bagian Isi: angka arab (1, 2, 3, 4, ...)
+- Posisi: Tengah bawah untuk bagian awal, kanan atas untuk bagian isi
+
+### 7. KRITERIA PENILAIAN KELAYAKAN:
+**LAYAK** jika:
+- Semua struktur wajib lengkap (Abstrak, Bab 1-5, Daftar Pustaka)
+- Format margin dan font sesuai pedoman
+- Minimal 20 referensi di Daftar Pustaka
+- Abstrak dalam 2 bahasa (Indonesia + Inggris)
+- Minimal 40 halaman isi (tidak termasuk lampiran)
+
+**PERLU PERBAIKAN** jika:
+- Kurang 1-2 komponen minor (misal: abstrak 1 bahasa saja)
+- Format margin/font tidak sesuai
+- Referensi kurang dari 20 atau tidak berkualitas
+- Struktur bab kurang lengkap
+
+**TIDAK LAYAK** jika:
+- Tidak ada Daftar Pustaka
+- Tidak ada struktur Bab 1-5
+- Kurang dari 15 halaman
+- Format sangat tidak sesuai pedoman
+
+### 8. CATATAN PENTING:
+- Tugas Akhir dan Proyek Akhir mengikuti pedoman yang sama
+- Skripsi, Proyek Akhir, Perancangan = istilah berbeda untuk dokumen yang sama
+- Setiap Fakultas/Departemen dapat menambah aturan spesifik (tidak mengurangi)
+- Pedoman ini berlaku untuk Program Sarjana dan Sarjana Terapan ITS

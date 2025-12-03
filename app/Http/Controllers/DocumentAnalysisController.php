@@ -27,9 +27,10 @@ class DocumentAnalysisController extends Controller
     /**
      * Analisis dokumen dengan caching dan error handling yang lebih baik
      */
+        // Jalankan analisis Python dengan batas waktu default PHP
+
     public function analyzeDocument($filename)
     {
-        // Validasi dan sanitasi filename
         $filename = $this->validateAndSanitizeFilename($filename);
         if (!$filename) {
             return $this->redirectWithError('Nama file tidak valid.');
@@ -64,25 +65,28 @@ class DocumentAnalysisController extends Controller
             } catch (\Exception $e) {
                 $errorMsg = $e->getMessage();
                 
-                // Jika error adalah validasi dokumen (bukan TA), tampilkan error langsung
-                if (str_contains($errorMsg, 'tidak terdeteksi sebagai Tugas Akhir')) {
-                    Log::warning('Dokumen ditolak: bukan format TA', [
+                // Jika error adalah validasi dokumen (bukan TA), gunakan fallback dengan error info
+                if (str_contains($errorMsg, 'tidak terdeteksi sebagai Tugas Akhir') ||
+                    str_contains($errorMsg, 'terlalu pendek') ||
+                    str_contains($errorMsg, 'terlalu sedikit') ||
+                    str_contains($errorMsg, 'TIDAK MEMENUHI standar')) {
+                    
+                    Log::warning('Dokumen tidak memenuhi standar TA ITS', [
                         'filename' => $filename,
                         'error' => $errorMsg
                     ]);
                     
-                    return redirect()->route('upload.form')
-                        ->with('error', $errorMsg)
-                        ->with('suggestion', 'Pastikan dokumen yang diupload adalah Tugas Akhir/Skripsi yang memiliki struktur lengkap (Abstrak, Bab, Daftar Pustaka, dll.)');
+                    // Gunakan fallback dengan info error yang sebenarnya
+                    $analysisResults = $this->generateFailedAnalysisResult($filename, $errorMsg);
+                } else {
+                    // Error lainnya (connection, timeout, dll) -> gunakan fallback standar
+                    Log::error('Analisis Python gagal, menggunakan fallback', [
+                        'filename' => $filename,
+                        'error' => $errorMsg
+                    ]);
+                    
+                    $analysisResults = $this->simulateAnalysis($filename);
                 }
-                
-                // Error lainnya (connection, timeout, dll) -> gunakan fallback
-                Log::error('Analisis Python gagal, menggunakan fallback', [
-                    'filename' => $filename,
-                    'error' => $errorMsg
-                ]);
-                
-                $analysisResults = $this->simulateAnalysis($filename);
             }
         } else {
             Log::info('Menggunakan hasil analisis dari cache', ['filename' => $filename]);
@@ -202,6 +206,8 @@ class DocumentAnalysisController extends Controller
             // Senopati (preferred) - passed to the Python script which already reads SENOPATI_* vars
             'SENOPATI_BASE_URL' => env('SENOPATI_BASE_URL', 'https://senopati.its.ac.id/senopati-lokal-dev/generate'),
             'SENOPATI_MODEL' => env('SENOPATI_MODEL', 'dolphin-mixtral:latest'),
+            // Control whether Python should hit Senopati or use fallback
+            'USE_SENOPATI' => env('USE_SENOPATI', 'false'),
 
             'PYTHONIOENCODING' => 'utf-8',
             'PYTHONUNBUFFERED' => '1'
@@ -278,8 +284,20 @@ class DocumentAnalysisController extends Controller
         }
 
         if (isset($results['error'])) {
-            Log::error("AI Analysis Error", ['error' => $results['error']]);
-            throw new \Exception("Analisis AI gagal: " . $results['error']);
+            $errorMsg = $results['error'];
+            Log::error("AI Analysis Error", ['error' => $errorMsg]);
+            
+            // Cek apakah ini error validasi dokumen (bukan TA)
+            if (str_contains($errorMsg, 'tidak terdeteksi sebagai') || 
+                str_contains($errorMsg, 'terlalu pendek') ||
+                str_contains($errorMsg, 'terlalu sedikit') ||
+                str_contains($errorMsg, 'Komponen yang hilang')) {
+                // Ini error validasi - lempar exception khusus
+                throw new \Exception($errorMsg);
+            }
+            
+            // Error lain (network, timeout, dll)
+            throw new \Exception("Analisis AI gagal: " . $errorMsg);
         }
 
         return $results;
@@ -352,6 +370,9 @@ class DocumentAnalysisController extends Controller
             
             // Prepare data untuk view
             $displayResults = $this->prepareDisplayResults($filename, $newResults);
+
+            // Copy PDF to public/pdfs for direct access
+            $this->copyPdfToPublic($filename);
 
             Log::info('Menampilkan hasil analisis', [
                 'filename' => $filename,
@@ -438,8 +459,140 @@ class DocumentAnalysisController extends Controller
             'status' => $results['status'] ?? self::STATUS_NEEDS_IMPROVEMENT,
             'details' => $results['details'] ?? [],
             'document_info' => $results['document_info'] ?? [],
-            'recommendations' => $results['recommendations'] ?? []
+            'recommendations' => $results['recommendations'] ?? [],
+            'locations' => $results['locations'] ?? []
         ];
+    }
+
+    /**
+     * Copy PDF to public folder for direct access
+     */
+    private function copyPdfToPublic($filename)
+    {
+        try {
+            $pathsToTry = [
+                self::UPLOAD_PATH . $filename,
+                self::PRIVATE_PATH . self::UPLOAD_PATH . $filename
+            ];
+
+            foreach ($pathsToTry as $storageRelPath) {
+                if (Storage::exists($storageRelPath)) {
+                    $fullPath = Storage::path($storageRelPath);
+                    
+                    if (file_exists($fullPath)) {
+                        // Create public/pdfs directory if not exists
+                        $publicPath = public_path('pdfs');
+                        if (!file_exists($publicPath)) {
+                            mkdir($publicPath, 0755, true);
+                        }
+                        
+                        $publicFile = $publicPath . '/' . $filename;
+                        
+                        // Copy file
+                        copy($fullPath, $publicFile);
+                        
+                        Log::info('PDF copied to public folder', [
+                            'filename' => $filename,
+                            'public_path' => $publicFile
+                        ]);
+                        
+                        return true;
+                    }
+                }
+            }
+        } catch (\Exception $e) {
+            Log::error('Failed to copy PDF to public', [
+                'filename' => $filename,
+                'error' => $e->getMessage()
+            ]);
+        }
+        
+        return false;
+    }
+
+    /**
+     * Serve/preview PDF inline in browser (tidak auto-download)
+     */
+    public function servePdf($filename)
+    {
+        // Handle OPTIONS request for CORS preflight
+        if (request()->isMethod('options')) {
+            return response('', 200, [
+                'Access-Control-Allow-Origin' => '*',
+                'Access-Control-Allow-Methods' => 'GET, HEAD, OPTIONS',
+                'Access-Control-Allow-Headers' => 'Content-Type, Accept, Range, Authorization',
+                'Access-Control-Max-Age' => '3600'
+            ]);
+        }
+
+        $filename = $this->validateAndSanitizeFilename($filename);
+        if (!$filename) {
+            Log::warning('Invalid filename in servePdf', ['filename' => $filename]);
+            abort(400, 'Invalid filename');
+        }
+
+        Log::info('Serving PDF', ['filename' => $filename]);
+
+        try {
+            $pathsToTry = [
+                self::UPLOAD_PATH . $filename,
+                self::PRIVATE_PATH . self::UPLOAD_PATH . $filename
+            ];
+
+            foreach ($pathsToTry as $storageRelPath) {
+                Log::debug('Trying path', ['path' => $storageRelPath]);
+                
+                if (Storage::exists($storageRelPath)) {
+                    $fullPath = Storage::path($storageRelPath);
+                    
+                    Log::info('File found in storage', [
+                        'storage_path' => $storageRelPath,
+                        'full_path' => $fullPath,
+                        'exists' => file_exists($fullPath),
+                        'readable' => is_readable($fullPath),
+                        'size' => file_exists($fullPath) ? filesize($fullPath) : 0
+                    ]);
+                    
+                    if (!file_exists($fullPath)) {
+                        Log::warning('Storage says exists but file_exists returns false', ['path' => $fullPath]);
+                        continue;
+                    }
+                    
+                    // Read file content
+                    $fileContent = file_get_contents($fullPath);
+                    $fileSize = filesize($fullPath);
+                    
+                    Log::info('Serving PDF with inline disposition', [
+                        'filename' => $filename,
+                        'size' => $fileSize
+                    ]);
+                    
+                    // Return response with proper headers to force inline display
+                    return response($fileContent, 200)
+                        ->header('Content-Type', 'application/pdf')
+                        ->header('Content-Disposition', 'inline; filename="' . $filename . '"')
+                        ->header('Content-Length', $fileSize)
+                        ->header('Cache-Control', 'public, max-age=3600')
+                        ->header('Accept-Ranges', 'bytes')
+                        ->header('X-Content-Type-Options', 'nosniff');
+                }
+            }
+
+            Log::error('PDF file not found in any path', [
+                'filename' => $filename,
+                'paths_tried' => $pathsToTry
+            ]);
+            abort(404, 'PDF file not found');
+
+        } catch (\Exception $e) {
+            Log::error('Error serving PDF', [
+                'filename' => $filename,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            
+            abort(500, 'Error loading PDF: ' . $e->getMessage());
+        }
     }
 
     /**
@@ -543,6 +696,84 @@ class DocumentAnalysisController extends Controller
     /**
      * Simulasi analisis (fallback)
      */
+    /**
+     * Generate hasil analisis untuk dokumen yang gagal validasi
+     */
+    private function generateFailedAnalysisResult($filename, $errorMsg)
+    {
+        // Ekstrak jumlah halaman dari error message jika ada
+        $pageCount = 0;
+        if (preg_match('/\((\d+) halaman\)/', $errorMsg, $matches)) {
+            $pageCount = (int)$matches[1];
+        }
+        
+        // Tentukan status dan score berdasarkan error
+        $score = 3;
+        $status = self::STATUS_NOT_ELIGIBLE;
+        $recommendations = [
+            $errorMsg,
+            "Sesuai Pedoman ITS SK Rektor No. 280/2022:",
+            "• Proposal TA minimal 15-20 halaman",
+            "• Laporan TA minimal 40-60 halaman",
+            "• HARUS ada: Abstrak (2 bahasa), Bab 1-5, Daftar Pustaka (min 20 ref)"
+        ];
+        
+        return [
+            "score" => $score,
+            "percentage" => $score * 10,
+            "status" => $status,
+            "details" => [
+                "Abstrak" => [
+                    "status" => "✗",
+                    "notes" => "Tidak terdeteksi atau dokumen terlalu pendek",
+                    "id_word_count" => 0,
+                    "en_word_count" => 0
+                ],
+                "Struktur Bab" => [
+                    "Bab 1" => "✗",
+                    "Bab 2" => "✗",
+                    "Bab 3" => "✗",
+                    "Bab 4" => "✗",
+                    "Bab 5" => "✗",
+                    "notes" => "Struktur Bab tidak terdeteksi atau tidak memenuhi standar Pedoman ITS"
+                ],
+                "Daftar Pustaka" => [
+                    "references_count" => "0",
+                    "format" => "Tidak Terdeteksi",
+                    "notes" => "Daftar Pustaka tidak terdeteksi. Pedoman ITS: Minimal 20 referensi dengan format APA/IEEE"
+                ],
+                "Cover & Halaman Formal" => [
+                    "status" => "✗",
+                    "notes" => "Halaman formal tidak terdeteksi atau tidak lengkap"
+                ],
+                "Format Teks" => [
+                    "font" => "Tidak terdeteksi",
+                    "size" => "Tidak terdeteksi",
+                    "spacing" => "Tidak terdeteksi",
+                    "notes" => "Pedoman ITS: Times New Roman 12pt, spasi 1.5"
+                ],
+                "Margin" => [
+                    "top" => "Tidak terdeteksi",
+                    "bottom" => "Tidak terdeteksi",
+                    "left" => "Tidak terdeteksi",
+                    "right" => "Tidak terdeteksi",
+                    "notes" => "Pedoman ITS: Atas 3cm, Bawah 2.5cm, Kiri 3cm, Kanan 2cm"
+                ]
+            ],
+            "document_info" => [
+                "jenis_dokumen" => "Tidak Memenuhi Standar TA ITS",
+                "total_halaman" => $pageCount,
+                "format_file" => "PDF"
+            ],
+            "recommendations" => $recommendations,
+            "locations" => [
+                "abstrak" => null,
+                "bab" => [],
+                "daftar_pustaka" => null
+            ]
+        ];
+    }
+
     private function simulateAnalysis($filename)
     {
         return [

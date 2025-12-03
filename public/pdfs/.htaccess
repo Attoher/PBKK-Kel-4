@@ -1,0 +1,11 @@
+<IfModule mod_mime.c>
+    AddType application/pdf .pdf
+</IfModule>
+
+<IfModule mod_headers.c>
+    <FilesMatch "\.pdf$">
+        Header set Content-Type "application/pdf"
+        Header set Content-Disposition "inline"
+        Header set X-Content-Type-Options "nosniff"
+    </FilesMatch>
+</IfModule>

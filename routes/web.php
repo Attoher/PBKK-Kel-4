@@ -23,6 +23,8 @@ Route::get('/upload/test', [UploadController::class, 'testConnection'])->name('u
 // Routes untuk analisis dokumen
 Route::get('/analyze/{filename}', [DocumentAnalysisController::class, 'analyzeDocument'])->name('analyze.document')->middleware(\App\Http\Middleware\CheckPythonEnv::class);
 Route::get('/results/{filename}', [DocumentAnalysisController::class, 'showResults'])->name('results');
+// Serve PDF inline for viewer (untuk preview di browser)
+Route::match(['get', 'head', 'options'], '/pdf/{filename}', [DocumentAnalysisController::class, 'servePdf'])->name('serve.pdf');
 
 // Route untuk download hasil
 Route::get('/download/{filename}', [DocumentAnalysisController::class, 'downloadResults'])->name('download.results');

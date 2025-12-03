@@ -23,8 +23,8 @@ class AppServiceProvider extends ServiceProvider
             URL::forceRootUrl(rtrim($appUrl, '/'));
         }
 
-        // Paksa HTTPS karena Senopati pakai SSL
-        if ($this->app->environment('production') || $this->app->environment('local')) {
+        // Paksa HTTPS hanya untuk production (Railway)
+        if ($this->app->environment('production')) {
              URL::forceScheme('https');
         }
     }
