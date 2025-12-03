@@ -75,14 +75,6 @@ background-color: rgba(30, 41, 59, 0.7) !important;
 border-color: var(--dark-border) !important;
 }
 
-.dark-mode .text-blue-800,
-.dark-mode .text-green-800,
-.dark-mode .text-yellow-800,
-.dark-mode .text-red-800,
-.dark-mode .text-purple-800 {
-color: #dbeafe !important;
-}
-
 /* Footer Dark Mode */
 .dark-mode footer {
 background-color: #0f172a !important;
@@ -138,4 +130,530 @@ transform: scale(1.1) rotate(15deg);
 /* Transisi Smooth untuk Dark Mode */
 body, .navbar, .card-hover, .bg-white, footer {
 transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+/* dark-its.css - Tambahkan selector berikut */
+
+/* Form input focus state */
+.dark-mode input:focus,
+.dark-mode select:focus,
+.dark-mode textarea:focus {
+  border-color: #60a5fa !important;
+  box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.1) !important;
+}
+
+/* Button styles in dark mode */
+.dark-mode .btn-hover {
+  background-color: var(--dark-card) !important;
+  border-color: var(--dark-border) !important;
+}
+
+.dark-mode .bg-gradient-to-r {
+  background: var(--dark-gradient) !important;
+}
+
+/* Placeholder text */
+.dark-mode ::placeholder {
+  color: #94a3b8 !important;
+  opacity: 1;
+}
+
+/* Scrollbar dark mode */
+.dark-mode ::-webkit-scrollbar-track {
+  background: #1e293b !important;
+}
+
+.dark-mode ::-webkit-scrollbar-thumb {
+  background: #475569 !important;
+}
+
+.dark-mode ::-webkit-scrollbar-thumb:hover {
+  background: #64748b !important;
+}
+
+.dark-mode a:not(.nav-link):hover {
+  color: #93c5fd !important;
+}
+
+/* Hero section dark mode */
+.dark-mode .bg-white\/95,
+.dark-mode .bg-white\/90,
+.dark-mode .bg-white\/80 {
+  background-color: rgba(30, 41, 59, 0.95) !important;
+}
+
+/* Card specific overrides */
+.dark-mode .bg-white {
+  background-color: var(--dark-card) !important;
+}
+
+.dark-mode .border-gray-200,
+.dark-mode .border-gray-200\/80,
+.dark-mode .border-gray-200\/50 {
+  border-color: var(--dark-border) !important;
+}
+
+/* Text colors with opacity */
+.dark-mode .text-white\/90,
+.dark-mode .text-white\/80 {
+  color: rgba(241, 245, 249, 0.9) !important;
+}
+
+/* Background gradients */
+.dark-mode .from-blue-50,
+.dark-mode .to-purple-50,
+.dark-mode .bg-gradient-to-br {
+  background-image: none !important;
+  background-color: rgba(15, 23, 42, 0.7) !important;
+}
+
+/* Status badges */
+.dark-mode .bg-emerald-50 { background-color: rgba(6, 78, 59, 0.3) !important; }
+.dark-mode .bg-amber-50 { background-color: rgba(120, 53, 15, 0.3) !important; }
+.dark-mode .bg-red-50 { background-color: rgba(127, 29, 29, 0.3) !important; }
+.dark-mode .bg-blue-50 { background-color: rgba(30, 58, 138, 0.3) !important; }
+.dark-mode .bg-green-50 { background-color: rgba(6, 78, 59, 0.3) !important; }
+.dark-mode .bg-yellow-50 { background-color: rgba(120, 53, 15, 0.3) !important; }
+.dark-mode .bg-purple-50 { background-color: rgba(76, 29, 149, 0.3) !important; }
+.dark-mode .bg-orange-50 { background-color: rgba(124, 45, 18, 0.3) !important; }
+.dark-mode .bg-indigo-50 { background-color: rgba(55, 48, 163, 0.3) !important; }
+
+/* Text in status badges */
+.dark-mode .text-emerald-700 { color: #a7f3d0 !important; }
+.dark-mode .text-amber-700 { color: #fde68a !important; }
+.dark-mode .text-red-700 { color: #fca5a5 !important; }
+.dark-mode .text-blue-700 { color: #93c5fd !important; }
+
+/* ================ HISTORY PAGE DARK MODE ================ */
+
+/* Main content background */
+.dark-mode main.bg-white {
+    background-color: var(--dark-bg) !important;
+}
+
+/* Stats cards in history */
+.dark-mode .bg-white.rounded-xl.shadow-lg {
+    background-color: var(--dark-card) !important;
+    border-color: var(--dark-border) !important;
+}
+
+.dark-mode .text-gray-800 {
+    color: var(--dark-text) !important;
+}
+
+.dark-mode .bg-blue-100,
+.dark-mode .bg-green-100,
+.dark-mode .bg-yellow-100,
+.dark-mode .bg-red-100 {
+    background-color: rgba(30, 41, 59, 0.7) !important;
+    border-color: var(--dark-border) !important;
+}
+
+/* History card items */
+.dark-mode .history-card.bg-gray-50 {
+    background-color: rgba(30, 41, 59, 0.5) !important;
+    border-color: var(--dark-border) !important;
+}
+
+.dark-mode .history-card:hover {
+    background-color: rgba(30, 41, 59, 0.8) !important;
+}
+
+/* Progress bars in history */
+.dark-mode .bg-gray-200 {
+    background-color: #374151 !important;
+}
+
+.dark-mode .bg-green-500 {
+    background-color: #10b981 !important;
+}
+
+.dark-mode .bg-yellow-500 {
+    background-color: #f59e0b !important;
+}
+
+.dark-mode .bg-red-500 {
+    background-color: #ef4444 !important;
+}
+
+/* Empty state */
+.dark-mode .empty-state {
+    background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%) !important;
+}
+
+/* Tips sections */
+.dark-mode .bg-yellow-50,
+.dark-mode .bg-blue-50 {
+    background-color: rgba(30, 41, 59, 0.5) !important;
+    border-color: #4b5563 !important;
+}
+
+.dark-mode .text-yellow-800,
+.dark-mode .text-blue-800 {
+    color: #e5e7eb !important;
+}
+
+.dark-mode .text-yellow-700,
+.dark-mode .text-blue-700 {
+    color: #d1d5db !important;
+}
+
+/* Confirm modal in history */
+.dark-mode #confirmModal .bg-white {
+    background-color: var(--dark-card) !important;
+    color: var(--dark-text) !important;
+}
+
+.dark-mode #confirmModal .text-gray-900 {
+    color: var(--dark-text) !important;
+}
+
+.dark-mode #confirmModal .text-gray-500,
+.dark-mode #confirmModal .text-gray-400 {
+    color: #9ca3af !important;
+}
+
+.dark-mode #confirmModal .bg-gray-50 {
+    background-color: rgba(30, 41, 59, 0.7) !important;
+}
+
+/* ================ UPLOAD PAGE DARK MODE ================ */
+
+/* Main upload container */
+.dark-mode .bg-white.rounded-2xl {
+    background-color: var(--dark-card) !important;
+    border-color: var(--dark-border) !important;
+}
+
+.dark-mode .bg-gradient-to-r.from-blue-600.to-purple-600 {
+    background: linear-gradient(135deg, #1e40af 0%, #5b21b6 100%) !important;
+}
+
+/* File upload container */
+.dark-mode .file-upload-container {
+    background-color: rgba(30, 41, 59, 0.7) !important;
+    border-color: #4b5563 !important;
+}
+
+.dark-mode .file-upload-container:hover {
+    background-color: rgba(30, 41, 59, 0.9) !important;
+    border-color: #60a5fa !important;
+}
+
+.dark-mode .file-upload-container .text-gray-600 {
+    color: #d1d5db !important;
+}
+
+/* File preview */
+.dark-mode #file-preview.bg-gray-50 {
+    background-color: rgba(30, 41, 59, 0.7) !important;
+    border-color: #4b5563 !important;
+}
+
+.dark-mode #file-preview .text-gray-800 {
+    color: #e5e7eb !important;
+}
+
+.dark-mode #file-preview .text-gray-500 {
+    color: #9ca3af !important;
+}
+
+/* Recent uploads */
+.dark-mode .bg-white.p-3.rounded-lg {
+    background-color: rgba(30, 41, 59, 0.7) !important;
+    border-color: #4b5563 !important;
+}
+
+.dark-mode .bg-white.p-3.rounded-lg:hover {
+    background-color: rgba(30, 41, 59, 0.9) !important;
+}
+
+/* Tab navigation */
+.dark-mode .bg-gray-50 {
+    background-color: rgba(30, 41, 59, 0.7) !important;
+    border-color: #4b5563 !important;
+}
+
+.dark-mode .tab-button {
+    color: #d1d5db !important;
+}
+
+.dark-mode .tab-button.active {
+    color: #60a5fa !important;
+    border-color: #60a5fa !important;
+}
+
+/* PDF preview section in upload */
+.dark-mode .pdf-info {
+    background-color: rgba(30, 41, 59, 0.7) !important;
+}
+
+.dark-mode #pdf-preview-container {
+    background-color: rgba(30, 41, 59, 0.5) !important;
+}
+
+.dark-mode .pdf-controls {
+    background-color: #4b5563 !important;
+}
+
+.dark-mode .pdf-controls .bg-gray-200 .halaman-text {
+    background-color: rgba(30, 41, 59, 0.5) !important;
+    color: #e5e7eb !important;
+}
+
+.dark-mode .pdf-controls .bg-gray-200:hover {
+    background-color: rgba(30, 41, 59, 0.5) !important;
+}
+
+.dark-mode .pdf-controls .bg-blue-100 {
+    background-color: rgba(59, 130, 246, 0.3) !important;
+}
+
+.dark-mode .pdf-controls .bg-blue-500 {
+    background-color: rgba(30, 41, 59, 0.5) !important;
+}
+
+/* Form error/success messages */
+.dark-mode .bg-red-100,
+.dark-mode .bg-green-100,
+.dark-mode .bg-blue-100 {
+    background-color: rgba(30, 41, 59, 0.7) !important;
+    border-color: #4b5563 !important;
+}
+
+.dark-mode .text-red-700,
+.dark-mode .text-green-700,
+.dark-mode .text-blue-700 {
+    color: #e5e7eb !important;
+}
+
+/* ================ RESULT PAGE DARK MODE ================ */
+
+/* Score summary section */
+.dark-mode .bg-blue-50 {
+    background-color: rgba(30, 41, 59, 0.7) !important;
+    border-color: #4b5563 !important;
+}
+
+.dark-mode .text-gray-600 {
+    color: #d1d5db !important;
+}
+
+/* Cards in results */
+.dark-mode .result-card.bg-white {
+    background-color: rgba(30, 41, 59, 0.7) !important;
+}
+
+.dark-mode .result-card.border-green-200,
+.dark-mode .result-card.border-yellow-200,
+.dark-mode .result-card.border-red-200 {
+    border-color: #4b5563 !important;
+}
+
+/* Progress bars in results */
+.dark-mode .bg-gray-100 {
+    background-color: #374151 !important;
+}
+
+/* PDF preview container in results */
+.dark-mode #pdf-container {
+    background-color: rgba(30, 41, 59, 0.7) !important;
+    border-color: #4b5563 !important;
+}
+
+.dark-mode #pdf-viewer-container {
+    background-color: rgba(30, 41, 59, 0.9) !important;
+}
+
+.dark-mode #pdf-loading {
+    background-color: rgba(30, 41, 59, 0.95) !important;
+}
+
+/* Quick navigation buttons in results */
+.dark-mode .bg-blue-100,
+.dark-mode .bg-purple-100,
+.dark-mode .bg-green-100 {
+    background-color: rgba(30, 41, 59, 0.7) !important;
+    border-color: #4b5563 !important;
+}
+
+.dark-mode .bg-blue-100:hover,
+.dark-mode .bg-purple-100:hover,
+.dark-mode .bg-green-100:hover {
+    background-color: rgba(30, 41, 59, 0.9) !important;
+}
+
+.dark-mode .text-blue-700,
+.dark-mode .text-purple-700,
+.dark-mode .text-green-700 {
+    color: #d1d5db !important;
+}
+
+/* Recommendations section */
+.dark-mode .bg-yellow-50 {
+    background-color: rgba(120, 53, 15, 0.3) !important;
+    border-color: #92400e !important;
+}
+
+.dark-mode .text-gray-700 {
+    color: #e5e7eb !important;
+}
+
+/* Document info section */
+.dark-mode .bg-gray-50 {
+    background-color: rgba(30, 41, 59, 0.7) !important;
+    border-color: #4b5563 !important;
+}
+
+/* Action buttons in results */
+.dark-mode .btn-hover.bg-white {
+    background-color: var(--dark-card) !important;
+    border-color: #4b5563 !important;
+    color: var(--dark-text) !important;
+}
+
+.dark-mode .btn-hover.bg-white:hover {
+    background-color: rgba(30, 41, 59, 0.9) !important;
+}
+
+/* ================ COMMON DARK MODE STYLES FOR ALL PAGES ================ */
+
+/* Navigation and footer */
+.dark-mode footer {
+    background-color: #111827 !important;
+}
+
+.dark-mode footer .text-gray-400 {
+    color: #9ca3af !important;
+}
+
+.dark-mode footer .text-gray-300:hover {
+    color: #ffffff !important;
+}
+
+/* Loading overlays and modals */
+.dark-mode #loadingOverlay .bg-white,
+.dark-mode #confirmModal .bg-white {
+    background-color: var(--dark-card) !important;
+    color: var(--dark-text) !important;
+}
+
+.dark-mode #loadingOverlay .text-gray-700 {
+    color: var(--dark-text) !important;
+}
+
+/* Notifications */
+.dark-mode .notification .bg-green-100,
+.dark-mode .notification .bg-red-100,
+.dark-mode .notification .bg-blue-100 {
+    background-color: rgba(30, 41, 59, 0.9) !important;
+    border-color: #4b5563 !important;
+    color: var(--dark-text) !important;
+}
+
+.dark-mode .notification .text-green-700,
+.dark-mode .notification .text-red-700,
+.dark-mode .notification .text-blue-700 {
+    color: var(--dark-text) !important;
+}
+
+/* Border and separator colors */
+.dark-mode .border-gray-200,
+.dark-mode .border-gray-300 {
+    border-color: #4b5563 !important;
+}
+
+.dark-mode .border-b.border-gray-200\/50 {
+    border-color: rgba(75, 85, 99, 0.5) !important;
+}
+
+/* Mobile menu */
+.dark-mode #mobileMenu {
+    background-color: rgba(30, 41, 59, 0.98) !important;
+    border-color: #4b5563 !important;
+}
+
+.dark-mode #mobileMenu .nav-link {
+    color: #d1d5db !important;
+}
+
+.dark-mode #mobileMenu .nav-link:hover {
+    background-color: rgba(59, 130, 246, 0.1) !important;
+    color: #60a5fa !important;
+}
+
+/* Button states */
+.dark-mode .btn-hover:disabled {
+    opacity: 0.5 !important;
+}
+
+/* Text colors for all pages */
+.dark-mode .text-blue-100 {
+    color: #93c5fd !important;
+}
+
+.dark-mode .text-gray-500 {
+    color: #9ca3af !important;
+}
+
+.dark-mode .text-gray-600 {
+    color: #d1d5db !important;
+}
+
+.dark-mode .font-bold.text-gray-800 {
+    color: var(--dark-text) !important;
+}
+
+/* Input fields and form elements */
+.dark-mode input[type="text"],
+.dark-mode input[type="email"],
+.dark-mode input[type="password"],
+.dark-mode select,
+.dark-mode textarea {
+    background-color: rgba(30, 41, 59, 0.7) !important;
+    border-color: #4b5563 !important;
+    color: var(--dark-text) !important;
+}
+
+.dark-mode input[type="text"]::placeholder,
+.dark-mode input[type="email"]::placeholder,
+.dark-mode input[type="password"]::placeholder,
+.dark-mode textarea::placeholder {
+    color: #9ca3af !important;
+}
+
+/* Custom scrollbar for dark mode */
+.dark-mode .custom-scrollbar::-webkit-scrollbar-track {
+    background: rgba(30, 41, 59, 0.7) !important;
+}
+
+.dark-mode .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: #4b5563 !important;
+}
+
+.dark-mode .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: #6b7280 !important;
+}
+
+/* Print styles adjustment for dark mode */
+@media print {
+    .dark-mode .print-hidden {
+        display: none !important;
+    }
+    
+    .dark-mode body {
+        background: white !important;
+        color: black !important;
+    }
+    
+    .dark-mode .bg-white,
+    .dark-mode .bg-gray-50,
+    .dark-mode .bg-blue-50 {
+        background: white !important;
+    }
+    
+    .dark-mode .text-gray-800,
+    .dark-mode .text-gray-600 {
+        color: black !important;
+    }
 }
