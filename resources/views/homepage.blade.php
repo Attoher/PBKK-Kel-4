@@ -358,7 +358,7 @@
                   <i class="fas fa-play-circle floating-element"></i> Demo & Tutorial
               </div>
               <h2 class="text-3xl xl:text-4xl lg:text-5xl font-extrabold text-gray-900 mb-6 text-balance stagger-fade-in">
-                  Lihat <span class="break-words">Cara Kerjanya</span> & <span class="break-words gradient-animate">Fitur Utama</span>
+                  Lihat <span class="break-words gradient-animate">Cara Kerjanya</span> & <span class="break-words gradient-animate">Fitur Utama</span>
               </h2>
               <p class="text-xl xl:text-2xl text-gray-600 max-w-3xl mx-auto break-words stagger-fade-in" style="animation-delay: 0.1s">
                   Tonton demo dan pelajari fitur lengkap pemeriksaan format Tugas Akhir ITS
@@ -590,7 +590,7 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
       <div class="grid items-start gap-10 lg:grid-cols-2">
         <div class="text-white animate-on-scroll">
-          <h2 class="text-2xl xl:text-3xl font-extrabold break-words gradient-animate">Cara Kerja</h2>
+          <h2 class="text-2xl xl:text-3xl font-extrabold break-words">Cara Kerja</h2>
           <ol class="mt-6 space-y-6">
             <li class="flex gap-4 stagger-fade-in">
               <div class="h-9 w-9 flex-none rounded-full bg-white text-blue-700 grid place-items-center font-bold pulse-glow floating-element">1</div>
