@@ -3,14 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Hasil Analisis - FormatCheck ITS</title>
+  <title>Hasil Analisis - TAkCekIn ITS</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js"></script>
+<link rel="stylesheet" href="{{ asset('css/loading-its.css') }}">
   <link rel="stylesheet" href="{{ asset('css/formatcheck-its.css') }}">
-  <link rel="stylesheet" href="css/formatcheck-its.css">
   <link rel="stylesheet" href="{{ asset('css/dark-its.css') }}">
-  <link rel="stylesheet" href="css/dark-its.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body class="flex flex-col min-h-screen no-horizontal-scroll">
@@ -25,7 +24,7 @@
               <i class="fas fa-graduation-cap text-white text-lg"></i>
             </div>
             <a href="{{ url('/') }}" class="flex items-center ml-3">
-              <span class="text-xl font-bold text-gray-800 break-words">FormatCheck ITS</span>
+              <span class="text-xl font-bold text-gray-800 break-words">TAkCekIn ITS</span>
             </a>
           </div>
 

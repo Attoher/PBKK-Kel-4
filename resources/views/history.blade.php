@@ -3,12 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Riwayat Analisis - FormatCheck ITS</title>
+  <title>Riwayat Analisis - TAkCekIn ITS</title>
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+<link rel="stylesheet" href="{{ asset('css/loading-its.css') }}">
   <link rel="stylesheet" href="{{ asset('css/history-its.css') }}">
-  <link rel="stylesheet" href="css/history-its.css">
   <link rel="stylesheet" href="{{ asset('css/dark-its.css') }}">
-  <link rel="stylesheet" href="css/dark-its.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body class="flex flex-col min-h-screen no-horizontal-scroll">
@@ -23,7 +22,7 @@
               <div class="w-10 h-10 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg flex items-center justify-center shadow-lg">
                 <i class="fas fa-graduation-cap text-white text-lg"></i>
               </div>
-              <span class="ml-3 text-xl font-bold text-gray-800 break-words">FormatCheck ITS</span>
+              <span class="ml-3 text-xl font-bold text-gray-800 break-words">TAkCekIn ITS</span>
             </a>
           </div>
 
@@ -424,7 +423,7 @@
               <div class="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg flex items-center justify-center mr-3">
                 <i class="fas fa-graduation-cap text-white text-lg"></i>
               </div>
-              <span class="text-xl font-bold break-words">FormatCheck ITS</span>
+              <span class="text-xl font-bold break-words">TAkCekIn ITS</span>
             </a>
           </div>
           <p class="text-gray-400 text-sm mt-2 break-words">Sistem Deteksi Kelengkapan Format Tugas Akhir</p>

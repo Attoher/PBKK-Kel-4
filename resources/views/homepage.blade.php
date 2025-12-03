@@ -4,9 +4,10 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="api-base" content="{{ url('/') }}">
-  <title>FormatCheck TA ITS — Cek Format Tugas Akhir Berbasis AI</title>
-  <meta name="description" content="FormatCheck TA ITS membantu mahasiswa memeriksa kesesuaian format penulisan Tugas Akhir sesuai panduan ITS secara otomatis dengan AI." />
+  <title>TAkCekIn TA ITS — Cek Format Tugas Akhir Berbasis AI</title>
+  <meta name="description" content="TAkCekIn TA ITS membantu mahasiswa memeriksa kesesuaian format penulisan Tugas Akhir sesuai panduan ITS secara otomatis dengan AI." />
   <script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="{{ asset('css/loading-its.css') }}">
 <link rel="stylesheet" href="{{ asset('css/formatcheck-its.css') }}">
 <link rel="stylesheet" href="{{ asset('css/dark-its.css') }}">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -26,12 +27,12 @@
               <i class="fas fa-graduation-cap text-white text-lg xl:text-xl"></i>
             </div>
             <a href="{{ url('/') }}" class="flex items-center ml-3">
-              <span class="text-xl xl:text-2xl font-bold text-gray-800 break-words">FormatCheck ITS</span>
+              <span class="text-xl xl:text-2xl font-bold text-gray-800 break-words">TAkCekIn ITS</span>
             </a>
           </div>
           
           <!-- Navigation Links -->
-          <div class="hidden xl:ml-8 xl:flex xl:space-x-6">
+          <div  class="hidden xl:ml-8 xl:flex xl:space-x-6">
             <a href="#fitur" class="nav-link border-transparent text-gray-600 hover:text-gray-900 inline-flex items-center px-3 py-2 border-b-2 text-sm font-semibold transition-all duration-200 break-words">
               <i class="fas fa-rocket mr-2 text-blue-500"></i>
               Fitur
@@ -235,7 +236,7 @@
   </section>
 
   <!-- VIDEO DEMO + FITUR - Section terpadu -->
-  <section id="video-fitur" class="bg-gradient-to-br from-blue-50 to-purple-50 py-16 xl:py-20 safe-area">
+  <section id="fitur" class="bg-gradient-to-br from-blue-50 to-purple-50 py-16 xl:py-20 safe-area">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <!-- Header Section -->
           <div class="text-center mb-12 lg:mb-16">
@@ -260,7 +261,7 @@
                           <div class="aspect-video">
                               <iframe 
                                   src="https://www.youtube.com/embed/YcqEDvqLne8?si=nbRDyek6LSyP5JWU" 
-                                  title="Demo FormatCheck TA ITS" 
+                                  title="Demo TAkCekIn TA ITS" 
                                   frameborder="0" 
                                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
                                   referrerpolicy="strict-origin-when-cross-origin"
@@ -283,9 +284,9 @@
                                           <i class="far fa-clock"></i> 3:45
                                       </span>
                                   </div>
-                                  <h3 class="text-lg lg:text-xl font-bold text-gray-900 mb-3 break-words">Demo Lengkap: FormatCheck TA ITS</h3>
+                                  <h3 class="text-lg lg:text-xl font-bold text-gray-900 mb-3 break-words">Demo Lengkap: TAkCekIn TA ITS</h3>
                                   <p class="text-gray-600 text-sm mb-4 break-words">
-                                      Pelajari cara menggunakan FormatCheck TA ITS untuk memeriksa format Tugas Akhir Anda secara lengkap dan akurat.
+                                      Pelajari cara menggunakan TAkCekIn TA ITS untuk memeriksa format Tugas Akhir Anda secara lengkap dan akurat.
                                   </p>
                               </div>
                           </div>
@@ -334,9 +335,9 @@
                       Video dapat diputar langsung di halaman ini
                   </div>
               </div>
-
+              
               <!-- Kolom Kanan: Fitur dalam grid 2 kolom -->
-              <div>
+              <div><br>
                   <!-- Grid Fitur 2 kolom -->
                   <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <!-- Feature 1 -->
@@ -697,7 +698,7 @@
               <div class="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg flex items-center justify-center mr-3">
                 <i class="fas fa-graduation-cap text-white text-lg"></i>
               </div>
-              <span class="text-xl font-bold break-words">FormatCheck ITS</span>
+              <span class="text-xl font-bold break-words">TAkCekIn ITS</span>
             </a>
           </div>
           <p class="text-gray-400 text-sm mt-2 break-words">Sistem Deteksi Kelengkapan Format Tugas Akhir</p>
@@ -884,10 +885,10 @@
       window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', detectSystemPreference);
     });
   </script>
+
   <!-- Dark Mode Toggle Button -->
   <button id="darkModeToggle" class="fixed bottom-6 right-6 z-50 w-12 h-12 rounded-full bg-white dark:bg-gray-800 shadow-lg hover:shadow-xl border border-gray-200 dark:border-gray-700 flex items-center justify-center transition-all duration-300 hover:scale-110 print-hidden">
     <i id="darkModeIcon" class="fas fa-moon text-gray-700 dark:text-yellow-300 text-lg"></i>
   </button>
-
 </body>
 </html>

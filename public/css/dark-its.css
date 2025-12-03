@@ -657,3 +657,369 @@ transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
         color: black !important;
     }
 }
+
+/* ================ LOGIN & REGISTER PAGE DARK MODE ================ */
+
+/* Background utama untuk halaman login/register */
+.dark-mode main.bg-white {
+    background: var(--dark-gradient) !important;
+}
+
+/* Form container */
+.dark-mode .login-container,
+.dark-mode .register-container {
+    background-color: var(--dark-card) !important;
+    border-color: var(--dark-border) !important;
+}
+
+/* Form header gradient */
+.dark-mode .bg-gradient-to-r.from-blue-600.to-purple-600 {
+    background: linear-gradient(135deg, #1e40af 0%, #5b21b6 100%) !important;
+}
+
+/* Text color in form header */
+.dark-mode .text-blue-100 {
+    color: rgba(219, 234, 254, 0.9) !important;
+}
+
+/* Input labels */
+.dark-mode .input-group label.text-gray-700 {
+    color: #e5e7eb !important;
+}
+
+/* Input fields dengan ikon */
+.dark-mode .input-group .relative input,
+.dark-mode .input-group .relative select {
+    background-color: rgba(30, 41, 59, 0.8) !important;
+    border-color: #4b5563 !important;
+    color: #f3f4f6 !important;
+}
+
+/* Ikon di dalam input */
+.dark-mode .input-group .text-gray-400 {
+    color: #9ca3af !important;
+}
+
+/* Placeholder text */
+.dark-mode .input-group input::placeholder,
+.dark-mode .input-group select::placeholder {
+    color: #9ca3af !important;
+}
+
+/* Password toggle button */
+.dark-mode #togglePassword .text-gray-400:hover,
+.dark-mode #togglePasswordConfirmation .text-gray-400:hover {
+    color: #d1d5db !important;
+}
+
+/* Password strength indicator */
+.dark-mode .bg-gray-200 {
+    background-color: #374151 !important;
+}
+
+/* Checkbox custom */
+.dark-mode .custom-checkbox {
+    border-color: #6b7280 !important;
+    background-color: var(--dark-card) !important;
+}
+
+.dark-mode .custom-checkbox:checked {
+    background-color: #4f46e5 !important;
+    border-color: #4f46e5 !important;
+}
+
+/* Terms agreement text */
+.dark-mode label.text-gray-700 {
+    color: #d1d5db !important;
+}
+
+/* Benefits section */
+.dark-mode .bg-blue-50 {
+    background-color: rgba(30, 41, 59, 0.7) !important;
+    border-color: #3b82f6 !important;
+}
+
+.dark-mode .text-blue-800 {
+    color: #dbeafe !important;
+}
+
+.dark-mode .text-blue-700 {
+    color: #bfdbfe !important;
+}
+
+/* Step indicator */
+.dark-mode .step-indicator::before {
+    background-color: #4b5563 !important;
+}
+
+.dark-mode .step {
+    background-color: #4b5563 !important;
+    color: #d1d5db !important;
+}
+
+.dark-mode .step.active {
+    background-color: #4f46e5 !important;
+    color: white !important;
+}
+
+.dark-mode .step.completed {
+    background-color: #059669 !important;
+}
+
+/* Divider text */
+.dark-mode .text-gray-500 {
+    color: #9ca3af !important;
+}
+
+/* SSO buttons */
+.dark-mode .border-gray-300 {
+    border-color: #4b5563 !important;
+}
+
+.dark-mode button.border-gray-300 {
+    background-color: var(--dark-card) !important;
+    color: #d1d5db !important;
+}
+
+.dark-mode button.border-gray-300:hover {
+    background-color: rgba(55, 65, 81, 0.5) !important;
+}
+
+.dark-mode .text-gray-700 {
+    color: #d1d5db !important;
+}
+
+/* Login/Register link */
+.dark-mode .text-blue-600 {
+    color: #60a5fa !important;
+}
+
+.dark-mode .text-blue-600:hover {
+    color: #93c5fd !important;
+}
+
+/* Guest access link */
+.dark-mode .text-blue-200 {
+    color: #93c5fd !important;
+}
+
+.dark-mode .text-blue-200:hover {
+    color: #bfdbfe !important;
+}
+
+/* Error messages container */
+.dark-mode .bg-red-100 {
+    background-color: rgba(127, 29, 29, 0.3) !important;
+    border-color: #7f1d1d !important;
+}
+
+.dark-mode .text-red-700 {
+    color: #fecaca !important;
+}
+
+/* Success messages container */
+.dark-mode .bg-green-100 {
+    background-color: rgba(6, 78, 59, 0.3) !important;
+    border-color: #065f46 !important;
+}
+
+.dark-mode .text-green-700 {
+    color: #a7f3d0 !important;
+}
+
+/* Info section on login page */
+.dark-mode .bg-white\/10 {
+    background-color: rgba(30, 41, 59, 0.7) !important;
+    backdrop-filter: blur(8px);
+}
+
+.dark-mode .text-white {
+    color: #f3f4f6 !important;
+}
+
+/* Benefit icons background */
+.dark-mode .bg-green-500,
+.dark-mode .bg-blue-500,
+.dark-mode .bg-purple-500 {
+    background-color: rgba(59, 130, 246, 0.2) !important;
+}
+
+/* Form steps visibility */
+.dark-mode .form-step {
+    background-color: transparent !important;
+}
+
+/* Submit button gradient in dark mode */
+.dark-mode .bg-gradient-to-r.from-blue-500.to-purple-500 {
+    background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%) !important;
+}
+
+.dark-mode .hover\:from-blue-600:hover,
+.dark-mode .hover\:to-purple-600:hover {
+    background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%) !important;
+}
+
+/* Disabled submit button */
+.dark-mode button:disabled {
+    background-color: #4b5563 !important;
+    color: #9ca3af !important;
+    opacity: 0.5;
+}
+
+/* Form focus states */
+.dark-mode input:focus,
+.dark-mode select:focus {
+    border-color: #60a5fa !important;
+    box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.1) !important;
+    background-color: rgba(30, 41, 59, 0.9) !important;
+}
+
+/* Forgot password link */
+.dark-mode a.text-blue-600 {
+    color: #60a5fa !important;
+}
+
+.dark-mode a.text-blue-600:hover {
+    color: #93c5fd !important;
+}
+
+/* "Remember me" text */
+.dark-mode .text-gray-700 {
+    color: #d1d5db !important;
+}
+
+/* Footer text colors in dark mode */
+.dark-mode footer .text-gray-300 {
+    color: #d1d5db !important;
+}
+
+.dark-mode footer .text-gray-300:hover {
+    color: #ffffff !important;
+}
+
+/* Border in dark mode */
+.dark-mode .border-gray-300 {
+    border-color: #4b5563 !important;
+}
+
+/* Loading spinner color */
+.dark-mode .fa-spinner {
+    color: #60a5fa !important;
+}
+
+/* Progress bar in password strength */
+.dark-mode .progress-bar {
+    background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%) !important;
+}
+
+/* Password match/mismatch messages */
+.dark-mode #password-match .text-green-600 {
+    color: #34d399 !important;
+}
+
+.dark-mode #password-mismatch .text-red-600 {
+    color: #f87171 !important;
+}
+
+/* Notification styling for login/register */
+.dark-mode .notification .bg-red-100 {
+    background-color: rgba(127, 29, 29, 0.9) !important;
+    border-color: #7f1d1d !important;
+}
+
+.dark-mode .notification .bg-green-100 {
+    background-color: rgba(6, 78, 59, 0.9) !important;
+    border-color: #065f46 !important;
+}
+
+.dark-mode .notification .text-red-700,
+.dark-mode .notification .text-green-700 {
+    color: #f3f4f6 !important;
+}
+
+/* Mobile responsive adjustments */
+@media (max-width: 768px) {
+    .dark-mode .login-container,
+    .dark-mode .register-container {
+        margin: 0 0.5rem;
+    }
+    
+    .dark-mode .bg-white\/10 {
+        margin: 0 0.5rem;
+    }
+}
+
+/* Custom scrollbar untuk form dalam dark mode */
+.dark-mode .form-step::-webkit-scrollbar {
+    width: 6px;
+}
+
+.dark-mode .form-step::-webkit-scrollbar-track {
+    background: rgba(30, 41, 59, 0.5);
+}
+
+.dark-mode .form-step::-webkit-scrollbar-thumb {
+    background: #4b5563;
+    border-radius: 3px;
+}
+
+.dark-mode .form-step::-webkit-scrollbar-thumb:hover {
+    background: #6b7280;
+}
+
+/* Animation for step transitions */
+.dark-mode .form-step.active {
+    animation: fadeInUp 0.5s ease-out;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Program studi dropdown arrow */
+.dark-mode .fa-chevron-down.text-gray-400 {
+    color: #9ca3af !important;
+}
+
+/* Benefits list icons */
+.dark-mode .fa-check-circle.text-green-500 {
+    color: #34d399 !important;
+}
+
+/* Step navigation buttons */
+.dark-mode .next-step.bg-blue-600 {
+    background-color: #3b82f6 !important;
+}
+
+.dark-mode .next-step.bg-blue-600:hover {
+    background-color: #2563eb !important;
+}
+
+.dark-mode .prev-step.text-gray-600 {
+    color: #9ca3af !important;
+}
+
+.dark-mode .prev-step:hover {
+    background-color: rgba(55, 65, 81, 0.3) !important;
+}
+
+/* Submit button specific styling */
+.dark-mode #submit-btn {
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+}
+
+/* Terms and conditions links */
+.dark-mode a.text-blue-600.font-medium {
+    color: #60a5fa !important;
+}
+
+.dark-mode a.text-blue-600.font-medium:hover {
+    color: #93c5fd !important;
+}

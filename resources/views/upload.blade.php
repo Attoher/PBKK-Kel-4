@@ -6,10 +6,9 @@
   <meta name="csrf-token" content="{{ csrf_token() }}">
   <title>Upload TA - Deteksi Format ITS</title>
   <script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="{{ asset('css/loading-its.css') }}">
   <link rel="stylesheet" href="{{ asset('css/pdf-its.css') }}">
-  <link rel="stylesheet" href="css/pdf-its.css">
   <link rel="stylesheet" href="{{ asset('css/dark-its.css') }}">
-  <link rel="stylesheet" href="css/dark-its.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 </head>
@@ -25,7 +24,7 @@
               <div class="w-10 h-10 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg flex items-center justify-center shadow-lg">
                 <i class="fas fa-graduation-cap text-white text-lg"></i>
               </div>
-              <span class="ml-3 text-xl font-bold text-gray-800 break-words">FormatCheck ITS</span>
+              <span class="ml-3 text-xl font-bold text-gray-800 break-words">TAkCekIn ITS</span>
             </a>
           </div>
 
@@ -487,7 +486,7 @@
               <div class="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg flex items-center justify-center mr-3">
                 <i class="fas fa-graduation-cap text-white text-lg"></i>
               </div>
-              <span class="text-xl font-bold break-words">FormatCheck ITS</span>
+              <span class="text-xl font-bold break-words">TAkCekIn ITS</span>
             </a>
           </div>
           <p class="text-gray-400 text-sm mt-2 break-words">Sistem Deteksi Kelengkapan Format Tugas Akhir</p>

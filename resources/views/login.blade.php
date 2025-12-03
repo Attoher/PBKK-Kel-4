@@ -3,12 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Login - FormatCheck ITS</title>
+  <title>Login - TAkCekIn ITS</title>
   <script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="{{ asset('css/loading-its.css') }}">
   <link rel="stylesheet" href="{{ asset('css/formatcheck-its.css') }}">
-  <link rel="stylesheet" href="css/formatcheck-its.css">
   <link rel="stylesheet" href="{{ asset('css/dark-its.css') }}">
-  <link rel="stylesheet" href="css/dark-its.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body class="flex flex-col min-h-screen no-horizontal-scroll">
@@ -49,7 +48,7 @@
               <i class="fas fa-graduation-cap text-blue-600 text-2xl"></i>
             </div>
           </div>
-          <h1 class="text-3xl md:text-4xl font-bold mb-4 break-words">FormatCheck ITS</h1>
+          <h1 class="text-3xl md:text-4xl font-bold mb-4 break-words">TAkCekIn ITS</h1>
           <p class="text-lg md:text-xl mb-6 text-blue-100 break-words">Sistem Deteksi Kelengkapan Format Tugas Akhir</p>
           <p class="text-blue-100 mb-6 md:mb-8 break-words">Masuk ke akun Anda untuk memeriksa format tugas akhir sesuai panduan ITS dengan mudah dan cepat.</p>
           
@@ -237,7 +236,7 @@
               <div class="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg flex items-center justify-center mr-3">
                 <i class="fas fa-graduation-cap text-white text-lg"></i>
               </div>
-              <span class="text-xl font-bold break-words">FormatCheck ITS</span>
+              <span class="text-xl font-bold break-words">TAkCekIn ITS</span>
             </a>
           </div>
           <p class="text-gray-400 text-sm mt-2 break-words">Sistem Deteksi Kelengkapan Format Tugas Akhir</p>
