@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="csrf-token" content="{{ csrf_token() }}">
   <title>Upload TA - Deteksi Format ITS</title>
+  <link rel="icon" type="image/png" href="{{ asset('icon/favicon.png') }}">
+  <link rel="shortcut icon" href="{{ asset('icon/favicon.png') }}">
   <script src="https://cdn.tailwindcss.com"></script>
 <link rel="stylesheet" href="{{ asset('css/loading-its.css') }}">
   <link rel="stylesheet" href="{{ asset('css/pdf-its.css') }}">

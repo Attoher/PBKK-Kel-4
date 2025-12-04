@@ -4,7 +4,10 @@
     <meta charset="UTF-8">
     <meta name="api-base" content="{{ url('/') }}">
     <title>Deteksi Kelengkapan TA</title>
+    <link rel="icon" type="image/png" href="{{ asset('icon/favicon.png') }}">
+    <link rel="shortcut icon" href="{{ asset('icon/favicon.png') }}">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
     @stack('styles')
 </head>
 <body class="bg-light">

@@ -4,6 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Riwayat Analisis - TAkCekIn ITS</title>
+  <link rel="icon" type="image/png" href="{{ asset('icon/favicon.png') }}">
+  <link rel="shortcut icon" href="{{ asset('icon/favicon.png') }}">
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 <link rel="stylesheet" href="{{ asset('css/loading-its.css') }}">
   <link rel="stylesheet" href="{{ asset('css/history-its.css') }}">

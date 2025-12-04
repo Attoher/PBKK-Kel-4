@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="api-base" content="{{ url('/') }}">
   <title>TAkCekIn TA ITS — Cek Format Tugas Akhir Berbasis AI</title>
+  <link rel="icon" type="image/png" href="{{ asset('icon/favicon.png') }}">
+  <link rel="shortcut icon" href="{{ asset('icon/favicon.png') }}">
   <meta name="description" content="TAkCekIn TA ITS membantu mahasiswa memeriksa kesesuaian format penulisan Tugas Akhir sesuai panduan ITS secara otomatis dengan AI." />
   <script src="https://cdn.tailwindcss.com"></script>
 <link rel="stylesheet" href="{{ asset('css/loading-its.css') }}">
@@ -1101,14 +1103,6 @@
       // Mulai mengetik setelah delay kecil
       setTimeout(typeCharacter, 500);
     }
-    
-    // Start typewriter when page loads
-    window.addEventListener('load', startTypewriter);
-    
-    // Optional: Restart animation on click
-    document.querySelector('.typewriter-container')?.addEventListener('click', () => {
-      startTypewriter();
-    });
   </script>
 
   <!-- Dark Mode Toggle Button -->

@@ -4,6 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Hasil Analisis - TAkCekIn ITS</title>
+  <link rel="icon" type="image/png" href="{{ asset('icon/favicon.png') }}">
+  <link rel="shortcut icon" href="{{ asset('icon/favicon.png') }}">
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js"></script>
