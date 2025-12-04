@@ -1,5 +1,11 @@
 # Deteksi Kelengkapan Format Buku TA Berbasis AI
 
+![Laravel](https://img.shields.io/badge/Laravel-11-red?style=flat-square)
+![PHP](https://img.shields.io/badge/PHP-8.1%2B-blue?style=flat-square)
+![Python](https://img.shields.io/badge/Python-3.10%2B-yellow?style=flat-square)
+![License](https://img.shields.io/badge/License-Academic-lightgrey?style=flat-square)
+![Status](https://img.shields.io/badge/Status-Active-success?style=flat-square)
+
 <img width="1917" height="992" alt="gambar" src="https://github.com/user-attachments/assets/96ba1028-3022-45f6-aab8-fa2cd70ad2e2" />
 
 ## Kelompok C04
