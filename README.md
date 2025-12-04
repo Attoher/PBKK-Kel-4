@@ -64,7 +64,6 @@ cd deteksi-ta
 
 ```bash
 composer install
-npm install
 ```
 
 ## 3. Setup Environment
