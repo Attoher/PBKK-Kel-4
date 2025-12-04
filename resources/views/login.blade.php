@@ -466,8 +466,8 @@
   </script>
   
   <!-- Dark Mode Toggle Button -->
-  <button id="darkModeToggle" class="fixed bottom-6 right-6 z-50 w-12 h-12 rounded-full bg-white dark:bg-gray-800 shadow-lg hover:shadow-xl border border-gray-200 dark:border-gray-700 flex items-center justify-center transition-all duration-300 hover:scale-110 print-hidden">
-    <i id="darkModeIcon" class="fas fa-moon text-gray-700 dark:text-yellow-300 text-lg"></i>
+  <button id="darkModeToggle" class="fixed bottom-6 right-6 z-50 w-12 h-12 rounded-full bg-white shadow-lg hover:shadow-xl border border-gray-200 flex items-center justify-center transition-all duration-300 hover:scale-110 print-hidden">
+    <i id="darkModeIcon" class="fas fa-moon text-gray-700 text-lg"></i>
   </button>
 </body>
 </html>
