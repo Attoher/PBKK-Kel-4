@@ -784,7 +784,7 @@
   </main>
 
   <!-- Footer (UBAH KELAS dari no-print menjadi print-hidden) -->
-  <footer class="bg-gray-800 text-white py-8 mt-12 print-hidden">
+  <footer class="bg-gray-800 text-white py-8 mt-12 print-hidden no-print">
     <div class="max-w-7xl mx-auto px-4 safe-area">
       <div class="flex flex-col md:flex-row justify-between items-center">
         <div class="mb-6 md:mb-0 text-center md:text-left">
