@@ -6,7 +6,7 @@
 ![License](https://img.shields.io/badge/License-Academic-lightgrey?style=flat-square)
 ![Status](https://img.shields.io/badge/Status-Active-success?style=flat-square)
 
-<img width="1917" height="992" alt="gambar" src="https://github.com/user-attachments/assets/96ba1028-3022-45f6-aab8-fa2cd70ad2e2" />
+<img width="1919" height="955" alt="image" src="https://github.com/user-attachments/assets/f8809e76-8a88-4aaa-ab45-4ab05b3e167e" />
 
 ## Kelompok C04
 
