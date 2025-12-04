@@ -470,22 +470,6 @@ body {
   min-width: 6rem;
 }
 
-/* ================ PRINT STYLES ================ */
-@media print {
-  .print-hidden {
-    display: none !important;
-  }
-  
-  body {
-    background: white !important;
-  }
-  
-  .bg-gradient-to-r {
-    background: #0067ac !important;
-    -webkit-print-color-adjust: exact;
-  }
-}
-
 /* ================ RESPONSIVE DESIGN ================ */
 /* Mobile - Small screens */
 @media (max-width: 480px) {
