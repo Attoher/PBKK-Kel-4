@@ -3,108 +3,188 @@
 <img width="1917" height="992" alt="gambar" src="https://github.com/user-attachments/assets/96ba1028-3022-45f6-aab8-fa2cd70ad2e2" />
 
 ## Kelompok C04
-- 5025231026 — Kasyiful Kurob  
-- 5025231033 — Raditya Yusuf Annaafi’  
-- 5025231044 — Rahman Azkarafi Prasetya  
-- 5025231056 — Razky Ageng Syahputra  
-- 5025231181 — Ath Thahir Muhammad Isa Rahmatullah  
-- 5025231182 — Abimanyu Danendra A  
-- 5025231184 — Alden Zhorif Muhammad  
+
+* 5025231026 — Kasyiful Kurob
+* 5025231033 — Raditya Yusuf Annaafi’
+* 5025231044 — Rahman Azkarafi Prasetya
+* 5025231056 — Razky Ageng Syahputra
+* 5025231181 — Ath Thahir Muhammad Isa Rahmatullah
+* 5025231182 — Abimanyu Danendra A
+* 5025231184 — Alden Zhorif Muhammad
 
 ## Deskripsi
-Aplikasi untuk mendeteksi kelengkapan format buku Tugas Akhir (TA) berbasis AI.  
-Mahasiswa dapat mengunggah file PDF buku TA, lalu sistem akan memeriksa apakah format sudah sesuai dengan ketentuan kampus.  
+
+Aplikasi web untuk mendeteksi kelengkapan format Tugas Akhir (TA) secara otomatis menggunakan AI.
+Pengguna mengunggah dokumen PDF/DOC/DOCX, kemudian sistem menganalisis struktur dokumen, tipografi, margin, penomoran, abstrak, dan sitasi berdasarkan standar format ITS.
 
 ## Target Pengguna
-- Mahasiswa  
-- Dosen Pembimbing  
-- Administrasi Kampus  
+
+* Mahasiswa
+* Dosen pembimbing
+* Staf administrasi kampus
 
 ## Fitur Utama
-- Upload file buku TA (PDF)  
-- Analisis kelengkapan format menggunakan AI  
-- Hasil deteksi ditampilkan dalam bentuk laporan sederhana  
 
-## Teknologi
-- Framework: Laravel 11 (PHP)  
-- Frontend: Blade Template  
-- Database: MySQL / SQLite (opsional)  
-- Version Control: Git + GitHub  
+* Upload dokumen PDF/DOC/DOCX
+* Chunk upload untuk file besar
+* Analisis format berbasis AI
+* Laporan hasil analisis dan rekomendasi
+* Preview PDF menggunakan PDF.js
+* Dark mode
+* Riwayat analisis (filter, ekspor CSV, hapus)
+* Pendaftaran multi-step
 
-## Cara Instalasi dan Menjalankan
-1. Clone repo ini:
-   ```bash
-   git clone https://github.com/username/deteksi-ta.git
-   cd deteksi-ta
+## Teknologi yang Digunakan
 
-2. Install dependency Laravel:
+* Laravel 11
+* Blade Templates + Tailwind CSS
+* JavaScript + PDF.js
+* MySQL / SQLite
+* Python (analisis konten dokumen)
+* Git + GitHub
 
-   ```bash
-   composer install
-   ```
+---
 
-3. Copy file environment:
+# Instalasi dan Menjalankan
 
-   ```bash
-   cp .env.example .env
-   ```
+## 1. Clone Repository
 
-4. Generate key aplikasi:
-
-   ```bash
-   php artisan key:generate
-   ```
-
-5. Jalankan server Laravel:
-
-   ```bash
-   php artisan serve
-   ```
-
-6. Buka di browser:
-
-   ```
-   http://127.0.0.1:8000/upload
-   ```
-
-## Struktur Folder Penting
-
-* `app/Http/Controllers/UploadController.php` → logic upload file
-* `resources/views/` → Blade templates (form upload dan hasil analisis)
-* `routes/web.php` → routing aplikasi
-
-## Cara Kontribusi
-
-1. Buat branch baru untuk fitur/bugfix:
-
-## Python environment
-
-The app invokes local Python scripts under `python/` to perform PDF analysis. Ensure the Python executable used by the app has the required packages installed (see `python/requirements.txt`).
-
-Set the `PYTHON_EXECUTABLE` environment variable in your `.env` (or leave empty to use `python` from PATH). Example for Windows:
-
-```
-PYTHON_EXECUTABLE=C:\\Users\\lenovo\\AppData\\Local\\Programs\\Python\\Python37\\python.exe
+```bash
+git clone https://github.com/username/deteksi-ta.git
+cd deteksi-ta
 ```
 
-If Python is not runnable, the middleware `check.python` will block analysis routes and return a helpful error.
+## 2. Install Dependencies Laravel
 
-   ```bash
-   git checkout -b fitur-nama
-   ```
+```bash
+composer install
+npm install
+```
+
+## 3. Setup Environment
+
+```bash
+cp .env.example .env
+php artisan key:generate
+```
+
+Contoh `.env` (SQLite default):
+
+```env
+APP_NAME="TA Format Checker ITS"
+APP_ENV=local
+APP_DEBUG=true
+DB_CONNECTION=sqlite
+
+SESSION_DRIVER=database
+QUEUE_CONNECTION=database
+
+PYTHON_EXECUTABLE=
+```
+
+## 4. Migrasi Database
+
+```bash
+php artisan migrate
+```
+
+## 5. Jalankan Server
+
+```bash
+php artisan serve
+```
+
+Akses:
+
+```
+http://127.0.0.1:8000
+```
+
+---
+
+# Konfigurasi Python Analyzer
+
+Aplikasi menjalankan script Python di folder `python/` untuk analisis konten dokumen.
+
+## 1. Install dependencies Python
+
+```bash
+pip install -r python/requirements.txt
+```
+
+## 2. Atur Python Executable di `.env` (opsional)
+
+Jika Python tidak terbaca otomatis:
+
+```
+PYTHON_EXECUTABLE=C:\\Path\\To\\Python\\python.exe
+```
+
+## 3. Tes script secara manual
+
+```bash
+python python/analyze_pdf.py sample.pdf
+```
+
+Middleware `check.python` akan menolak request jika Python tidak terdeteksi.
+
+---
+
+# Struktur Folder Penting
+
+## Folder View (Blade)
+
+* `homepage.blade.php` – Beranda
+* `upload.blade.php` – Upload dokumen
+* `history.blade.php` – Riwayat analisis
+* `result.blade.php` – Hasil analisis
+* `login.blade.php` – Login
+* `register.blade.php` – Registrasi multi-step
+
+## Stylesheet
+
+* `public/css/loading-its.css`
+* `public/css/history-its.css`
+* `public/css/pdf-its.css`
+* `public/css/formatcheck-its.css`
+* `public/css/dark-its.css`
+
+## Backend
+
+* `app/Http/Controllers/UploadController.php`
+* `app/Http/Controllers/AnalysisController.php`
+* `routes/web.php`
+* `python/analyze_pdf.py` (AI analyzer)
+
+---
+
+# Cara Kontribusi
+
+1. Buat branch baru:
+
+```bash
+git checkout -b feature-nama-fitur
+```
+
 2. Commit perubahan:
 
-   ```bash
-   git add .
-   git commit -m "Tambah fitur upload PDF"
-   ```
-3. Push ke GitHub:
+```bash
+git add .
+git commit -m "Deskripsi perubahan"
+```
 
-   ```bash
-   git push origin fitur-nama
-   ```
-4. Buat Pull Request di GitHub.
+3. Push branch:
 
-## Lisensi
+```bash
+git push origin feature-nama-fitur
+```
 
-Proyek ini dibuat untuk keperluan akademik di Institut Teknologi Sepuluh Nopember (ITS) tahun ajaran 2025/2026.
+4. Ajukan Pull Request di GitHub.
+
+---
+
+# Lisensi
+
+Proyek ini dibuat untuk keperluan akademik di Institut Teknologi Sepuluh Nopember (ITS), tahun ajaran 2025/2026.
+
+---
