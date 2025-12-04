@@ -10,13 +10,13 @@
 
 ## Kelompok C04
 
-* 5025231181 — Ath Thahir Muhammad Isa Rahmatullah — Frontend Developer
-* 5025231056 — Razky Ageng Syahputra — Backend Developer
-* 5025231182 — Abimanyu Danendra A — Backend Developer
-* 5025231184 — Alden Zhorif Muhammad — Database Developer
-* 5025231044 — Rahman Azkarafi Prasetya — AI Engineer
-* 5025231033 — Raditya Yusuf Annaafi’ — DevOps
-* 5025231026 — Kasyiful Kurob — Prompt Engineering
+* 5025231181 — Ath Thahir Muhammad Isa Rahmatullah — UI/UX & Frontend & Backend Developer
+* 5025231182 — Abimanyu Danendra A — Frontend & Backend & Database Developer
+* 5025231184 — Alden Zhorif Muhammad — Backend & Database Developer
+* 5025231056 — Razky Ageng Syahputra — UI/UX & DevOps
+* 5025231044 — Rahman Azkarafi Prasetya — Prompt Engineering (AI) & AI Engineer & DevOps
+* 5025231033 — Raditya Yusuf Annaafi’ — Prompt Engineering (AI) & DevOps
+* 5025231026 — Kasyiful Kurob — Prompt Engineering (AI) & Documentation
 
 ## Deskripsi
 
