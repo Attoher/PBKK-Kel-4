@@ -10,13 +10,13 @@
 
 ## Kelompok C04
 
-* 5025231026 — Kasyiful Kurob
-* 5025231033 — Raditya Yusuf Annaafi’
-* 5025231044 — Rahman Azkarafi Prasetya
-* 5025231056 — Razky Ageng Syahputra
-* 5025231181 — Ath Thahir Muhammad Isa Rahmatullah
-* 5025231182 — Abimanyu Danendra A
-* 5025231184 — Alden Zhorif Muhammad
+* 5025231181 — Ath Thahir Muhammad Isa Rahmatullah — Frontend Developer
+* 5025231056 — Razky Ageng Syahputra — Backend Developer
+* 5025231182 — Abimanyu Danendra A — Backend Developer
+* 5025231184 — Alden Zhorif Muhammad — Database Developer
+* 5025231044 — Rahman Azkarafi Prasetya — AI Engineer
+* 5025231033 — Raditya Yusuf Annaafi’ — DevOps
+* 5025231026 — Kasyiful Kurob — Prompt Engineering
 
 ## Deskripsi
 
