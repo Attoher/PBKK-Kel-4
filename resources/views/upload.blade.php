@@ -665,22 +665,6 @@
         queueRenderPage(pageNum);
       });
       
-      document.getElementById('zoom-in').addEventListener('click', () => {
-        scale += 0.2;
-        queueRenderPage(pageNum);
-      });
-      
-      document.getElementById('zoom-out').addEventListener('click', () => {
-        if (scale <= 0.5) return;
-        scale -= 0.2;
-        queueRenderPage(pageNum);
-      });
-      
-      document.getElementById('reset-zoom').addEventListener('click', () => {
-        scale = 1.0;
-        queueRenderPage(pageNum);
-      });
-      
       // ========== Drag and Drop Functionality ==========
       ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
         dropArea.addEventListener(eventName, preventDefaults, false);
