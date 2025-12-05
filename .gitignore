@@ -23,19 +23,53 @@ Homestead.json
 Homestead.yaml
 Thumbs.db
 
-# Storage files (uploaded PDFs)
-/storage/app/private/uploads/*.pdf
-/storage/app/private/results/*.json
-
-# Python cache
-__pycache__/
+# Python virtual environment (BESAR: 341MB)
+/venv/
+/python/venv/
 *.pyc
+__pycache__/
 *.pyo
 .pytest_cache/
 
-# Database (keep structure, ignore data)
-/database/database.sqlite
+# Storage files - uploaded PDFs & results (BESAR: 313MB)
+/storage/app/private/uploads/
+/storage/app/private/results/
+/storage/app/public/uploads/
+/storage/logs/*.log
+/storage/framework/cache/
+/storage/framework/sessions/
+/storage/framework/views/
 
-# Large reference and documentation folders
+# Public PDFs folder (BESAR: 117MB)
+/public/pdfs/*.pdf
+/public/temp/*.pdf
+
+# Large reference and documentation folders (BESAR: 107MB)
 /Referensi/
 /pedoman/
+
+# Database (keep structure, ignore data)
+/database/database.sqlite
+*.sqlite
+*.sqlite-journal
+
+# Composer setup
+composer-setup.php
+composer.phar
+
+# Node modules and compiled assets
+package-lock.json
+yarn.lock
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Backup files
+*.bak
+*.backup
+*.save
+*.swp
+*.tmp
+*~

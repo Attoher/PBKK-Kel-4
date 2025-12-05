@@ -10,18 +10,50 @@ class UploadController extends Controller
 {
     public function showUploadForm()
     {
-        $files = Storage::files('uploads');
+        $currentSessionId = session()->getId();
+        $resultsFiles = Storage::files('results');
         $recentUploads = [];
 
-        foreach ($files as $file) {
-            if (pathinfo($file, PATHINFO_EXTENSION) === 'pdf') {
-                $filename = basename($file);
-                $recentUploads[] = [
-                    'name' => $filename,
-                    'uploaded_at' => date('Y-m-d H:i:s', Storage::lastModified($file)),
-                    'size' => $this->formatFileSize(Storage::size($file)),
-                    'url' => route('analyze.document', ['filename' => $filename])
-                ];
+        foreach ($resultsFiles as $file) {
+            if (str_contains($file, '_results.json')) {
+                try {
+                    $content = Storage::get($file);
+                    $results = json_decode($content, true);
+                    
+                    if (json_last_error() !== JSON_ERROR_NONE) {
+                        continue;
+                    }
+                    
+                    // PRIVACY: Hanya tampilkan upload dari session yang sama
+                    $fileSessionId = $results['session_id'] ?? null;
+                    if ($fileSessionId !== $currentSessionId) {
+                        continue; // Skip file dari user lain
+                    }
+                    
+                    $originalFilename = str_replace('_results.json', '', basename($file)) . '.pdf';
+                    $uploadPath = 'uploads/' . $originalFilename;
+                    
+                    // Cek apakah file PDF masih ada
+                    if (!Storage::exists($uploadPath)) {
+                        $uploadPath = 'private/uploads/' . $originalFilename;
+                        if (!Storage::exists($uploadPath)) {
+                            continue; // Skip jika file tidak ada
+                        }
+                    }
+                    
+                    $recentUploads[] = [
+                        'name' => $originalFilename,
+                        'uploaded_at' => $results['uploaded_at'] ?? date('Y-m-d H:i:s', Storage::lastModified($file)),
+                        'size' => $this->formatFileSize(Storage::size($uploadPath)),
+                        'url' => route('analyze.document', ['filename' => $originalFilename])
+                    ];
+                } catch (\Exception $e) {
+                    Log::warning('Error processing results file for recent uploads', [
+                        'file' => $file,
+                        'error' => $e->getMessage()
+                    ]);
+                    continue;
+                }
             }
         }
 
@@ -179,17 +211,31 @@ class UploadController extends Controller
 
             // Redirect seperti di processUpload()
             if (pathinfo($filename, PATHINFO_EXTENSION) === 'pdf') {
-                    try {
-                            app(\App\Http\Controllers\DocumentAnalysisController::class)->analyzeDocument($filename);
-                        } catch (\Exception $e) {
-                            Log::error('Gagal menjalankan analisis otomatis: ' . $e->getMessage());
-                        }
-                return response()->json([
-                    'success' => true,
-                    'redirect' => route('analyze.document', ['filename' => $filename]),
-                    'message' => 'File berhasil digabung dan siap dianalisis.',
-                    'filename' => $filename
-                ]);
+                try {
+                    app(\App\Http\Controllers\DocumentAnalysisController::class)->analyzeDocument($filename);
+                    
+                    return response()->json([
+                        'success' => true,
+                        'redirect' => route('analyze.document', ['filename' => $filename]),
+                        'message' => 'File berhasil digabung dan siap dianalisis.',
+                        'filename' => $filename
+                    ]);
+                } catch (\Exception $e) {
+                    Log::error('Dokumen ditolak saat analisis: ' . $e->getMessage());
+                    
+                    // Hapus file yang ditolak
+                    if (Storage::exists($finalPath)) {
+                        Storage::delete($finalPath);
+                    }
+                    
+                    // Kembalikan error rejection ke frontend
+                    return response()->json([
+                        'success' => false,
+                        'rejected' => true,
+                        'message' => $e->getMessage(),
+                        'filename' => $filename
+                    ], 422); // 422 Unprocessable Entity untuk validation error
+                }
             } else {
                 return response()->json([
                     'success' => true,
