@@ -259,151 +259,88 @@ def extract_section_locations(pages_text):
 
 def validate_ta_document(text, total_halaman, pages_text=None, locations=None):
     """
-    Validasi KETAT dokumen berdasarkan PEDOMAN RESMI ITS SK Rektor No. 280/2022
+    Validasi FLEKSIBEL dokumen berdasarkan PEDOMAN RESMI ITS SK Rektor No. 280/2022
     
-    KRITERIA MINIMUM (STRICT):
-    - Minimal 30 halaman (Laporan TA lengkap)
-    - WAJIB ada: Abstrak (2 bahasa), Struktur Bab (min 4 bab), Daftar Pustaka
-    - WAJIB ada: Pendahuluan, Metodologi, Hasil/Pembahasan
+    KRITERIA MINIMUM (LEBIH ADIL):
+    - Minimal 15 halaman (TA Pendek/Proposal TA)
+    - Komponen Penting: Judul, Bab 1-3+, Daftar Pustaka (minimal 10)
+    - Hanya menolak dokumen yang JELAS bukan TA (invoice, katalog, dsb)
     
-    Dokumen yang tidak memenuhi standar akan LANGSUNG DITOLAK.
+    Dokumen dengan kekurangan akan dikategorikan "PERLU PERBAIKAN" bukan "DITOLAK"
     """
     text_lower = text.lower()
 
-    # Cek panjang dokumen sesuai pedoman ITS - LEBIH KETAT
-    if total_halaman < 30:
-        return False, f"DITOLAK: Dokumen terlalu pendek ({total_halaman} halaman). Berdasarkan Pedoman ITS SK Rektor 280/2022, Laporan Tugas Akhir harus minimal 40-60 halaman. Dokumen Anda tidak memenuhi standar format ITS."
+    # Cek panjang dokumen - LEBIH FLEKSIBEL
+    if total_halaman < 10:
+        return False, f"DITOLAK: Dokumen terlalu pendek ({total_halaman} halaman). Minimum 10 halaman untuk proposal TA. Silakan upload dokumen yang lebih lengkap."
 
-    # Tolak jenis dokumen yang bukan TA/Skripsi dengan deteksi lebih ketat
-    reject_keywords = [
-        'kwitansi', 'invoice', 'receipt', 'bukti pembayaran', 'tagihan',
+    # Tolak HANYA dokumen yang JELAS bukan TA (dengan banyak keywords)
+    hard_reject_keywords = [
+        'kwitansi', 'invoice', 'receipt', 'bukti pembayaran', 'bukti transfer',
         'surat jalan', 'delivery note', 'purchase order',
-        'quotation', 'penawaran harga', 'bukti transfer',
         'form pendaftaran', 'formulir pendaftaran', 'permohonan izin',
         'sertifikat', 'certificate of', 'surat keterangan',
-        'katalog', 'catalog', 'catalogue', 'product catalog', 'company profile',
-        'brochure', 'brosur', 'leaflet', 'flyer', 'pamphlet',
-        'manual book', 'user manual', 'panduan pengguna',
-        'price list', 'daftar harga', 'e-commerce', 'sales',
-        'advertisement', 'iklan', 'promosi', 'promotion'
+        'price list', 'daftar harga',
     ]
-    for keyword in reject_keywords:
-        if keyword in text_lower:
-            return False, f"DITOLAK: Dokumen terdeteksi sebagai '{keyword.upper()}', bukan Tugas Akhir/Skripsi ITS. Sistem hanya menerima dokumen Tugas Akhir/Skripsi yang sesuai dengan Pedoman ITS SK Rektor 280/2022."
+    hard_reject_count = sum(1 for kw in hard_reject_keywords if kw in text_lower)
     
-    # Deteksi pattern katalog/brochure dengan multiple indicators
-    catalog_patterns = [
-        r'(product|produk)\s+(catalog|katalog|specification)',
-        r'(company|corporate)\s+profile',
-        r'(price|harga)\s*:\s*(\$|Rp)',
-        r'(order|pesan)\s+(now|sekarang|disini)',
-        r'(available|tersedia)\s+in\s+(color|size|warna|ukuran)',
-        r'(specifications?|spesifikasi)\s*:\s*\n.*\n.*\n',  # Multiple spec lines
-        r'(warranty|garansi)\s*:\s*\d+\s*(year|tahun|month|bulan)',
-        r'(contact\s+us|hubungi\s+kami)\s*:\s*\+?\d{2,}'
-    ]
-    catalog_hits = 0
-    for pattern in catalog_patterns:
-        if re.search(pattern, text_lower):
-            catalog_hits += 1
+    if hard_reject_count >= 2:
+        return False, f"DITOLAK: Dokumen terdeteksi sebagai dokumen ADMINISTRATIF/KOMERSIAL (invoice, kwitansi, dll), bukan Tugas Akhir. Silakan upload dokumen Tugas Akhir/Skripsi sesuai Pedoman ITS."
     
-    if catalog_hits >= 3:
-        return False, "DITOLAK: Dokumen terdeteksi sebagai KATALOG PRODUK atau BROSUR PERUSAHAAN, bukan Tugas Akhir/Skripsi ITS. Sistem hanya menerima dokumen akademik Tugas Akhir sesuai Pedoman ITS SK Rektor 280/2022."
-
-    # Komponen WAJIB berdasarkan Pedoman ITS
-    required_components = {
-        'abstrak': False,
-        'bab': False,
-        'daftar_pustaka': False,
-        'pendahuluan': False,
-        'metodologi': False
-    }
-
-    # Gunakan locations (hasil deteksi ekstraksi)
-    if locations:
-        required_components['abstrak'] = bool(locations.get('abstrak'))
-        required_components['bab'] = bool(locations.get('bab') and len(locations['bab']) >= 3)
-        required_components['daftar_pustaka'] = bool(locations.get('daftar_pustaka'))
-    else:
-        # Fallback: deteksi langsung dari teks
-        if re.search(r'\babstrak\b', text_lower) or re.search(r'\babstract\b', text_lower):
-            required_components['abstrak'] = True
-        bab_pattern = r'\b(bab\s+[i1-5]|chapter\s+[i1-5])\b'
-        if len(re.findall(bab_pattern, text_lower)) >= 3:
-            required_components['bab'] = True
-        if re.search(r'(?:daftar\s+pustaka|daftar\s+referensi|references|bibliography)', text_lower):
-            required_components['daftar_pustaka'] = True
-
-    # Deteksi karakteristik NON-AKADEMIK (katalog, brosur, iklan)
-    commercial_indicators = [
-        r'\b(buy|beli|order|pesan)\s+(now|sekarang)',
-        r'\b(discount|diskon|promo|sale)\s*:\s*\d+%',
+    # Deteksi TERLALU KOMERSIAL (banyak tanda jual-beli + sedikit akademik)
+    commercial_patterns = [
+        r'\b(buy|beli)\s+(now|sekarang)',
+        r'\b(discount|diskon)\s*:\s*\d+%',
         r'\b(free\s+shipping|gratis\s+ongkir)',
         r'\b(limited\s+stock|stok\s+terbatas)',
-        r'\b(call\s+us|hubungi|contact)\s*:\s*\+?\d{10,}',
-        r'(www\.|http|\.com|\.id)\s*\/\s*(shop|store|produk)',
-        r'\b(warranty|garansi)\s+(1|2|3)\s+(year|tahun)',
         r'\b(color|warna)\s*:\s*(red|black|white|merah|hitam|putih)',
         r'\b(size|ukuran)\s*:\s*(S|M|L|XL)',
-        r'\b(model|type)\s*:\s*[A-Z]{2,}\-\d{3,}'
     ]
-    commercial_hits = sum(1 for pattern in commercial_indicators if re.search(pattern, text_lower))
+    commercial_hits = sum(1 for pattern in commercial_patterns if re.search(pattern, text_lower))
     
-    # Deteksi kata-kata akademik yang seharusnya ada
+    # Deteksi kata akademik
     academic_indicators = [
-        r'\b(penelitian|research|study|kajian)\b',
-        r'\b(analisis|analysis|analisa)\b',
-        r'\b(hasil|result|finding|temuan)\b',
-        r'\b(kesimpulan|conclusion|simpulan)\b',
+        r'\b(penelitian|research|study|kajian|analisis)\b',
         r'\b(metode|method|metodologi)\b',
-        r'\b(hipotesis|hypothesis|asumsi)\b',
-        r'\b(variabel|variable|faktor)\b',
-        r'\b(data|dataset|sampel|sample)\b'
+        r'\b(hasil|result|finding|pembahasan)\b',
+        r'\b(kesimpulan|conclusion|saran)\b',
+        r'\b(bab|chapter)\b',
     ]
     academic_hits = sum(1 for pattern in academic_indicators if re.search(pattern, text_lower))
     
-    # Jika terlalu banyak indikator komersial dan sedikit akademik -> TOLAK
-    if commercial_hits >= 4 and academic_hits < 3:
-        return False, "DITOLAK: Dokumen terdeteksi sebagai DOKUMEN KOMERSIAL (katalog/brosur/iklan), bukan dokumen akademik Tugas Akhir. Sistem hanya menerima dokumen Tugas Akhir/Skripsi yang sesuai Pedoman ITS SK Rektor 280/2022."
-    
-    # Deteksi Pendahuluan dan Metodologi (komponen WAJIB Bab 1 & 3)
-    if pages_text is not None:
-        toc_pages = classify_pages(pages_text)
-        def any_non_toc(pattern):
-            r = re.compile(pattern, re.IGNORECASE)
-            for i, ptxt in enumerate(pages_text):
-                if i in toc_pages:
-                    continue
-                if r.search(ptxt or ""):
-                    return True
-            return False
-        required_components['pendahuluan'] = any_non_toc(r'\b(pendahuluan|introduction|latar\s+belakang)\b')
-        required_components['metodologi'] = any_non_toc(r'\b(metodologi|methodology|metode\s+penelitian|research\s+method)\b')
-    else:
-        required_components['pendahuluan'] = bool(re.search(r'\b(pendahuluan|introduction|latar\s+belakang)\b', text_lower))
-        required_components['metodologi'] = bool(re.search(r'\b(metodologi|methodology|metode\s+penelitian|research\s+method)\b', text_lower))
+    # Tolak HANYA jika SANGAT komersial dan TIDAK akademik
+    if commercial_hits >= 5 and academic_hits < 2:
+        return False, "DITOLAK: Dokumen terdeteksi sebagai KATALOG/BROSUR PENJUALAN, bukan Tugas Akhir akademik. Silakan upload dokumen Tugas Akhir/Skripsi."
 
-    # PEDOMAN ITS: SEMUA komponen kritis WAJIB ada (tidak ada toleransi)
-    critical_components = ['abstrak', 'bab', 'daftar_pustaka', 'pendahuluan', 'metodologi']
-    missing_critical = []
+    # Deteksi komponen dokumentasi lokal
+    has_abstrak = bool(re.search(r'\b(abstrak|abstract)\b', text_lower))
+    has_bab = len(re.findall(r'\b(bab\s+[i1-5]|chapter\s+[i1-5])\b', text_lower)) >= 2
+    has_dafpus = bool(re.search(r'\b(daftar\s+pustaka|daftar\s+referensi|references|bibliography)\b', text_lower))
+    has_pendahuluan = bool(re.search(r'\b(pendahuluan|introduction|latar\s+belakang|background)\b', text_lower))
     
-    for comp in critical_components:
-        if not required_components[comp]:
-            missing_critical.append(comp.replace('_', ' ').title())
-    
-    if missing_critical:
-        return False, f"DITOLAK: Dokumen TIDAK MEMENUHI standar format Pedoman ITS SK Rektor 280/2022. Komponen WAJIB yang HILANG: {', '.join(missing_critical)}. Dokumen Tugas Akhir ITS HARUS memiliki: (1) Abstrak dalam 2 bahasa (Indonesia & Inggris), (2) Struktur Bab 1-5 lengkap (Pendahuluan, Tinjauan Pustaka, Metodologi, Hasil & Pembahasan, Kesimpulan), dan (3) Daftar Pustaka minimal 20 referensi. Silakan perbaiki format dokumen sesuai Pedoman ITS."
-    
-    # Validasi konten minimum - LEBIH KETAT
-    if len(text) < 15000:
-        return False, f"DITOLAK: Konten dokumen terlalu sedikit ({len(text)} karakter). Tugas Akhir ITS harus memiliki konten substansial minimal 15,000 karakter. Dokumen Anda tidak memenuhi standar kelengkapan konten Pedoman ITS."
-    
-    # Validasi jumlah bab - harus minimal 4 bab
-    if locations and locations.get('bab'):
-        num_bab = len(locations['bab'])
-        if num_bab < 4:
-            return False, f"DITOLAK: Struktur bab tidak lengkap (hanya {num_bab} bab terdeteksi). Berdasarkan Pedoman ITS, Tugas Akhir harus memiliki minimal Bab 1-5 (Pendahuluan, Tinjauan Pustaka, Metodologi, Hasil & Pembahasan, Kesimpulan). Silakan lengkapi struktur bab sesuai Pedoman ITS."
+    # Cek dari locations jika tersedia
+    if locations:
+        has_abstrak = has_abstrak or bool(locations.get('abstrak'))
+        has_bab = bool(locations.get('bab') and len(locations['bab']) >= 2) or has_bab
+        has_dafpus = has_dafpus or bool(locations.get('daftar_pustaka'))
 
+    # Hanya tolak jika komponen FUNDAMENTAL benar-benar hilang DAN dokumen TERLALU PENDEK
+    missing_fundamental = []
+    if not has_bab:
+        missing_fundamental.append("Struktur Bab (Bab 1, 2, 3, dst)")
+    if not has_dafpus:
+        missing_fundamental.append("Daftar Pustaka/Referensi")
+    if not has_pendahuluan:
+        missing_fundamental.append("Pendahuluan/Latar Belakang")
+    
+    # TOLAK hanya jika SANGAT FUNDAMENTAL hilang DAN dokumen pendek
+    if len(missing_fundamental) >= 2 and total_halaman < 15:
+        return False, f"DITOLAK: Dokumen terlalu pendek ({total_halaman} halaman) dan HILANG komponen kritis: {', '.join(missing_fundamental)}. Minimum 15 halaman dengan struktur Bab dan Daftar Pustaka. Silakan lengkapi dokumen Anda."
+
+    # Cek konten minimum
+    if len(text) < 5000:
+        return False, f"DITOLAK: Konten terlalu sedikit ({len(text)} karakter, min 5000). Silakan upload dokumen yang lebih lengkap."
+    
     return True, ""
 
 
@@ -803,7 +740,7 @@ def fallback_result(total_halaman, format_margin_info, pages_text=None, location
     Hasil fallback dengan analisis lokal (tanpa AI eksternal)
     Sesuai Pedoman ITS SK Rektor No. 280/2022
     
-    VALIDASI KETAT: Dokumen yang tidak memenuhi standar minimum akan ditolak
+    VALIDASI FLEKSIBEL: Berikan saran untuk perbaikan, jangan langsung tolak
     """
     # Analisis lokal jika data tersedia
     abstrak_id_words = 0
@@ -816,18 +753,9 @@ def fallback_result(total_halaman, format_margin_info, pages_text=None, location
         if locations:
             ref_count = count_references(pages_text, locations)
     
-    # VALIDASI KETAT: Komponen kritis harus ada
-    critical_missing = []
-    if abstrak_id_words == 0 and abstrak_en_words == 0:
-        critical_missing.append("Abstrak (2 bahasa)")
-    if bab_count < 3:
-        critical_missing.append(f"Struktur Bab lengkap (hanya {bab_count} bab terdeteksi, minimal 4)")
-    if ref_count < 10:
-        critical_missing.append(f"Daftar Pustaka memadai (hanya {ref_count} referensi, minimal 20)")
-    
-    # REJECT jika terlalu banyak komponen kritis hilang
-    if len(critical_missing) >= 2:
-        error_msg = f"DITOLAK: Dokumen tidak memenuhi standar format Pedoman ITS. Komponen kritis yang hilang/tidak memadai: {', '.join(critical_missing)}. Silakan perbaiki format dokumen sesuai Pedoman ITS SK Rektor 280/2022 sebelum mengupload kembali."
+    # FLEKSIBEL: Hanya raise error jika SANGAT fundamental hilang
+    if bab_count < 1 or total_halaman < 8:
+        error_msg = f"DITOLAK: Dokumen tidak memiliki struktur dasar Tugas Akhir ({bab_count} bab, {total_halaman} halaman). Minimum: 8 halaman dengan minimal 1 bab. Silakan upload dokumen yang lebih lengkap."
         raise ValueError(error_msg)
     
     # Evaluasi komponen berdasarkan hasil analisis lokal
@@ -864,35 +792,43 @@ def fallback_result(total_halaman, format_margin_info, pages_text=None, location
     # Tentukan jenis dokumen berdasarkan jumlah halaman
     has_abstract = abstrak_id_words > 0 or abstrak_en_words > 0
     has_dafpus = ref_count > 0
-    has_babs = bab_count >= 3
+    has_babs = bab_count >= 2
     
-    if total_halaman < 30:
-        jenis_dok = "Proposal TA"
-        score = 7 if (has_abstract and has_babs) else 6
-        percentage = score * 10
-        status = "PERLU PERBAIKAN" if score >= 6 else "TIDAK LAYAK"
+    # SCORING FLEKSIBEL - tidak reject, hanya berikan score & rekomendasi
+    if total_halaman < 20:
+        jenis_dok = "Proposal TA / TA Pendek"
+        # Score berdasarkan komponen yang ada
+        score = 5  # base minimal
+        if has_babs: score += 1
+        if has_abstract: score += 1.5
+        if has_dafpus: score += 1.5
+        if total_halaman >= 10: score += 0.5
+        
+        percentage = round(score * 10, 1)
+        status = "PERLU PERBAIKAN" if score >= 6 else "PERLU PERBAIKAN SIGNIFIKAN"
+        
         rec = [
-            "Dokumen terdeteksi sebagai Proposal TA (halaman < 30)",
-            "Untuk Laporan TA lengkap, sesuai Pedoman ITS minimal 40-60 halaman",
-            "Pastikan semua Bab 1-5 lengkap sesuai Pedoman ITS",
-            "Daftar Pustaka harus minimal 20 referensi (jurnal/buku kredibel)",
-            "Gunakan format APA atau IEEE secara konsisten"
+            f"✓ Dokumen terdeteksi sebagai Proposal/TA Pendek ({total_halaman} halaman, {bab_count} bab)",
+            "⚠️ Untuk Laporan TA lengkap, Pedoman ITS merekomendasikan 40-60 halaman",
+            "📋 Pastikan semua Bab 1-5 ada: Pendahuluan, Tinjauan Pustaka, Metodologi, Hasil & Pembahasan, Kesimpulan",
+            f"📚 Daftar Pustaka: Saat ini {ref_count} referensi, target minimal 20 (preferably dari jurnal/buku kredibel)",
+            "📝 Abstrak 2 bahasa: Pastikan minimal 200-300 kata untuk masing-masing bahasa"
         ]
     else:
         jenis_dok = "Laporan TA/Skripsi"
         # Hitung score berdasarkan komponen yang terdeteksi
         score = 6  # base
-        if abstrak_id_words >= 200 and abstrak_en_words >= 200: score += 1
+        if abstrak_id_words >= 200 and abstrak_en_words >= 200: score += 1.5
         if ref_count >= 20: score += 1.5
         if bab_count >= 5: score += 1
         if total_halaman >= 40: score += 0.5
         
         percentage = round(score * 10, 1)
-        status = "LAYAK" if score >= 8 else "PERLU PERBAIKAN"
+        status = "LAYAK" if score >= 8.5 else "PERLU PERBAIKAN"
         
         rec = [
-            f"Analisis otomatis berhasil: Abstrak ({abstrak_id_words}+{abstrak_en_words} kata), {ref_count} referensi, {bab_count} bab",
-            "✓ Dokumen memenuhi panjang minimum Pedoman ITS (122 halaman)" if total_halaman >= 40 else "⚠️ Verifikasi panjang dokumen",
+            f"✓ Dokumen terdeteksi sebagai Laporan TA lengkap ({total_halaman} halaman)",
+            f"📊 Analisis otomatis: Abstrak ({abstrak_id_words}+{abstrak_en_words} kata), {ref_count} referensi, {bab_count} bab terdeteksi",
             f"{'✓' if abstrak_status == '✓' else '⚠️'} Abstrak: {abstrak_notes.strip()}",
             f"{'✓' if dafpus_status == '✓' else '⚠️'} Daftar Pustaka: {dafpus_notes.strip()}",
             f"{'✓' if all(s == '✓' for s in bab_status) else '⚠️'} Struktur Bab: {bab_notes.strip()}"
