@@ -65,19 +65,23 @@ class DocumentAnalysisController extends Controller
             } catch (\Exception $e) {
                 $errorMsg = $e->getMessage();
                 
-                // Jika error adalah validasi dokumen (bukan TA), gunakan fallback dengan error info
-                if (str_contains($errorMsg, 'tidak terdeteksi sebagai Tugas Akhir') ||
+                // Jika error adalah REJECTION (dokumen DITOLAK), JANGAN lanjutkan ke result
+                if (str_contains($errorMsg, 'DITOLAK') ||
+                    str_contains($errorMsg, 'tidak terdeteksi sebagai') ||
+                    str_contains($errorMsg, 'tidak memenuhi standar') ||
+                    str_contains($errorMsg, 'TIDAK MEMENUHI') ||
+                    str_contains($errorMsg, 'Komponen WAJIB') ||
+                    str_contains($errorMsg, 'Komponen kritis') ||
                     str_contains($errorMsg, 'terlalu pendek') ||
-                    str_contains($errorMsg, 'terlalu sedikit') ||
-                    str_contains($errorMsg, 'TIDAK MEMENUHI standar')) {
+                    str_contains($errorMsg, 'terlalu sedikit')) {
                     
-                    Log::warning('Dokumen tidak memenuhi standar TA ITS', [
+                    Log::warning('Dokumen DITOLAK - tidak memenuhi standar ITS', [
                         'filename' => $filename,
                         'error' => $errorMsg
                     ]);
                     
-                    // Gunakan fallback dengan info error yang sebenarnya
-                    $analysisResults = $this->generateFailedAnalysisResult($filename, $errorMsg);
+                    // THROW exception agar tidak lanjut ke result page
+                    throw new \Exception($errorMsg);
                 } else {
                     // Error lainnya (connection, timeout, dll) -> gunakan fallback standar
                     Log::error('Analisis Python gagal, menggunakan fallback', [
@@ -287,12 +291,15 @@ class DocumentAnalysisController extends Controller
             $errorMsg = $results['error'];
             Log::error("AI Analysis Error", ['error' => $errorMsg]);
             
-            // Cek apakah ini error validasi dokumen (bukan TA)
-            if (str_contains($errorMsg, 'tidak terdeteksi sebagai') || 
+            // Cek apakah ini error validasi dokumen (DITOLAK karena tidak memenuhi standar)
+            if (str_contains($errorMsg, 'DITOLAK') || 
+                str_contains($errorMsg, 'tidak terdeteksi sebagai') || 
                 str_contains($errorMsg, 'terlalu pendek') ||
                 str_contains($errorMsg, 'terlalu sedikit') ||
-                str_contains($errorMsg, 'Komponen yang hilang')) {
-                // Ini error validasi - lempar exception khusus
+                str_contains($errorMsg, 'tidak memenuhi standar') ||
+                str_contains($errorMsg, 'Komponen WAJIB') ||
+                str_contains($errorMsg, 'Komponen kritis')) {
+                // Ini error validasi format - lempar exception dengan pesan lengkap
                 throw new \Exception($errorMsg);
             }
             
@@ -319,6 +326,10 @@ class DocumentAnalysisController extends Controller
 
             // Convert to new structure sebelum disimpan
             $convertedResults = $this->convertToNewStructure($results);
+            
+            // Add session_id untuk privacy
+            $convertedResults['session_id'] = session()->getId();
+            $convertedResults['uploaded_at'] = now()->toIso8601String();
             
             // Save results
             $saved = Storage::put(
@@ -851,6 +862,9 @@ class DocumentAnalysisController extends Controller
         $perPage = 10;
         $search = $request->get('search', '');
         
+        // Get current session ID untuk privacy
+        $currentSessionId = session()->getId();
+        
         $files = Storage::files(self::RESULTS_PATH);
         $history = [];
         
@@ -863,6 +877,12 @@ class DocumentAnalysisController extends Controller
                     if (json_last_error() !== JSON_ERROR_NONE) {
                         Log::warning('Skip corrupt results file', ['file' => $file]);
                         continue;
+                    }
+                    
+                    // PRIVACY: Hanya tampilkan file dari session yang sama
+                    $fileSessionId = $results['session_id'] ?? null;
+                    if ($fileSessionId !== $currentSessionId) {
+                        continue; // Skip file dari user/session lain
                     }
                     
                     $originalFilename = str_replace('_results.json', '', basename($file)) . '.pdf';
@@ -1010,6 +1030,22 @@ class DocumentAnalysisController extends Controller
         try {
             $resultsFilename = $this->getResultsFilename($filename);
             $resultsPath = self::RESULTS_PATH . $resultsFilename;
+            
+            // PRIVACY: Cek apakah file ini milik session yang sama
+            if (Storage::exists($resultsPath)) {
+                $content = Storage::get($resultsPath);
+                $results = json_decode($content, true);
+                $fileSessionId = $results['session_id'] ?? null;
+                $currentSessionId = session()->getId();
+                
+                if ($fileSessionId && $fileSessionId !== $currentSessionId) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Anda tidak memiliki akses untuk menghapus file ini'
+                    ], 403);
+                }
+            }
+            
             $uploadPath = self::UPLOAD_PATH . $filename;
             $privateUploadPath = self::PRIVATE_PATH . self::UPLOAD_PATH . $filename;
             
@@ -1065,11 +1101,21 @@ class DocumentAnalysisController extends Controller
     public function clearHistory(Request $request)
     {
         try {
+            $currentSessionId = session()->getId();
             $files = Storage::files(self::RESULTS_PATH);
             $deletedCount = 0;
             
             foreach ($files as $file) {
                 if (str_contains($file, '_results.json')) {
+                    // PRIVACY: Hanya hapus file milik session sendiri
+                    $content = Storage::get($file);
+                    $results = json_decode($content, true);
+                    $fileSessionId = $results['session_id'] ?? null;
+                    
+                    if ($fileSessionId && $fileSessionId !== $currentSessionId) {
+                        continue; // Skip file dari user lain
+                    }
+                    
                     Storage::delete($file);
                     $deletedCount++;
                     
@@ -1105,6 +1151,7 @@ class DocumentAnalysisController extends Controller
         try {
             $days = $request->input('days', 30);
             $cutoffDate = now()->subDays($days);
+            $currentSessionId = session()->getId();
             
             $files = Storage::files(self::RESULTS_PATH);
             $deletedCount = 0;
@@ -1112,6 +1159,15 @@ class DocumentAnalysisController extends Controller
             
             foreach ($files as $file) {
                 if (str_contains($file, '_results.json')) {
+                    // PRIVACY: Hanya hapus file milik session sendiri
+                    $content = Storage::get($file);
+                    $results = json_decode($content, true);
+                    $fileSessionId = $results['session_id'] ?? null;
+                    
+                    if ($fileSessionId && $fileSessionId !== $currentSessionId) {
+                        continue; // Skip file dari user lain
+                    }
+                    
                     $totalCount++;
                     $lastModified = Storage::lastModified($file);
                     $fileDate = Carbon::createFromTimestamp($lastModified);

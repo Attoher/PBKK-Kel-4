@@ -196,6 +196,17 @@
               <i id="submit-loading" class="fas fa-spinner fa-spin ml-2 hidden"></i>
             </button>
 
+            <!-- Rejection Warning (Muncul saat dokumen ditolak) -->
+            <div id="rejection-warning" class="hidden mt-4 bg-red-50 border-l-4 border-red-500 text-red-800 px-4 py-3 rounded-lg shadow-md animate-pulse">
+              <div class="flex items-start">
+                <i class="fas fa-times-circle text-red-500 text-2xl mr-3 mt-0.5 flex-shrink-0"></i>
+                <div class="flex-1">
+                  <h4 class="font-bold text-lg mb-2">Dokumen Ditolak</h4>
+                  <p id="rejection-message" class="text-sm leading-relaxed break-words"></p>
+                </div>
+              </div>
+            </div>
+
             <!-- Error Messages -->
             @if($errors->any())
               <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg">
@@ -715,6 +726,9 @@
       });
       
       function handleFiles(files) {
+        // Hide rejection warning saat upload file baru
+        hideRejectionWarning();
+        
         if (files.length > 0) {
           const file = files[0];
           const validTypes = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
@@ -868,11 +882,36 @@
 
           if (!mergeResponse.ok) {
             console.error('Merge failed:', mergeResponse.status, mergeText);
-            throw new Error(`Gagal menggabungkan file: ${mergeResponse.status} - ${mergeText.substring(0, 100)}`);
+            
+            // Parse response untuk cek apakah ini rejection error
+            let errorMessage = `Gagal menggabungkan file: ${mergeResponse.status}`;
+            try {
+              const errorResult = JSON.parse(mergeText);
+              if (errorResult.rejected) {
+                // Dokumen ditolak karena tidak memenuhi standar
+                errorMessage = errorResult.message || 'Dokumen ditolak karena tidak memenuhi standar format ITS.';
+                showRejectionWarning(errorMessage);
+                return; // Jangan throw error, langsung return
+              } else {
+                errorMessage = errorResult.message || errorMessage;
+              }
+            } catch (parseError) {
+              // Jika gagal parse, gunakan error message default
+              errorMessage += ` - ${mergeText.substring(0, 100)}`;
+            }
+            
+            throw new Error(errorMessage);
           }
 
           const result = JSON.parse(mergeText);
           console.log('Merge result:', result);
+
+          // Cek apakah dokumen ditolak
+          if (result.rejected || (!result.success && result.message)) {
+              // Dokumen ditolak, tampilkan warning TANPA redirect
+              showRejectionWarning(result.message || 'Dokumen ditolak karena tidak memenuhi standar format ITS.');
+              return;
+          }
 
           // Jika sukses, redirect ke halaman hasil
           if (result.success && result.filename) {
@@ -894,6 +933,34 @@
       });
       
       // ========== Notification Functions ==========
+      window.showRejectionWarning = function(message) {
+        const rejectionWarning = document.getElementById('rejection-warning');
+        const rejectionMessage = document.getElementById('rejection-message');
+        
+        if (rejectionWarning && rejectionMessage) {
+          rejectionMessage.textContent = message;
+          rejectionWarning.classList.remove('hidden');
+          
+          // Scroll ke warning agar terlihat
+          rejectionWarning.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          
+          // Hapus loading state
+          const submitBtn = document.getElementById('submit-btn');
+          const submitText = document.getElementById('submit-text');
+          const submitLoading = document.getElementById('submit-loading');
+          if (submitBtn) submitBtn.disabled = false;
+          if (submitText) submitText.textContent = 'Analisis Dokumen';
+          if (submitLoading) submitLoading.classList.add('hidden');
+        }
+      };
+      
+      window.hideRejectionWarning = function() {
+        const rejectionWarning = document.getElementById('rejection-warning');
+        if (rejectionWarning) {
+          rejectionWarning.classList.add('hidden');
+        }
+      };
+      
       window.showNotification = function(message) {
         notificationMessage.textContent = message;
         notification.classList.remove('hidden');

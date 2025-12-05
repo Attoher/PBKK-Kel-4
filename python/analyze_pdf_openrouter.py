@@ -259,30 +259,56 @@ def extract_section_locations(pages_text):
 
 def validate_ta_document(text, total_halaman, pages_text=None, locations=None):
     """
-    Validasi dokumen berdasarkan PEDOMAN RESMI ITS SK Rektor No. 280/2022
+    Validasi KETAT dokumen berdasarkan PEDOMAN RESMI ITS SK Rektor No. 280/2022
     
-    KRITERIA MINIMUM:
-    - Minimal 15 halaman (Proposal TA) atau 40+ halaman (Laporan TA)
-    - HARUS ada: Abstrak, Struktur Bab (min 3 bab), Daftar Pustaka
-    - HARUS ada: Pendahuluan dan Metodologi
+    KRITERIA MINIMUM (STRICT):
+    - Minimal 30 halaman (Laporan TA lengkap)
+    - WAJIB ada: Abstrak (2 bahasa), Struktur Bab (min 4 bab), Daftar Pustaka
+    - WAJIB ada: Pendahuluan, Metodologi, Hasil/Pembahasan
+    
+    Dokumen yang tidak memenuhi standar akan LANGSUNG DITOLAK.
     """
     text_lower = text.lower()
 
-    # Cek panjang dokumen sesuai pedoman ITS
-    if total_halaman < 15:
-        return False, f"Dokumen terlalu pendek ({total_halaman} halaman). Berdasarkan Pedoman ITS: Proposal TA minimal 15-20 halaman, Laporan TA minimal 40-60 halaman."
+    # Cek panjang dokumen sesuai pedoman ITS - LEBIH KETAT
+    if total_halaman < 30:
+        return False, f"DITOLAK: Dokumen terlalu pendek ({total_halaman} halaman). Berdasarkan Pedoman ITS SK Rektor 280/2022, Laporan Tugas Akhir harus minimal 40-60 halaman. Dokumen Anda tidak memenuhi standar format ITS."
 
-    # Tolak jenis dokumen yang bukan TA/Skripsi
+    # Tolak jenis dokumen yang bukan TA/Skripsi dengan deteksi lebih ketat
     reject_keywords = [
         'kwitansi', 'invoice', 'receipt', 'bukti pembayaran', 'tagihan',
         'surat jalan', 'delivery note', 'purchase order',
         'quotation', 'penawaran harga', 'bukti transfer',
         'form pendaftaran', 'formulir pendaftaran', 'permohonan izin',
-        'sertifikat', 'certificate of', 'surat keterangan'
+        'sertifikat', 'certificate of', 'surat keterangan',
+        'katalog', 'catalog', 'catalogue', 'product catalog', 'company profile',
+        'brochure', 'brosur', 'leaflet', 'flyer', 'pamphlet',
+        'manual book', 'user manual', 'panduan pengguna',
+        'price list', 'daftar harga', 'e-commerce', 'sales',
+        'advertisement', 'iklan', 'promosi', 'promotion'
     ]
     for keyword in reject_keywords:
         if keyword in text_lower:
-            return False, f"Dokumen terdeteksi sebagai '{keyword.upper()}', bukan Tugas Akhir/Skripsi ITS."
+            return False, f"DITOLAK: Dokumen terdeteksi sebagai '{keyword.upper()}', bukan Tugas Akhir/Skripsi ITS. Sistem hanya menerima dokumen Tugas Akhir/Skripsi yang sesuai dengan Pedoman ITS SK Rektor 280/2022."
+    
+    # Deteksi pattern katalog/brochure dengan multiple indicators
+    catalog_patterns = [
+        r'(product|produk)\s+(catalog|katalog|specification)',
+        r'(company|corporate)\s+profile',
+        r'(price|harga)\s*:\s*(\$|Rp)',
+        r'(order|pesan)\s+(now|sekarang|disini)',
+        r'(available|tersedia)\s+in\s+(color|size|warna|ukuran)',
+        r'(specifications?|spesifikasi)\s*:\s*\n.*\n.*\n',  # Multiple spec lines
+        r'(warranty|garansi)\s*:\s*\d+\s*(year|tahun|month|bulan)',
+        r'(contact\s+us|hubungi\s+kami)\s*:\s*\+?\d{2,}'
+    ]
+    catalog_hits = 0
+    for pattern in catalog_patterns:
+        if re.search(pattern, text_lower):
+            catalog_hits += 1
+    
+    if catalog_hits >= 3:
+        return False, "DITOLAK: Dokumen terdeteksi sebagai KATALOG PRODUK atau BROSUR PERUSAHAAN, bukan Tugas Akhir/Skripsi ITS. Sistem hanya menerima dokumen akademik Tugas Akhir sesuai Pedoman ITS SK Rektor 280/2022."
 
     # Komponen WAJIB berdasarkan Pedoman ITS
     required_components = {
@@ -308,6 +334,38 @@ def validate_ta_document(text, total_halaman, pages_text=None, locations=None):
         if re.search(r'(?:daftar\s+pustaka|daftar\s+referensi|references|bibliography)', text_lower):
             required_components['daftar_pustaka'] = True
 
+    # Deteksi karakteristik NON-AKADEMIK (katalog, brosur, iklan)
+    commercial_indicators = [
+        r'\b(buy|beli|order|pesan)\s+(now|sekarang)',
+        r'\b(discount|diskon|promo|sale)\s*:\s*\d+%',
+        r'\b(free\s+shipping|gratis\s+ongkir)',
+        r'\b(limited\s+stock|stok\s+terbatas)',
+        r'\b(call\s+us|hubungi|contact)\s*:\s*\+?\d{10,}',
+        r'(www\.|http|\.com|\.id)\s*\/\s*(shop|store|produk)',
+        r'\b(warranty|garansi)\s+(1|2|3)\s+(year|tahun)',
+        r'\b(color|warna)\s*:\s*(red|black|white|merah|hitam|putih)',
+        r'\b(size|ukuran)\s*:\s*(S|M|L|XL)',
+        r'\b(model|type)\s*:\s*[A-Z]{2,}\-\d{3,}'
+    ]
+    commercial_hits = sum(1 for pattern in commercial_indicators if re.search(pattern, text_lower))
+    
+    # Deteksi kata-kata akademik yang seharusnya ada
+    academic_indicators = [
+        r'\b(penelitian|research|study|kajian)\b',
+        r'\b(analisis|analysis|analisa)\b',
+        r'\b(hasil|result|finding|temuan)\b',
+        r'\b(kesimpulan|conclusion|simpulan)\b',
+        r'\b(metode|method|metodologi)\b',
+        r'\b(hipotesis|hypothesis|asumsi)\b',
+        r'\b(variabel|variable|faktor)\b',
+        r'\b(data|dataset|sampel|sample)\b'
+    ]
+    academic_hits = sum(1 for pattern in academic_indicators if re.search(pattern, text_lower))
+    
+    # Jika terlalu banyak indikator komersial dan sedikit akademik -> TOLAK
+    if commercial_hits >= 4 and academic_hits < 3:
+        return False, "DITOLAK: Dokumen terdeteksi sebagai DOKUMEN KOMERSIAL (katalog/brosur/iklan), bukan dokumen akademik Tugas Akhir. Sistem hanya menerima dokumen Tugas Akhir/Skripsi yang sesuai Pedoman ITS SK Rektor 280/2022."
+    
     # Deteksi Pendahuluan dan Metodologi (komponen WAJIB Bab 1 & 3)
     if pages_text is not None:
         toc_pages = classify_pages(pages_text)
@@ -325,15 +383,26 @@ def validate_ta_document(text, total_halaman, pages_text=None, locations=None):
         required_components['pendahuluan'] = bool(re.search(r'\b(pendahuluan|introduction|latar\s+belakang)\b', text_lower))
         required_components['metodologi'] = bool(re.search(r'\b(metodologi|methodology|metode\s+penelitian|research\s+method)\b', text_lower))
 
-    # PEDOMAN ITS: Minimal harus ada 4 dari 5 komponen wajib
-    valid_components = sum(required_components.values())
-    if valid_components < 4:
-        missing = [k.replace('_', ' ').title() for k, v in required_components.items() if not v]
-        return False, f"Dokumen TIDAK MEMENUHI standar Pedoman ITS. Komponen WAJIB yang hilang: {', '.join(missing)}. Sesuai Pedoman ITS, dokumen harus memiliki: Abstrak (2 bahasa), Bab 1-5 (Pendahuluan, Tinjauan Pustaka, Metodologi, Hasil, Kesimpulan), dan Daftar Pustaka (min 20 referensi)."
-
-    # Validasi panjang konten minimum
-    if len(text) < 5000:
-        return False, "Konten dokumen terlalu sedikit untuk Tugas Akhir/Skripsi ITS. Pastikan dokumen memiliki konten yang memadai sesuai Pedoman ITS."
+    # PEDOMAN ITS: SEMUA komponen kritis WAJIB ada (tidak ada toleransi)
+    critical_components = ['abstrak', 'bab', 'daftar_pustaka', 'pendahuluan', 'metodologi']
+    missing_critical = []
+    
+    for comp in critical_components:
+        if not required_components[comp]:
+            missing_critical.append(comp.replace('_', ' ').title())
+    
+    if missing_critical:
+        return False, f"DITOLAK: Dokumen TIDAK MEMENUHI standar format Pedoman ITS SK Rektor 280/2022. Komponen WAJIB yang HILANG: {', '.join(missing_critical)}. Dokumen Tugas Akhir ITS HARUS memiliki: (1) Abstrak dalam 2 bahasa (Indonesia & Inggris), (2) Struktur Bab 1-5 lengkap (Pendahuluan, Tinjauan Pustaka, Metodologi, Hasil & Pembahasan, Kesimpulan), dan (3) Daftar Pustaka minimal 20 referensi. Silakan perbaiki format dokumen sesuai Pedoman ITS."
+    
+    # Validasi konten minimum - LEBIH KETAT
+    if len(text) < 15000:
+        return False, f"DITOLAK: Konten dokumen terlalu sedikit ({len(text)} karakter). Tugas Akhir ITS harus memiliki konten substansial minimal 15,000 karakter. Dokumen Anda tidak memenuhi standar kelengkapan konten Pedoman ITS."
+    
+    # Validasi jumlah bab - harus minimal 4 bab
+    if locations and locations.get('bab'):
+        num_bab = len(locations['bab'])
+        if num_bab < 4:
+            return False, f"DITOLAK: Struktur bab tidak lengkap (hanya {num_bab} bab terdeteksi). Berdasarkan Pedoman ITS, Tugas Akhir harus memiliki minimal Bab 1-5 (Pendahuluan, Tinjauan Pustaka, Metodologi, Hasil & Pembahasan, Kesimpulan). Silakan lengkapi struktur bab sesuai Pedoman ITS."
 
     return True, ""
 
@@ -733,6 +802,8 @@ def fallback_result(total_halaman, format_margin_info, pages_text=None, location
     """
     Hasil fallback dengan analisis lokal (tanpa AI eksternal)
     Sesuai Pedoman ITS SK Rektor No. 280/2022
+    
+    VALIDASI KETAT: Dokumen yang tidak memenuhi standar minimum akan ditolak
     """
     # Analisis lokal jika data tersedia
     abstrak_id_words = 0
@@ -744,6 +815,20 @@ def fallback_result(total_halaman, format_margin_info, pages_text=None, location
         abstrak_id_words, abstrak_en_words = analyze_abstracts(pages_text)
         if locations:
             ref_count = count_references(pages_text, locations)
+    
+    # VALIDASI KETAT: Komponen kritis harus ada
+    critical_missing = []
+    if abstrak_id_words == 0 and abstrak_en_words == 0:
+        critical_missing.append("Abstrak (2 bahasa)")
+    if bab_count < 3:
+        critical_missing.append(f"Struktur Bab lengkap (hanya {bab_count} bab terdeteksi, minimal 4)")
+    if ref_count < 10:
+        critical_missing.append(f"Daftar Pustaka memadai (hanya {ref_count} referensi, minimal 20)")
+    
+    # REJECT jika terlalu banyak komponen kritis hilang
+    if len(critical_missing) >= 2:
+        error_msg = f"DITOLAK: Dokumen tidak memenuhi standar format Pedoman ITS. Komponen kritis yang hilang/tidak memadai: {', '.join(critical_missing)}. Silakan perbaiki format dokumen sesuai Pedoman ITS SK Rektor 280/2022 sebelum mengupload kembali."
+        raise ValueError(error_msg)
     
     # Evaluasi komponen berdasarkan hasil analisis lokal
     abstrak_status = "✓" if (abstrak_id_words >= 200 and abstrak_en_words >= 200) else "⚠️"
@@ -875,9 +960,22 @@ def main():
 
     if not USE_SENOPATI:
         print("DEBUG: USE_SENOPATI=false -> returning fallback result", file=sys.stderr)
-        result = fallback_result(total_halaman, format_margin_info, pages_text, locations)
-        result["locations"] = locations
-        print(json.dumps(result, ensure_ascii=False))
+        try:
+            result = fallback_result(total_halaman, format_margin_info, pages_text, locations)
+            result["locations"] = locations
+            output = json.dumps(result, ensure_ascii=False)
+            try:
+                print(output)
+            except UnicodeEncodeError:
+                print(json.dumps(result, ensure_ascii=True))
+        except ValueError as ve:
+            # Document rejected by fallback validation
+            print(f"DEBUG: Document rejected by fallback: {str(ve)}", file=sys.stderr)
+            error_output = json.dumps({"error": str(ve)}, ensure_ascii=False)
+            try:
+                print(error_output)
+            except UnicodeEncodeError:
+                print(json.dumps({"error": str(ve)}, ensure_ascii=True))
         return
 
     prompt = build_ai_prompt(full_text, total_halaman, format_margin_info)
@@ -887,14 +985,25 @@ def main():
             parsed = extract_json_from_text(resp.get("response", ""))
             if isinstance(parsed, dict):
                 parsed["locations"] = locations
-            print(json.dumps(parsed, ensure_ascii=False))
+            # Fix encoding untuk Windows console
+            output = json.dumps(parsed, ensure_ascii=False)
+            try:
+                print(output)
+            except UnicodeEncodeError:
+                print(json.dumps(parsed, ensure_ascii=True))
             return
         except Exception as e:
             print(f"DEBUG: JSON parse failed: {e}", file=sys.stderr)
 
     result = fallback_result(total_halaman, format_margin_info, pages_text, locations)
     result["locations"] = locations
-    print(json.dumps(result, ensure_ascii=False))
+    # Fix encoding untuk Windows console
+    output = json.dumps(result, ensure_ascii=False)
+    try:
+        print(output)
+    except UnicodeEncodeError:
+        # Fallback: encode sebagai ASCII dengan escape sequences
+        print(json.dumps(result, ensure_ascii=True))
 
 
 if __name__ == "__main__":

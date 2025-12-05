@@ -19,12 +19,15 @@ Meningkatkan akurasi AI dalam mendeteksi dan menilai kelayakan dokumen Tugas Akh
 ### 1. **python/analyze_pdf_openrouter.py**
 
 #### A. SYSTEM_PROMPT (Baris 11-53)
+
 **Sebelum:**
+
 ```python
 SYSTEM_PROMPT = "Anda adalah asisten ahli format dokumen ITS. Hasilkan HANYA JSON valid tanpa penjelasan tambahan."
 ```
 
 **Sesudah:**
+
 ```python
 SYSTEM_PROMPT = """Anda adalah asisten ahli analisis format dokumen Tugas Akhir Institut Teknologi Sepuluh Nopember (ITS).
 
@@ -73,12 +76,15 @@ Hasilkan HANYA JSON valid tanpa penjelasan tambahan atau teks lain."""
 ---
 
 #### B. build_ai_prompt() (Baris 333-426)
+
 **Perubahan:**
-- Menambahkan deskripsi lengkap kriteria penilaian berdasarkan Pedoman ITS
-- Menjelaskan setiap komponen wajib: Abstrak (2 bahasa), Bab 1-5 (dengan rincian), Daftar Pustaka (min 20 ref)
-- Menambahkan instruksi format output yang lebih detail
+
+-   Menambahkan deskripsi lengkap kriteria penilaian berdasarkan Pedoman ITS
+-   Menjelaskan setiap komponen wajib: Abstrak (2 bahasa), Bab 1-5 (dengan rincian), Daftar Pustaka (min 20 ref)
+-   Menambahkan instruksi format output yang lebih detail
 
 **Contoh bagian baru:**
+
 ```python
 KRITERIA PENILAIAN BERDASARKAN PEDOMAN ITS:
 
@@ -99,13 +105,16 @@ KRITERIA PENILAIAN BERDASARKAN PEDOMAN ITS:
 ---
 
 #### C. validate_ta_document() (Baris 193-258)
+
 **Perubahan:**
-- Meningkatkan threshold validasi: minimal 4 dari 5 komponen wajib (sebelumnya 3)
-- Menambahkan deteksi minimal 3 bab (sebelumnya 2)
-- Pesan error lebih informatif dengan menyebutkan Pedoman ITS
-- Menambahkan komentar dokumentasi tentang kriteria minimum
+
+-   Meningkatkan threshold validasi: minimal 4 dari 5 komponen wajib (sebelumnya 3)
+-   Menambahkan deteksi minimal 3 bab (sebelumnya 2)
+-   Pesan error lebih informatif dengan menyebutkan Pedoman ITS
+-   Menambahkan komentar dokumentasi tentang kriteria minimum
 
 **Sebelum:**
+
 ```python
 if valid_components < 3:
     missing = [k.replace('_', ' ').title() for k, v in required_components.items() if not v]
@@ -113,6 +122,7 @@ if valid_components < 3:
 ```
 
 **Sesudah:**
+
 ```python
 if valid_components < 4:
     missing = [k.replace('_', ' ').title() for k, v in required_components.items() if not v]
@@ -124,13 +134,16 @@ if valid_components < 4:
 ---
 
 #### D. fallback_result() (Baris 428-472)
+
 **Perubahan:**
-- Membedakan jenis dokumen: Proposal TA (<30 hal) vs Laporan TA (≥30 hal)
-- Score dan status disesuaikan dengan jenis dokumen
-- Rekomendasi lebih spesifik sesuai Pedoman ITS
-- Notes di setiap komponen menyebutkan aturan Pedoman ITS
+
+-   Membedakan jenis dokumen: Proposal TA (<30 hal) vs Laporan TA (≥30 hal)
+-   Score dan status disesuaikan dengan jenis dokumen
+-   Rekomendasi lebih spesifik sesuai Pedoman ITS
+-   Notes di setiap komponen menyebutkan aturan Pedoman ITS
 
 **Sebelum:**
+
 ```python
 "recommendations": [
     "Gunakan analisis ini sebagai panduan awal",
@@ -139,6 +152,7 @@ if valid_components < 4:
 ```
 
 **Sesudah (untuk Proposal TA):**
+
 ```python
 "recommendations": [
     "Dokumen terdeteksi sebagai Proposal TA (halaman < 30)",
@@ -158,12 +172,13 @@ if valid_components < 4:
 **Deskripsi:** File reference lengkap yang berisi ekstraksi aturan dari Pedoman ITS SK Rektor No. 280/2022.
 
 **Isi:**
-- Format kertas dan margin
-- Struktur wajib TA (Bagian Awal, Isi, Akhir)
-- Kriteria validasi dokumen
-- Aturan khusus Abstrak dan Daftar Pustaka
-- Penomoran halaman
-- Kriteria penilaian kelayakan (LAYAK/PERLU PERBAIKAN/TIDAK LAYAK)
+
+-   Format kertas dan margin
+-   Struktur wajib TA (Bagian Awal, Isi, Akhir)
+-   Kriteria validasi dokumen
+-   Aturan khusus Abstrak dan Daftar Pustaka
+-   Penomoran halaman
+-   Kriteria penilaian kelayakan (LAYAK/PERLU PERBAIKAN/TIDAK LAYAK)
 
 **Tujuan:** Dokumentasi reference untuk developer dan potential future use (bisa dibaca oleh AI lain atau digunakan untuk training).
 
@@ -174,33 +189,48 @@ if valid_components < 4:
 ### Test Case: 5025211103-Muhammad_Naufal_Baihaqi-BukuTA.pdf (122 halaman)
 
 **Output (Ringkas):**
+
 ```json
 {
-  "score": 9,
-  "percentage": 90,
-  "status": "LAYAK",
-  "document_info": {
-    "jenis_dokumen": "Laporan TA/Skripsi",
-    "total_halaman": 122
-  },
-  "recommendations": [
-    "Dokumen memenuhi struktur dasar Pedoman ITS",
-    "Pastikan Abstrak tersedia dalam 2 bahasa (ID & EN, masing-masing 200-300 kata)",
-    "Verifikasi Daftar Pustaka minimal 20 referensi dengan format APA/IEEE konsisten",
-    "Periksa margin sesuai Pedoman ITS: Atas 3cm, Bawah 2.5cm, Kiri 3cm, Kanan 2cm",
-    "Font Times New Roman 12pt, spasi 1.5 untuk isi"
-  ],
-  "locations": {
-    "abstrak": {"page": 15, "snippet": "ABSTRAK PEMBUATAN DATA SINTETIK..."},
-    "bab": [
-      {"label": "Bab 1", "page": 33, "title": "PENDAHULUAN..."},
-      {"label": "Bab 2", "page": 37, "title": "TINJAUAN PUSTAKA..."},
-      {"label": "Bab 3", "page": 49, "title": "METODOLOGI..."},
-      {"label": "Bab 4", "page": 70, "title": "Hasil dan Pembahasan..."},
-      {"label": "Bab 5", "page": 108, "title": "Kesimpulan dan Saran..."}
+    "score": 9,
+    "percentage": 90,
+    "status": "LAYAK",
+    "document_info": {
+        "jenis_dokumen": "Laporan TA/Skripsi",
+        "total_halaman": 122
+    },
+    "recommendations": [
+        "Dokumen memenuhi struktur dasar Pedoman ITS",
+        "Pastikan Abstrak tersedia dalam 2 bahasa (ID & EN, masing-masing 200-300 kata)",
+        "Verifikasi Daftar Pustaka minimal 20 referensi dengan format APA/IEEE konsisten",
+        "Periksa margin sesuai Pedoman ITS: Atas 3cm, Bawah 2.5cm, Kiri 3cm, Kanan 2cm",
+        "Font Times New Roman 12pt, spasi 1.5 untuk isi"
     ],
-    "daftar_pustaka": {"page": 110, "snippet": "DAFTAR PUSTAKA Alam, T. M..."}
-  }
+    "locations": {
+        "abstrak": {
+            "page": 15,
+            "snippet": "ABSTRAK PEMBUATAN DATA SINTETIK..."
+        },
+        "bab": [
+            { "label": "Bab 1", "page": 33, "title": "PENDAHULUAN..." },
+            { "label": "Bab 2", "page": 37, "title": "TINJAUAN PUSTAKA..." },
+            { "label": "Bab 3", "page": 49, "title": "METODOLOGI..." },
+            {
+                "label": "Bab 4",
+                "page": 70,
+                "title": "Hasil dan Pembahasan..."
+            },
+            {
+                "label": "Bab 5",
+                "page": 108,
+                "title": "Kesimpulan dan Saran..."
+            }
+        ],
+        "daftar_pustaka": {
+            "page": 110,
+            "snippet": "DAFTAR PUSTAKA Alam, T. M..."
+        }
+    }
 }
 ```
 
@@ -215,40 +245,44 @@ if valid_components < 4:
 
 ## 🔍 PERBANDINGAN SEBELUM DAN SESUDAH
 
-| Aspek | SEBELUM | SESUDAH |
-|-------|---------|---------|
-| **AI Knowledge** | Standar umum dokumen TA | Pedoman Resmi ITS SK 280/2022 |
-| **Validasi Threshold** | 3/5 komponen wajib | 4/5 komponen wajib |
-| **Deteksi Bab Minimum** | 2 bab | 3 bab |
-| **Rekomendasi** | Umum & generik | Spesifik Pedoman ITS |
-| **Status Dokumen** | LAYAK/TIDAK LAYAK | LAYAK/PERLU PERBAIKAN/TIDAK LAYAK |
-| **Jenis Dokumen** | TA/Skripsi (umum) | Proposal TA vs Laporan TA |
-| **Referensi Minimum** | Tidak spesifik | 20 referensi (eksplisit) |
-| **Format Abstrak** | Terdeteksi/tidak | 2 bahasa, 200-300 kata (eksplisit) |
+| Aspek                   | SEBELUM                 | SESUDAH                            |
+| ----------------------- | ----------------------- | ---------------------------------- |
+| **AI Knowledge**        | Standar umum dokumen TA | Pedoman Resmi ITS SK 280/2022      |
+| **Validasi Threshold**  | 3/5 komponen wajib      | 4/5 komponen wajib                 |
+| **Deteksi Bab Minimum** | 2 bab                   | 3 bab                              |
+| **Rekomendasi**         | Umum & generik          | Spesifik Pedoman ITS               |
+| **Status Dokumen**      | LAYAK/TIDAK LAYAK       | LAYAK/PERLU PERBAIKAN/TIDAK LAYAK  |
+| **Jenis Dokumen**       | TA/Skripsi (umum)       | Proposal TA vs Laporan TA          |
+| **Referensi Minimum**   | Tidak spesifik          | 20 referensi (eksplisit)           |
+| **Format Abstrak**      | Terdeteksi/tidak        | 2 bahasa, 200-300 kata (eksplisit) |
 
 ---
 
 ## 🚀 MANFAAT PERUBAHAN
 
 ### 1. **Akurasi Lebih Tinggi**
-- AI sekarang memiliki konteks lengkap tentang standar ITS
-- Validasi lebih ketat sesuai aturan resmi
-- Deteksi komponen lebih komprehensif
+
+-   AI sekarang memiliki konteks lengkap tentang standar ITS
+-   Validasi lebih ketat sesuai aturan resmi
+-   Deteksi komponen lebih komprehensif
 
 ### 2. **Feedback Lebih Edukatif**
-- User mendapat informasi spesifik tentang apa yang kurang
-- Rekomendasi mengacu langsung ke Pedoman ITS
-- User tahu standar minimum yang harus dipenuhi
+
+-   User mendapat informasi spesifik tentang apa yang kurang
+-   Rekomendasi mengacu langsung ke Pedoman ITS
+-   User tahu standar minimum yang harus dipenuhi
 
 ### 3. **Konsistensi dengan Regulasi ITS**
-- Sistem sekarang aligned dengan SK Rektor No. 280/2022
-- Bisa dijadikan reference tool resmi untuk mahasiswa ITS
-- Membantu dosen pembimbing dalam preliminary check
+
+-   Sistem sekarang aligned dengan SK Rektor No. 280/2022
+-   Bisa dijadikan reference tool resmi untuk mahasiswa ITS
+-   Membantu dosen pembimbing dalam preliminary check
 
 ### 4. **Skalabilitas**
-- Pedoman tersimpan dalam SYSTEM_PROMPT yang mudah diupdate
-- File pedoman_its_prompt.txt bisa digunakan untuk reference
-- Mudah menambahkan aturan baru jika ada SK Rektor update
+
+-   Pedoman tersimpan dalam SYSTEM_PROMPT yang mudah diupdate
+-   File pedoman_its_prompt.txt bisa digunakan untuk reference
+-   Mudah menambahkan aturan baru jika ada SK Rektor update
 
 ---
 
@@ -256,10 +290,11 @@ if valid_components < 4:
 
 1. **Senopati API**: Masih mengembalikan error 500, sistem menggunakan fallback result yang sudah diupdate dengan pengetahuan Pedoman ITS.
 
-2. **Future Enhancement**: 
-   - Bisa menambahkan deteksi otomatis margin/font dari PDF (saat ini hardcoded)
-   - Bisa menambahkan hitungan referensi otomatis di Daftar Pustaka
-   - Bisa menambahkan validasi format APA/IEEE
+2. **Future Enhancement**:
+
+    - Bisa menambahkan deteksi otomatis margin/font dari PDF (saat ini hardcoded)
+    - Bisa menambahkan hitungan referensi otomatis di Daftar Pustaka
+    - Bisa menambahkan validasi format APA/IEEE
 
 3. **Kompatibilitas**: Perubahan ini backward compatible, JSON output format tetap sama, hanya konten yang lebih kaya.
 
@@ -267,9 +302,9 @@ if valid_components < 4:
 
 ## 🎓 REFERENSI
 
-- **Pedoman Resmi**: SK Rektor ITS No. 280/IT2/T/HK.00.01/2022 tentang Pedoman Penyusunan Laporan Tugas Akhir Sarjana dan Sarjana Terapan
-- **File Pedoman**: `pedoman/280-SK-Rektor-ttg-Pedoman-Penyusunan-Laporan-Tugas-Akhir-Sarjana-Sarjana-Terapan.pdf`
-- **Ekstraksi Pedoman**: `pedoman_text.txt` (39 halaman, 62,685 karakter)
+-   **Pedoman Resmi**: SK Rektor ITS No. 280/IT2/T/HK.00.01/2022 tentang Pedoman Penyusunan Laporan Tugas Akhir Sarjana dan Sarjana Terapan
+-   **File Pedoman**: `pedoman/280-SK-Rektor-ttg-Pedoman-Penyusunan-Laporan-Tugas-Akhir-Sarjana-Sarjana-Terapan.pdf`
+-   **Ekstraksi Pedoman**: `pedoman_text.txt` (39 halaman, 62,685 karakter)
 
 ---
 
