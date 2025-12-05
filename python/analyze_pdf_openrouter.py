@@ -190,27 +190,37 @@ def extract_section_locations(pages_text):
                         break
 
         # Deteksi Daftar Pustaka dengan berbagai variasi penulisan
+        # SKIP pages yang masuk ToC/Daftar Isi
+        if idx in toc_pages:
+            continue
+            
         # Pattern yang lebih robust untuk menangkap berbagai format
+        # Allow page numbers sebelum heading (e.g., "91 DAFTAR PUSTAKA")
         ref_patterns = [
-            r"(?:^|\n)\s*(DAFTAR\s+PUSTAKA|Daftar\s+Pustaka)\s*(?:\n|$)",
-            r"(?:^|\n)\s*(REFERENCES|References)\s*(?:\n|$)",
-            r"(?:^|\n)\s*(BIBLIOGRAPHY|Bibliography)\s*(?:\n|$)",
-            r"(?:^|\n)\s*(DAFTAR\s+REFERENSI|Daftar\s+Referensi)\s*(?:\n|$)",
-            r"(?:^|\n)\s*(KEPUSTAKAAN|Kepustakaan)\s*(?:\n|$)",
-            r"(?:^|\n)\s*(SUMBER\s+PUSTAKA|Sumber\s+Pustaka)\s*(?:\n|$)"
+            r"(?:^|\n|\s)(\d+\s+)?(DAFTAR\s+PUSTAKA|Daftar\s+Pustaka)(?:\s|$)",
+            r"(?:^|\n|\s)(\d+\s+)?(REFERENCES|References)(?:\s|$)",
+            r"(?:^|\n|\s)(\d+\s+)?(BIBLIOGRAPHY|Bibliography)(?:\s|$)",
+            r"(?:^|\n|\s)(\d+\s+)?(DAFTAR\s+REFERENSI|Daftar\s+Referensi)(?:\s|$)",
+            r"(?:^|\n|\s)(\d+\s+)?(KEPUSTAKAAN|Kepustakaan)(?:\s|$)",
+            r"(?:^|\n|\s)(\d+\s+)?(SUMBER\s+PUSTAKA|Sumber\s+Pustaka)(?:\s|$)"
         ]
         
         for pattern in ref_patterns:
             m_ref = re.search(pattern, text, re.MULTILINE)
             if m_ref and locations["daftar_pustaka"] is None:
                 start = m_ref.start()
+                # Extract heading (skip page number if present)
+                matched_text = m_ref.group(0)
+                heading = matched_text.strip().split()[-2:] if len(matched_text.strip().split()) >= 2 else matched_text.strip()
+                heading_str = ' '.join(heading) if isinstance(heading, list) else heading
+                
                 # Extract lebih banyak content (500 chars) untuk snippet
                 end = min(start + 500, len(text))
                 snippet_text = text[start:end]
                 locations["daftar_pustaka"] = {
                     "page": idx + 1,
                     "snippet": _clean_snippet(snippet_text),
-                    "heading": m_ref.group(1)  # Simpan heading yang terdeteksi
+                    "heading": heading_str  # Simpan heading yang terdeteksi
                 }
                 break
 
@@ -538,7 +548,7 @@ def analyze_abstracts(pages_text):
 
 
 def count_references(pages_text, locations):
-    """Hitung jumlah referensi di Daftar Pustaka dengan multiple strategies"""
+    """Hitung jumlah referensi di Daftar Pustaka"""
     if not locations.get('daftar_pustaka'):
         return 0
 
@@ -552,51 +562,54 @@ def count_references(pages_text, locations):
     
     combined_text = '\n'.join(ref_pages)
     
-    # Multiple strategies untuk counting references
-    ref_count = 0
+    # Clean up
+    combined_text = re.sub(r'^\s*\d+\s+(?=DAFTAR|Daftar|[A-Z][a-z])', '', combined_text, flags=re.MULTILINE)
+    if re.search(r'(BIODATA PENULIS|Lampiran|Appendix)', combined_text, re.IGNORECASE):
+        combined_text = re.split(r'(BIODATA PENULIS|Lampiran|Appendix)', combined_text, flags=re.IGNORECASE)[0]
+    combined_text = re.sub(r'^.*?DAFTAR\s+PUSTAKA\s*', '', combined_text, flags=re.IGNORECASE | re.MULTILINE)
     
-    # Strategy 1: Count by year patterns
-    # Pattern: (YYYY) atau YYYY. atau YYYY,
-    year_patterns = [
-        r'\(\d{4}\)',           # (2020)
-        r'\b\d{4}\.\s',        # 2020. 
-        r'\b\d{4},\s',         # 2020, 
-        r'\b\d{4}\)[,.]',      # 2020), atau 2020).
-    ]
+    # Strategy: Count unique references by finding reference start lines
+    # A reference typically starts with: "Lastname, Initial(s). "
+    # But NOT with "and", "Dan", "&", or other continuation words
     
-    # Split by lines and count valid reference lines
     lines = combined_text.split('\n')
-    counted_lines = set()  # Avoid double counting
+    refs = []
+    seen_refs = set()
     
-    for i, line in enumerate(lines):
-        line = line.strip()
-        # Skip empty, very short lines
-        if not line or len(line) < 15:
+    for line in lines:
+        stripped = line.strip()
+        if not stripped or len(stripped) < 5:
             continue
-        # Skip page numbers, headers, section titles
-        if re.match(r'^\d+$', line):
-            continue
-        if line.upper() in ['DAFTAR PUSTAKA', 'REFERENCES', 'BIBLIOGRAPHY', 'KEPUSTAKAAN', 'DAFTAR REFERENSI']:
-            continue
-        # Skip common non-reference patterns
-        if re.match(r'^(Lampiran|Appendix|Biodata|BIODATA)', line, re.IGNORECASE):
-            break  # Stop counting if we hit appendix section
         
-        # Check if line matches reference patterns
-        has_year = any(re.search(pat, line) for pat in year_patterns)
-        
-        # Additional patterns: author names (capitalize) and punctuation
-        has_author = re.search(r'[A-Z][a-z]+,\s+[A-Z]', line) or re.search(r'[A-Z][a-z]+\s+[A-Z]\.', line)
-        
-        # Must have year and reasonable length OR strong author pattern
-        if (has_year and len(line) > 25) or (has_author and len(line) > 40 and i not in counted_lines):
-            ref_count += 1
-            counted_lines.add(i)
+        # Check if line starts with a reference pattern (not continuation)
+        if re.match(r'[A-Z][a-z\s\'-]*,\s+[A-Z]', stripped):
+            # Make sure it's not a sub-author line
+            if not re.match(r'^(and|Dan|&|or|Or)\s+', stripped, re.IGNORECASE):
+                # Extract the first 100 chars for deduplication (catch duplicated sections)
+                ref_key = stripped[:100]
+                if ref_key not in seen_refs:
+                    seen_refs.add(ref_key)
+                    refs.append(stripped)
     
-    # Strategy 2: Fallback - count numbered references [1], [2], etc.
-    if ref_count < 5:
-        numbered_refs = re.findall(r'^\s*\[\d+\]', combined_text, re.MULTILINE)
-        ref_count = max(ref_count, len(numbered_refs))
+    if len(refs) >= 10:
+        return len(refs)
+    
+    # Fallback: Count by year patterns (both (YYYY) and YYYY.) with deduplication
+    year_matches = list(re.finditer(r'(?:\((?:19|20)\d{2}\)|(?:19|20)\d{2}[,\.])', combined_text))
+    
+    if len(year_matches) >= 10:
+        # Deduplicate by distance (min 100 chars apart = different reference)
+        unique_years = []
+        last_pos = -150
+        
+        for match in year_matches:
+            if match.start() - last_pos > 100:
+                unique_years.append(match.start())
+                last_pos = match.start()
+        
+        return len(unique_years) if len(unique_years) >= 10 else len(year_matches)
+    
+    return max(len(refs), len(year_matches)) if max(len(refs), len(year_matches)) >= 5 else 0
     
     # Strategy 3: Fallback - count by dense year occurrence (group by paragraphs)
     if ref_count < 5:
