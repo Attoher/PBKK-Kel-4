@@ -196,16 +196,21 @@ def extract_section_locations(pages_text):
             r"(?:^|\n)\s*(REFERENCES|References)\s*(?:\n|$)",
             r"(?:^|\n)\s*(BIBLIOGRAPHY|Bibliography)\s*(?:\n|$)",
             r"(?:^|\n)\s*(DAFTAR\s+REFERENSI|Daftar\s+Referensi)\s*(?:\n|$)",
-            r"(?:^|\n)\s*(KEPUSTAKAAN|Kepustakaan)\s*(?:\n|$)"
+            r"(?:^|\n)\s*(KEPUSTAKAAN|Kepustakaan)\s*(?:\n|$)",
+            r"(?:^|\n)\s*(SUMBER\s+PUSTAKA|Sumber\s+Pustaka)\s*(?:\n|$)"
         ]
         
         for pattern in ref_patterns:
             m_ref = re.search(pattern, text, re.MULTILINE)
             if m_ref and locations["daftar_pustaka"] is None:
                 start = m_ref.start()
+                # Extract lebih banyak content (500 chars) untuk snippet
+                end = min(start + 500, len(text))
+                snippet_text = text[start:end]
                 locations["daftar_pustaka"] = {
                     "page": idx + 1,
-                    "snippet": _clean_snippet(text[start:start + 200])
+                    "snippet": _clean_snippet(snippet_text),
+                    "heading": m_ref.group(1)  # Simpan heading yang terdeteksi
                 }
                 break
 
@@ -241,16 +246,22 @@ def extract_section_locations(pages_text):
     # Fallback heuristic: jika Daftar Pustaka tidak terdeteksi via heading,
     # scan halaman akhir untuk dense reference patterns
     if not locations["daftar_pustaka"]:
-        for idx in range(len(pages_text) - 1, max(0, len(pages_text) - 30), -1):
+        # Cari halaman dengan pattern referensi yang kuat (years + author patterns)
+        for idx in range(len(pages_text) - 1, max(0, len(pages_text) - 40), -1):
             text = pages_text[idx] or ""
-            # Heuristic: halaman dengan >5 entries tahun (YYYY) dan author patterns
-            year_matches = re.findall(r'\(\d{4}\)|\d{4}\.', text)
+            # Heuristic: halaman dengan >8 entries tahun (YYYY) dan author patterns
+            year_matches = re.findall(r'\(\d{4}\)|\d{4}\.|20\d{2}[,)]', text)
             author_patterns = re.findall(r'[A-Z][a-z]+,\s+[A-Z]\.', text)
             
-            if len(year_matches) > 5 and len(author_patterns) > 3:
+            # Jika ada banyak tahun dan author pattern (tanda-tanda daftar pustaka)
+            if len(year_matches) > 8 and len(author_patterns) > 5:
+                # Extract daftar pustaka snippet
+                heading = "DAFTAR PUSTAKA (Deteksi Otomatis)"
                 locations["daftar_pustaka"] = {
                     "page": idx + 1,
-                    "snippet": _clean_snippet(text[:300])
+                    "snippet": f"{heading}\n{_clean_snippet(text[:400])}",
+                    "heading": heading,
+                    "auto_detected": True  # Mark as auto-detected
                 }
                 break
     
@@ -843,7 +854,8 @@ def fallback_result(total_halaman, format_margin_info, pages_text=None, location
                 "status": abstrak_status,
                 "notes": abstrak_notes,
                 "id_word_count": abstrak_id_words,
-                "en_word_count": abstrak_en_words
+                "en_word_count": abstrak_en_words,
+                **({"page": locations['abstrak']['page']} if locations and locations.get('abstrak') else {})
             },
             "Struktur Bab": {
                 "Bab 1": bab_status[0], "Bab 2": bab_status[1], 
@@ -851,9 +863,11 @@ def fallback_result(total_halaman, format_margin_info, pages_text=None, location
                 "notes": bab_notes
             },
             "Daftar Pustaka": {
+                "status": dafpus_status,
                 "references_count": str(ref_count) if ref_count > 0 else "Tidak terdeteksi",
                 "format": "APA/IEEE" if ref_count >= 20 else "Perlu verifikasi manual",
-                "notes": dafpus_notes
+                "notes": dafpus_notes,
+                **({"page": locations['daftar_pustaka']['page']} if locations and locations.get('daftar_pustaka') else {})
             },
             "Cover & Halaman Formal": {
                 "status": "✓",
@@ -866,7 +880,12 @@ def fallback_result(total_halaman, format_margin_info, pages_text=None, location
             "total_halaman": total_halaman,
             "format_file": "PDF"
         },
-        "recommendations": rec
+        "recommendations": rec,
+        "locations": {
+            "abstrak": locations.get('abstrak') if locations else None,
+            "bab": locations.get('bab') if locations else [],
+            "daftar_pustaka": locations.get('daftar_pustaka') if locations else None
+        }
     }
 
 
