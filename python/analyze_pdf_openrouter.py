@@ -808,14 +808,18 @@ def fallback_result(total_halaman, format_margin_info, pages_text=None, location
     # SCORING FLEKSIBEL - tidak reject, hanya berikan score & rekomendasi
     if total_halaman < 20:
         jenis_dok = "Proposal TA / TA Pendek"
-        # Score berdasarkan komponen yang ada
-        score = 5  # base minimal
-        if has_babs: score += 1
-        if has_abstract: score += 1.5
+        # Score berdasarkan komponen yang ada (max 10)
+        score = 5.0  # base minimal
+        if has_babs: score += 1.5
+        if has_abstract: score += 2.0
         if has_dafpus: score += 1.5
         if total_halaman >= 10: score += 0.5
         
-        percentage = round(score * 10, 1)
+        # Cap skor maksimal 10
+        score = min(score, 10.0)
+        # Round ke 1 desimal dan clean floating point
+        score = round(score, 1)
+        percentage = score * 10
         status = "PERLU PERBAIKAN" if score >= 6 else "PERLU PERBAIKAN SIGNIFIKAN"
         
         rec = [
@@ -827,14 +831,40 @@ def fallback_result(total_halaman, format_margin_info, pages_text=None, location
         ]
     else:
         jenis_dok = "Laporan TA/Skripsi"
-        # Hitung score berdasarkan komponen yang terdeteksi
-        score = 6  # base
-        if abstrak_id_words >= 200 and abstrak_en_words >= 200: score += 1.5
-        if ref_count >= 20: score += 1.5
-        if bab_count >= 5: score += 1
-        if total_halaman >= 40: score += 0.5
+        # Hitung score berdasarkan komponen yang terdeteksi (MAX 10.0)
+        # Weighted scoring dengan bobot terbatas
+        score = 5.5  # base untuk Laporan TA
         
-        percentage = round(score * 10, 1)
+        # Komponen kriteria (max total 4.5)
+        if abstrak_id_words >= 200 and abstrak_en_words >= 200: 
+            score += 1.2  # Abstrak OK
+        elif abstrak_id_words > 0 or abstrak_en_words > 0:
+            score += 0.6  # Abstrak partial
+            
+        if ref_count >= 20: 
+            score += 1.5  # Referensi lengkap
+        elif ref_count >= 10:
+            score += 0.8  # Referensi cukup
+        elif ref_count > 0:
+            score += 0.3  # Referensi ada
+            
+        if bab_count >= 5: 
+            score += 1.2  # Bab lengkap
+        elif bab_count >= 3:
+            score += 0.7  # Bab partial
+        elif bab_count >= 1:
+            score += 0.3  # Bab minimal
+            
+        if total_halaman >= 40: 
+            score += 0.6  # Panjang optimal
+        elif total_halaman >= 30:
+            score += 0.3  # Panjang cukup
+        
+        # Cap skor maksimal 10.0
+        score = min(score, 10.0)
+        # Round ke 1 desimal dan clean floating point
+        score = round(score, 1)
+        percentage = score * 10
         status = "LAYAK" if score >= 8.5 else "PERLU PERBAIKAN"
         
         rec = [
