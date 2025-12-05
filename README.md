@@ -12,7 +12,7 @@
 
 * 5025231181 — Ath Thahir Muhammad Isa Rahmatullah — UI/UX & Frontend & Backend Developer
 * 5025231182 — Abimanyu Danendra A — Frontend & Backend & Database Developer
-* 5025231184 — Alden Zhorif Muhammad — Backend & Database Developer
+* 5025231184 — Alden Zhorif Muhammad — Backend & Database Developer & DevOps
 * 5025231044 — Rahman Azkarafi Prasetya — Prompt Engineering (AI) & DevOps
 * 5025231056 — Razky Ageng Syahputra — Prompt Engineering (AI) & DevOps
 * 5025231033 — Raditya Yusuf Annaafi’ — Prompt Engineering (AI) & DevOps
